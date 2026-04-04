@@ -1,0 +1,976 @@
+2026-04-03T08:22:17.582979-0400 | INFO | main:36 | === Oil Super Spike Analyzer starting ===
+2026-04-03T08:22:17.582979-0400 | INFO | main:39 | Initializing database...
+2026-04-03T08:22:18.599414-0400 | INFO | main:42 | Database ready.
+2026-04-03T08:22:18.599414-0400 | INFO | main:46 | Running backfill (incremental — fetches any new data since last run)...
+2026-04-03T08:22:18.717800-0400 | INFO | backfill_manager:110 | Starting backfill [fred]...
+2026-04-03T08:22:26.655323-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILWTICO (CL) from 2026-02-28 to 2026-04-03
+2026-04-03T08:22:29.318584-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 1 records for CL
+2026-04-03T08:22:29.318584-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILBRENTEU (BZ) from 2026-02-28 to 2026-04-03
+2026-04-03T08:22:29.740313-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 1 records for BZ
+2026-04-03T08:22:29.769362-0400 | INFO | backfill_manager:129 | Backfill [fred] complete: 2 records.
+2026-04-03T08:22:29.801404-0400 | INFO | backfill_manager:110 | Starting backfill [yahoo]...
+2026-04-03T08:22:35.534143-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching CL=F (CL) from 2026-02-28
+2026-04-03T08:22:39.939105-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 3 new records for CL
+2026-04-03T08:22:39.939105-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching BZ=F (BZ) from 2026-02-28
+2026-04-03T08:22:40.087191-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 3 new records for BZ
+2026-04-03T08:22:40.104854-0400 | INFO | backfill_manager:129 | Backfill [yahoo] complete: 6 records.
+2026-04-03T08:22:40.130839-0400 | INFO | backfill_manager:110 | Starting backfill [eia]...
+2026-04-03T08:22:40.163021-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Inventories (PET.WCESTUS1.W) from 2026-02-28
+2026-04-03T08:22:43.795373-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Inventories
+2026-04-03T08:22:43.796374-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Production (PET.WCRFPUS2.W) from 2026-02-28
+2026-04-03T08:22:44.939666-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Production
+2026-04-03T08:22:44.986503-0400 | INFO | backfill_manager:129 | Backfill [eia] complete: 0 records.
+2026-04-03T08:22:44.989197-0400 | INFO | backfill_manager:110 | Starting backfill [gdelt]...
+2026-04-03T08:22:46.310469-0400 | INFO | gdelt_backfill:60 | GDELT backfill: 2026-03-08 → 2026-04-03 (27 days)
+2026-04-03T08:22:58.182284-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 1/3 in 5s
+2026-04-03T08:23:31.651598-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 2/3 in 10s
+2026-04-03T08:23:54.203264-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 3/3 in 20s
+2026-04-03T08:24:14.208809-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T08:24:55.027052-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 1/3 in 5s
+2026-04-03T08:25:16.775689-0400 | INFO | news_collector:149 | GDELT 429 for 2026-03-08, retry 2/3 in 10s
+2026-04-03T08:25:37.504327-0400 | INFO | news_collector:149 | GDELT 429 for 2026-03-08, retry 3/3 in 20s
+2026-04-03T08:25:57.514767-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T08:25:57.514767-0400 | WARNING | gdelt_backfill:73 | GDELT backfill: 2 consecutive failures, stopping at 2026-03-08 (will resume next run)
+2026-04-03T08:25:57.514767-0400 | INFO | gdelt_backfill:199 | GDELT backfill partial (stopped at 2026-03-08): 0 articles, 0 classified
+2026-04-03T08:25:57.644774-0400 | INFO | backfill_manager:129 | Backfill [gdelt] complete: 0 records.
+2026-04-03T08:25:58.503436-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T08:25:58.591442-0400 | DEBUG | news_collector:72 | RSS reuters_world: fetched 0 entries
+2026-04-03T08:25:58.620174-0400 | DEBUG | news_collector:72 | RSS reuters_commodities: fetched 0 entries
+2026-04-03T08:25:59.350184-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T08:25:59.543833-0400 | DEBUG | news_collector:72 | RSS aljazeera: fetched 25 entries
+2026-04-03T08:25:59.849625-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 23 entries
+2026-04-03T08:25:59.849625-0400 | INFO | news_collector:76 | RSS total: 50 keyword-matched articles
+2026-04-03T08:26:30.904615-0400 | WARNING | news_collector:119 | GDELT fetch failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc (Caused by ConnectTimeoutError(<HTTPSConnection(host='api.gdeltproject.org', port=443) at 0x20d758bdee0>, 'Connection to api.gdeltproject.org timed out. (connect timeout=30)'))
+2026-04-03T08:26:31.048167-0400 | INFO | news_collector:246 | Dedup: removed 6 duplicates, 44 unique remain
+2026-04-03T08:26:31.065742-0400 | DEBUG | news_collector:347 | DB dedup: skipped 1 already-stored articles
+2026-04-03T08:26:31.117164-0400 | INFO | news_collector:419 | Stored 43 new articles in geopolitical_events
+2026-04-03T08:27:13.319120-0400 | INFO | geopolitical_agent:220 | Classified 43/43 events
+2026-04-03T08:27:13.319120-0400 | INFO | main:57 | News pipeline: 43 new articles from RSS/GDELT live.
+2026-04-03T08:27:13.319120-0400 | INFO | main:60 | Backfill complete.
+2026-04-03T08:27:13.319120-0400 | INFO | main:69 | Starting APScheduler...
+2026-04-03T08:27:13.693378-0400 | INFO | scheduler:219 | Scheduler started with jobs:
+2026-04-03T08:27:13.693378-0400 | INFO | scheduler:221 |   [market_morning] Market Data (Morning) — next run: 2026-04-03 10:00:00-04:00
+2026-04-03T08:27:13.693378-0400 | INFO | scheduler:221 |   [news] News Collection Pipeline — next run: 2026-04-03 10:00:00-04:00
+2026-04-03T08:27:13.695385-0400 | INFO | scheduler:221 |   [military] Military Intelligence Pipeline — next run: 2026-04-03 10:15:00-04:00
+2026-04-03T08:27:13.695385-0400 | INFO | scheduler:221 |   [eia_fred] EIA + FRED Data Update — next run: 2026-04-03 11:00:00-04:00
+2026-04-03T08:27:13.695385-0400 | INFO | scheduler:221 |   [market_midday] Market Data (Midday) — next run: 2026-04-03 13:00:00-04:00
+2026-04-03T08:27:13.695385-0400 | INFO | scheduler:221 |   [market_settlement] Market Data (Settlement) — next run: 2026-04-03 16:15:00-04:00
+2026-04-03T08:27:13.695385-0400 | INFO | scheduler:221 |   [summary_evening] AI Summary (Evening) — next run: 2026-04-03 17:00:00-04:00
+2026-04-03T08:27:13.695385-0400 | INFO | scheduler:221 |   [scenario] Scenario Probability Update — next run: 2026-04-03 17:30:00-04:00
+2026-04-03T08:27:13.697389-0400 | INFO | scheduler:221 |   [trade] Trade Recommendation Analysis — next run: 2026-04-03 17:45:00-04:00
+2026-04-03T08:27:13.697389-0400 | INFO | scheduler:221 |   [pnl] P&L Projection — next run: 2026-04-03 18:00:00-04:00
+2026-04-03T08:27:13.697389-0400 | INFO | scheduler:221 |   [summary_morning] AI Summary (Morning) — next run: 2026-04-04 08:00:00-04:00
+2026-04-03T08:27:13.697389-0400 | INFO | main:73 | Scheduler started.
+2026-04-03T08:27:13.697389-0400 | INFO | main:78 | Launching Dash application...
+2026-04-03T08:27:20.374565-0400 | INFO | main:36 | === Oil Super Spike Analyzer starting ===
+2026-04-03T08:27:20.375566-0400 | INFO | main:39 | Initializing database...
+2026-04-03T08:27:21.293736-0400 | INFO | main:42 | Database ready.
+2026-04-03T08:27:21.293736-0400 | INFO | main:46 | Running backfill (incremental — fetches any new data since last run)...
+2026-04-03T08:27:21.346081-0400 | INFO | backfill_manager:110 | Starting backfill [fred]...
+2026-04-03T08:27:25.404175-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILWTICO (CL) from 2026-02-28 to 2026-04-03
+2026-04-03T08:27:25.723193-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 0 records for CL
+2026-04-03T08:27:25.723193-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILBRENTEU (BZ) from 2026-02-28 to 2026-04-03
+2026-04-03T08:27:25.975651-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 0 records for BZ
+2026-04-03T08:27:26.007205-0400 | INFO | backfill_manager:129 | Backfill [fred] complete: 0 records.
+2026-04-03T08:27:26.023336-0400 | INFO | backfill_manager:110 | Starting backfill [yahoo]...
+2026-04-03T08:27:26.880582-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching CL=F (CL) from 2026-02-28
+2026-04-03T08:27:29.954680-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 0 new records for CL
+2026-04-03T08:27:29.954680-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching BZ=F (BZ) from 2026-02-28
+2026-04-03T08:27:30.073398-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 0 new records for BZ
+2026-04-03T08:27:30.116740-0400 | INFO | backfill_manager:129 | Backfill [yahoo] complete: 0 records.
+2026-04-03T08:27:30.130216-0400 | INFO | backfill_manager:110 | Starting backfill [eia]...
+2026-04-03T08:27:30.161370-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Inventories (PET.WCESTUS1.W) from 2026-02-28
+2026-04-03T08:27:31.569089-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Inventories
+2026-04-03T08:27:31.569089-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Production (PET.WCRFPUS2.W) from 2026-02-28
+2026-04-03T08:27:32.866856-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Production
+2026-04-03T08:27:32.889990-0400 | INFO | backfill_manager:129 | Backfill [eia] complete: 0 records.
+2026-04-03T08:27:32.917262-0400 | INFO | backfill_manager:110 | Starting backfill [gdelt]...
+2026-04-03T08:27:33.257451-0400 | INFO | gdelt_backfill:60 | GDELT backfill: 2026-03-08 → 2026-04-03 (27 days)
+2026-04-03T08:27:47.860170-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 1/3 in 5s
+2026-04-03T08:28:08.131004-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 2/3 in 10s
+2026-04-03T08:28:45.681423-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 3/3 in 20s
+2026-04-03T08:29:05.679132-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T08:30:04.144879-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 1/3 in 5s
+2026-04-03T08:30:22.045190-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 2/3 in 10s
+2026-04-03T08:30:50.287850-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 3/3 in 20s
+2026-04-03T08:31:10.290223-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T08:31:10.290223-0400 | WARNING | gdelt_backfill:73 | GDELT backfill: 2 consecutive failures, stopping at 2026-03-08 (will resume next run)
+2026-04-03T08:31:10.290223-0400 | INFO | gdelt_backfill:199 | GDELT backfill partial (stopped at 2026-03-08): 0 articles, 0 classified
+2026-04-03T08:31:10.410444-0400 | INFO | backfill_manager:129 | Backfill [gdelt] complete: 0 records.
+2026-04-03T08:31:11.190430-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T08:31:11.206096-0400 | DEBUG | news_collector:72 | RSS reuters_world: fetched 0 entries
+2026-04-03T08:31:11.207413-0400 | DEBUG | news_collector:72 | RSS reuters_commodities: fetched 0 entries
+2026-04-03T08:31:11.910079-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T08:31:12.068794-0400 | DEBUG | news_collector:72 | RSS aljazeera: fetched 25 entries
+2026-04-03T08:31:12.423279-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 23 entries
+2026-04-03T08:31:12.423279-0400 | INFO | news_collector:76 | RSS total: 51 keyword-matched articles
+2026-04-03T08:31:33.545499-0400 | WARNING | news_collector:119 | GDELT fetch failed: Expecting value: line 1 column 1 (char 0)
+2026-04-03T08:31:33.581385-0400 | INFO | news_collector:246 | Dedup: removed 6 duplicates, 45 unique remain
+2026-04-03T08:31:33.583084-0400 | DEBUG | news_collector:347 | DB dedup: skipped 43 already-stored articles
+2026-04-03T08:31:33.715669-0400 | INFO | news_collector:419 | Stored 2 new articles in geopolitical_events
+2026-04-03T08:31:38.286132-0400 | INFO | geopolitical_agent:220 | Classified 2/2 events
+2026-04-03T08:31:38.286132-0400 | INFO | main:57 | News pipeline: 2 new articles from RSS/GDELT live.
+2026-04-03T08:31:38.286132-0400 | INFO | main:60 | Backfill complete.
+2026-04-03T08:31:38.286132-0400 | INFO | main:69 | Starting APScheduler...
+2026-04-03T08:31:38.420395-0400 | INFO | scheduler:219 | Scheduler started with jobs:
+2026-04-03T08:31:38.420395-0400 | INFO | scheduler:221 |   [market_morning] Market Data (Morning) — next run: 2026-04-03 10:00:00-04:00
+2026-04-03T08:31:38.420395-0400 | INFO | scheduler:221 |   [news] News Collection Pipeline — next run: 2026-04-03 10:00:00-04:00
+2026-04-03T08:31:38.420395-0400 | INFO | scheduler:221 |   [military] Military Intelligence Pipeline — next run: 2026-04-03 10:15:00-04:00
+2026-04-03T08:31:38.420395-0400 | INFO | scheduler:221 |   [eia_fred] EIA + FRED Data Update — next run: 2026-04-03 11:00:00-04:00
+2026-04-03T08:31:38.420395-0400 | INFO | scheduler:221 |   [market_midday] Market Data (Midday) — next run: 2026-04-03 13:00:00-04:00
+2026-04-03T08:31:38.420395-0400 | INFO | scheduler:221 |   [market_settlement] Market Data (Settlement) — next run: 2026-04-03 16:15:00-04:00
+2026-04-03T08:31:38.420395-0400 | INFO | scheduler:221 |   [summary_evening] AI Summary (Evening) — next run: 2026-04-03 17:00:00-04:00
+2026-04-03T08:31:38.420395-0400 | INFO | scheduler:221 |   [scenario] Scenario Probability Update — next run: 2026-04-03 17:30:00-04:00
+2026-04-03T08:31:38.420395-0400 | INFO | scheduler:221 |   [trade] Trade Recommendation Analysis — next run: 2026-04-03 17:45:00-04:00
+2026-04-03T08:31:38.420395-0400 | INFO | scheduler:221 |   [pnl] P&L Projection — next run: 2026-04-03 18:00:00-04:00
+2026-04-03T08:31:38.420395-0400 | INFO | scheduler:221 |   [summary_morning] AI Summary (Morning) — next run: 2026-04-04 08:00:00-04:00
+2026-04-03T08:31:38.420395-0400 | INFO | main:73 | Scheduler started.
+2026-04-03T08:31:38.420395-0400 | INFO | main:78 | Launching Dash application...
+2026-04-03T10:00:00.014168-0400 | INFO | scheduler:31 | Job [market_morning] started
+2026-04-03T10:00:00.015156-0400 | INFO | scheduler:31 | Job [market_morning] started
+2026-04-03T10:00:00.015156-0400 | INFO | scheduler:31 | Job [news] started
+2026-04-03T10:00:00.016162-0400 | INFO | scheduler:31 | Job [news] started
+2026-04-03T10:00:00.578327-0400 | ERROR | scheduler:63 | Futures collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_0'.
+2026-04-03T10:00:00.578327-0400 | ERROR | scheduler:63 | Futures collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_0'.
+2026-04-03T10:00:00.596132-0400 | ERROR | scheduler:70 | Options collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_0'.
+2026-04-03T10:00:00.597136-0400 | INFO | scheduler:35 | Job [market_morning] completed in 0.6s — {'futures': "There is no current event loop in thread 'ThreadPoolExecutor-0_0'.", 'options': "There is no current event loop in thread 'ThreadPoolExecutor-0_0'."}
+2026-04-03T10:00:00.596132-0400 | ERROR | scheduler:70 | Options collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_0'.
+2026-04-03T10:00:00.599171-0400 | INFO | scheduler:35 | Job [market_morning] completed in 0.6s — {'futures': "There is no current event loop in thread 'ThreadPoolExecutor-0_0'.", 'options': "There is no current event loop in thread 'ThreadPoolExecutor-0_0'."}
+2026-04-03T10:00:00.860150-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T10:00:00.922146-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T10:00:00.972011-0400 | DEBUG | news_collector:72 | RSS reuters_world: fetched 0 entries
+2026-04-03T10:00:00.987056-0400 | DEBUG | news_collector:72 | RSS reuters_commodities: fetched 0 entries
+2026-04-03T10:00:01.750811-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T10:00:01.751808-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T10:00:01.959615-0400 | DEBUG | news_collector:72 | RSS aljazeera: fetched 25 entries
+2026-04-03T10:00:01.971137-0400 | DEBUG | news_collector:72 | RSS aljazeera: fetched 25 entries
+2026-04-03T10:00:02.266055-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 25 entries
+2026-04-03T10:00:02.266055-0400 | INFO | news_collector:76 | RSS total: 49 keyword-matched articles
+2026-04-03T10:00:02.272053-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 25 entries
+2026-04-03T10:00:02.272053-0400 | INFO | news_collector:76 | RSS total: 49 keyword-matched articles
+2026-04-03T10:00:33.532278-0400 | WARNING | news_collector:119 | GDELT fetch failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc (Caused by ConnectTimeoutError(<HTTPSConnection(host='api.gdeltproject.org', port=443) at 0x21057da9a60>, 'Connection to api.gdeltproject.org timed out. (connect timeout=30)'))
+2026-04-03T10:00:33.532278-0400 | WARNING | news_collector:119 | GDELT fetch failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc (Caused by ConnectTimeoutError(<HTTPSConnection(host='api.gdeltproject.org', port=443) at 0x20d791387d0>, 'Connection to api.gdeltproject.org timed out. (connect timeout=30)'))
+2026-04-03T10:00:33.551173-0400 | INFO | news_collector:246 | Dedup: removed 6 duplicates, 43 unique remain
+2026-04-03T10:00:33.556176-0400 | INFO | news_collector:246 | Dedup: removed 6 duplicates, 43 unique remain
+2026-04-03T10:00:33.557180-0400 | DEBUG | news_collector:347 | DB dedup: skipped 40 already-stored articles
+2026-04-03T10:00:33.561225-0400 | DEBUG | news_collector:347 | DB dedup: skipped 40 already-stored articles
+2026-04-03T10:00:33.680389-0400 | INFO | news_collector:419 | Stored 3 new articles in geopolitical_events
+2026-04-03T10:00:33.722347-0400 | INFO | news_collector:419 | Stored 3 new articles in geopolitical_events
+2026-04-03T10:00:37.740122-0400 | INFO | geopolitical_agent:220 | Classified 3/3 events
+2026-04-03T10:00:37.741144-0400 | INFO | scheduler:35 | Job [news] completed in 37.7s — 3 articles
+2026-04-03T10:00:38.595318-0400 | INFO | geopolitical_agent:220 | Classified 3/3 events
+2026-04-03T10:00:38.596319-0400 | INFO | scheduler:35 | Job [news] completed in 38.6s — 3 articles
+2026-04-03T10:15:00.004852-0400 | INFO | scheduler:31 | Job [military] started
+2026-04-03T10:15:00.004852-0400 | INFO | scheduler:31 | Job [military] started
+2026-04-03T10:15:07.222799-0400 | INFO | military_collector:115 | Created 3 military events for 2026-04-03
+2026-04-03T10:15:07.329807-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-04-01%7C2026-04-03&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-04-03T10:15:09.445669-0400 | INFO | military_collector:115 | Created 0 military events for 2026-04-03
+2026-04-03T10:15:09.456712-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-04-01%7C2026-04-03&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-04-03T10:15:14.578859-0400 | INFO | summarizer:268 | Generated 2 military daily summaries for 2026-04-03
+2026-04-03T10:15:14.579933-0400 | INFO | scheduler:35 | Job [military] completed in 14.6s — {'military_events_from_news': 3, 'acled_events': 0, 'military_summaries': 2}
+2026-04-03T10:15:14.608881-0400 | ERROR | summarizer:273 | Military summary generation failed: (raised as a result of Query-invoked autoflush; consider using a session.no_autoflush block if this flush is occurring prematurely)
+(sqlite3.IntegrityError) UNIQUE constraint failed: military_daily_summary.date, military_daily_summary.side
+[SQL: INSERT INTO military_daily_summary (date, side, total_personnel_losses, total_aircraft_losses, total_naval_losses, total_armor_losses, total_missile_losses, total_drone_losses, cumulative_personnel_losses, cumulative_aircraft_losses, cumulative_naval_losses, active_personnel_deployed, pending_personnel_deployment, summary_text, escalation_score, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('2026-04-03', 'Iran', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "Iranian forces conducted strategic infrastructure strikes against opposing coalition assets, successfully targeting a water treatment facility in Kuw ... (12 characters truncated) ... of broader Gulf operations. This represents an escalation in Iran's campaign to disrupt critical civilian infrastructure supporting enemy operations.", 7, '2026-04-03 14:15:12.858411')]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-04-03T10:15:14.609878-0400 | ERROR | scheduler:38 | Job [military] failed after 14.6s: (raised as a result of Query-invoked autoflush; consider using a session.no_autoflush block if this flush is occurring prematurely)
+(sqlite3.IntegrityError) UNIQUE constraint failed: military_daily_summary.date, military_daily_summary.side
+[SQL: INSERT INTO military_daily_summary (date, side, total_personnel_losses, total_aircraft_losses, total_naval_losses, total_armor_losses, total_missile_losses, total_drone_losses, cumulative_personnel_losses, cumulative_aircraft_losses, cumulative_naval_losses, active_personnel_deployed, pending_personnel_deployment, summary_text, escalation_score, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('2026-04-03', 'Iran', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "Iranian forces conducted strategic infrastructure strikes against opposing coalition assets, successfully targeting a water treatment facility in Kuw ... (12 characters truncated) ... of broader Gulf operations. This represents an escalation in Iran's campaign to disrupt critical civilian infrastructure supporting enemy operations.", 7, '2026-04-03 14:15:12.858411')]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-04-03T13:15:13.084959-0400 | INFO | main:36 | === Oil Super Spike Analyzer starting ===
+2026-04-03T13:15:13.085962-0400 | INFO | main:39 | Initializing database...
+2026-04-03T13:15:13.501372-0400 | INFO | main:42 | Database ready.
+2026-04-03T13:15:13.501372-0400 | INFO | main:46 | Running backfill (incremental — fetches any new data since last run)...
+2026-04-03T13:15:13.713932-0400 | INFO | backfill_manager:110 | Starting backfill [fred]...
+2026-04-03T13:15:14.324236-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILWTICO (CL) from 2026-02-28 to 2026-04-03
+2026-04-03T13:15:15.874070-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 0 records for CL
+2026-04-03T13:15:15.876079-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILBRENTEU (BZ) from 2026-02-28 to 2026-04-03
+2026-04-03T13:15:16.411454-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 0 records for BZ
+2026-04-03T13:15:16.444381-0400 | INFO | backfill_manager:129 | Backfill [fred] complete: 0 records.
+2026-04-03T13:15:16.475549-0400 | INFO | backfill_manager:110 | Starting backfill [yahoo]...
+2026-04-03T13:15:16.906998-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching CL=F (CL) from 2026-02-28
+2026-04-03T13:15:17.413020-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 0 new records for CL
+2026-04-03T13:15:17.413020-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching BZ=F (BZ) from 2026-02-28
+2026-04-03T13:15:17.653363-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 0 new records for BZ
+2026-04-03T13:15:17.722324-0400 | INFO | backfill_manager:129 | Backfill [yahoo] complete: 0 records.
+2026-04-03T13:15:17.805047-0400 | INFO | backfill_manager:110 | Starting backfill [eia]...
+2026-04-03T13:15:17.872667-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Inventories (PET.WCESTUS1.W) from 2026-02-28
+2026-04-03T13:15:19.498911-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Inventories
+2026-04-03T13:15:19.498911-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Production (PET.WCRFPUS2.W) from 2026-02-28
+2026-04-03T13:15:20.680558-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Production
+2026-04-03T13:15:20.708723-0400 | INFO | backfill_manager:129 | Backfill [eia] complete: 0 records.
+2026-04-03T13:15:20.736032-0400 | INFO | backfill_manager:110 | Starting backfill [gdelt]...
+2026-04-03T13:15:20.848720-0400 | INFO | gdelt_backfill:60 | GDELT backfill: 2026-03-08 → 2026-04-03 (27 days)
+2026-04-03T13:15:27.581857-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 1/3 in 5s
+2026-04-03T13:15:46.045108-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 2/3 in 10s
+2026-04-03T13:16:17.138647-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC+OR+Houthi+OR+Bab+el-Mandeb+OR+Red+Sea+tanker&mode=ArtList&maxrecords=250&startdatetime=20260308000000&enddatetime=20260309000000&format=json&sort=DateDesc (Caused by ConnectTimeoutError(<HTTPSConnection(host='api.gdeltproject.org', port=443) at 0x186bcb4fd70>, 'Connection to api.gdeltproject.org timed out. (connect timeout=30)'))), retry 3/3 in 20s
+2026-04-03T13:16:37.141827-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T13:17:18.680885-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 1/3 in 5s
+2026-04-03T13:17:35.719790-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 2/3 in 10s
+2026-04-03T13:18:02.695148-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 3/3 in 20s
+2026-04-03T13:18:22.711086-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T13:18:22.711086-0400 | WARNING | gdelt_backfill:73 | GDELT backfill: 2 consecutive failures, stopping at 2026-03-08 (will resume next run)
+2026-04-03T13:18:22.711086-0400 | INFO | gdelt_backfill:199 | GDELT backfill partial (stopped at 2026-03-08): 0 articles, 0 classified
+2026-04-03T13:18:22.844627-0400 | INFO | backfill_manager:129 | Backfill [gdelt] complete: 0 records.
+2026-04-03T13:18:23.675369-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T13:18:24.445716-0400 | DEBUG | news_collector:72 | RSS google_red_sea: fetched 100 entries
+2026-04-03T13:18:24.625168-0400 | DEBUG | news_collector:72 | RSS reuters_world: fetched 0 entries
+2026-04-03T13:18:24.641030-0400 | DEBUG | news_collector:72 | RSS reuters_commodities: fetched 0 entries
+2026-04-03T13:18:25.261233-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T13:18:25.501215-0400 | DEBUG | news_collector:72 | RSS aljazeera: fetched 25 entries
+2026-04-03T13:18:25.775611-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 30 entries
+2026-04-03T13:18:25.775611-0400 | INFO | news_collector:76 | RSS total: 75 keyword-matched articles
+2026-04-03T13:18:47.162623-0400 | WARNING | news_collector:119 | GDELT fetch failed: Expecting value: line 1 column 1 (char 0)
+2026-04-03T13:18:47.337547-0400 | INFO | news_collector:246 | Dedup: removed 11 duplicates, 64 unique remain
+2026-04-03T13:18:47.341104-0400 | DEBUG | news_collector:347 | DB dedup: skipped 35 already-stored articles
+2026-04-03T13:18:47.376015-0400 | INFO | news_collector:419 | Stored 29 new articles in geopolitical_events
+2026-04-03T13:19:16.651710-0400 | INFO | geopolitical_agent:220 | Classified 29/29 events
+2026-04-03T13:19:16.651710-0400 | INFO | main:57 | News pipeline: 29 new articles from RSS/GDELT live.
+2026-04-03T13:19:16.651710-0400 | INFO | main:60 | Backfill complete.
+2026-04-03T13:19:16.768508-0400 | INFO | production_tracker:301 | Daily status for 2026-04-03: oil offline=6.30 mbd (6.1% global), shut-in=0.00, damaged=0.00, hormuz=6.30, bab_el_mandeb=0.00
+2026-04-03T13:19:16.768508-0400 | INFO | main:68 | Production tracker: daily status computed.
+2026-04-03T13:19:16.768508-0400 | INFO | main:78 | Starting APScheduler...
+2026-04-03T13:19:16.849266-0400 | INFO | scheduler:219 | Scheduler started with jobs:
+2026-04-03T13:19:16.849266-0400 | INFO | scheduler:221 |   [news] News Collection Pipeline — next run: 2026-04-03 14:00:00-04:00
+2026-04-03T13:19:16.849266-0400 | INFO | scheduler:221 |   [military] Military Intelligence Pipeline — next run: 2026-04-03 14:15:00-04:00
+2026-04-03T13:19:16.850277-0400 | INFO | scheduler:221 |   [market_settlement] Market Data (Settlement) — next run: 2026-04-03 16:15:00-04:00
+2026-04-03T13:19:16.850277-0400 | INFO | scheduler:221 |   [summary_evening] AI Summary (Evening) — next run: 2026-04-03 17:00:00-04:00
+2026-04-03T13:19:16.850277-0400 | INFO | scheduler:221 |   [scenario] Scenario Probability Update — next run: 2026-04-03 17:30:00-04:00
+2026-04-03T13:19:16.851291-0400 | INFO | scheduler:221 |   [trade] Trade Recommendation Analysis — next run: 2026-04-03 17:45:00-04:00
+2026-04-03T13:19:16.851291-0400 | INFO | scheduler:221 |   [pnl] P&L Projection — next run: 2026-04-03 18:00:00-04:00
+2026-04-03T13:19:16.852276-0400 | INFO | scheduler:221 |   [summary_morning] AI Summary (Morning) — next run: 2026-04-04 08:00:00-04:00
+2026-04-03T13:19:16.852276-0400 | INFO | scheduler:221 |   [market_morning] Market Data (Morning) — next run: 2026-04-06 10:00:00-04:00
+2026-04-03T13:19:16.852276-0400 | INFO | scheduler:221 |   [eia_fred] EIA + FRED Data Update — next run: 2026-04-06 11:00:00-04:00
+2026-04-03T13:19:16.853280-0400 | INFO | scheduler:221 |   [market_midday] Market Data (Midday) — next run: 2026-04-06 13:00:00-04:00
+2026-04-03T13:19:16.853280-0400 | INFO | main:82 | Scheduler started.
+2026-04-03T13:19:16.853280-0400 | INFO | main:87 | Launching Dash application...
+2026-04-03T13:19:18.101715-0400 | INFO | main:36 | === Oil Super Spike Analyzer starting ===
+2026-04-03T13:19:18.101715-0400 | INFO | main:39 | Initializing database...
+2026-04-03T13:19:18.531974-0400 | INFO | main:42 | Database ready.
+2026-04-03T13:19:18.531974-0400 | INFO | main:46 | Running backfill (incremental — fetches any new data since last run)...
+2026-04-03T13:19:18.630465-0400 | INFO | backfill_manager:110 | Starting backfill [fred]...
+2026-04-03T13:19:19.136263-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILWTICO (CL) from 2026-02-28 to 2026-04-03
+2026-04-03T13:19:19.629529-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 0 records for CL
+2026-04-03T13:19:19.629529-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILBRENTEU (BZ) from 2026-02-28 to 2026-04-03
+2026-04-03T13:19:20.051021-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 0 records for BZ
+2026-04-03T13:19:20.097616-0400 | INFO | backfill_manager:129 | Backfill [fred] complete: 0 records.
+2026-04-03T13:19:20.110676-0400 | INFO | backfill_manager:110 | Starting backfill [yahoo]...
+2026-04-03T13:19:20.538131-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching CL=F (CL) from 2026-02-28
+2026-04-03T13:19:21.086320-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 0 new records for CL
+2026-04-03T13:19:21.086320-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching BZ=F (BZ) from 2026-02-28
+2026-04-03T13:19:21.219452-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 0 new records for BZ
+2026-04-03T13:19:21.253674-0400 | INFO | backfill_manager:129 | Backfill [yahoo] complete: 0 records.
+2026-04-03T13:19:21.285255-0400 | INFO | backfill_manager:110 | Starting backfill [eia]...
+2026-04-03T13:19:21.302812-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Inventories (PET.WCESTUS1.W) from 2026-02-28
+2026-04-03T13:19:22.694530-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Inventories
+2026-04-03T13:19:22.695528-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Production (PET.WCRFPUS2.W) from 2026-02-28
+2026-04-03T13:19:23.995270-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Production
+2026-04-03T13:19:24.130672-0400 | INFO | backfill_manager:129 | Backfill [eia] complete: 0 records.
+2026-04-03T13:19:24.164354-0400 | INFO | backfill_manager:110 | Starting backfill [gdelt]...
+2026-04-03T13:19:24.269840-0400 | INFO | gdelt_backfill:60 | GDELT backfill: 2026-03-08 → 2026-04-03 (27 days)
+2026-04-03T13:19:37.034628-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 1/3 in 5s
+2026-04-03T13:20:03.106601-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC+OR+Houthi+OR+Bab+el-Mandeb+OR+Red+Sea+tanker&mode=ArtList&maxrecords=250&startdatetime=20260308000000&enddatetime=20260309000000&format=json&sort=DateDesc (Caused by ConnectTimeoutError(<HTTPSConnection(host='api.gdeltproject.org', port=443) at 0x2cbc40147a0>, 'Connection to api.gdeltproject.org timed out. (connect timeout=30)'))), retry 2/3 in 10s
+2026-04-03T13:20:27.003147-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 3/3 in 20s
+2026-04-03T13:20:47.007378-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T13:21:38.042930-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC+OR+Houthi+OR+Bab+el-Mandeb+OR+Red+Sea+tanker&mode=ArtList&maxrecords=250&startdatetime=20260308000000&enddatetime=20260309000000&format=json&sort=DateDesc (Caused by ConnectTimeoutError(<HTTPSConnection(host='api.gdeltproject.org', port=443) at 0x2cbc3feff20>, 'Connection to api.gdeltproject.org timed out. (connect timeout=30)'))), retry 1/3 in 5s
+2026-04-03T13:21:58.223747-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 2/3 in 10s
+2026-04-03T13:22:33.230241-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 3/3 in 20s
+2026-04-03T13:22:53.233043-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T13:22:53.233043-0400 | WARNING | gdelt_backfill:73 | GDELT backfill: 2 consecutive failures, stopping at 2026-03-08 (will resume next run)
+2026-04-03T13:22:53.233043-0400 | INFO | gdelt_backfill:199 | GDELT backfill partial (stopped at 2026-03-08): 0 articles, 0 classified
+2026-04-03T13:22:53.333682-0400 | INFO | backfill_manager:129 | Backfill [gdelt] complete: 0 records.
+2026-04-03T13:22:54.170236-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T13:22:54.923537-0400 | DEBUG | news_collector:72 | RSS google_red_sea: fetched 100 entries
+2026-04-03T13:22:54.939718-0400 | DEBUG | news_collector:72 | RSS reuters_world: fetched 0 entries
+2026-04-03T13:22:54.954887-0400 | DEBUG | news_collector:72 | RSS reuters_commodities: fetched 0 entries
+2026-04-03T13:22:55.671326-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T13:22:55.947987-0400 | DEBUG | news_collector:72 | RSS aljazeera: fetched 25 entries
+2026-04-03T13:22:56.565356-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 30 entries
+2026-04-03T13:22:56.565356-0400 | INFO | news_collector:76 | RSS total: 76 keyword-matched articles
+2026-04-03T13:23:27.637553-0400 | WARNING | news_collector:119 | GDELT fetch failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC+OR+Houthi+OR+Bab+el-Mandeb+OR+Red+Sea+tanker&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc (Caused by ConnectTimeoutError(<HTTPSConnection(host='api.gdeltproject.org', port=443) at 0x2cbc411b5f0>, 'Connection to api.gdeltproject.org timed out. (connect timeout=30)'))
+2026-04-03T13:23:27.692031-0400 | INFO | news_collector:246 | Dedup: removed 11 duplicates, 65 unique remain
+2026-04-03T13:23:27.692031-0400 | DEBUG | news_collector:347 | DB dedup: skipped 63 already-stored articles
+2026-04-03T13:23:28.054010-0400 | INFO | news_collector:419 | Stored 2 new articles in geopolitical_events
+2026-04-03T13:23:32.090359-0400 | INFO | geopolitical_agent:220 | Classified 2/2 events
+2026-04-03T13:23:32.090359-0400 | INFO | main:57 | News pipeline: 2 new articles from RSS/GDELT live.
+2026-04-03T13:23:32.090359-0400 | INFO | main:60 | Backfill complete.
+2026-04-03T13:23:32.184000-0400 | INFO | production_tracker:301 | Daily status for 2026-04-03: oil offline=6.30 mbd (6.1% global), shut-in=0.00, damaged=0.00, hormuz=6.30, bab_el_mandeb=0.00
+2026-04-03T13:23:32.184000-0400 | INFO | main:68 | Production tracker: daily status computed.
+2026-04-03T13:23:32.184000-0400 | INFO | main:78 | Starting APScheduler...
+2026-04-03T13:23:32.274191-0400 | INFO | scheduler:219 | Scheduler started with jobs:
+2026-04-03T13:23:32.274191-0400 | INFO | scheduler:221 |   [news] News Collection Pipeline — next run: 2026-04-03 14:00:00-04:00
+2026-04-03T13:23:32.274191-0400 | INFO | scheduler:221 |   [military] Military Intelligence Pipeline — next run: 2026-04-03 14:15:00-04:00
+2026-04-03T13:23:32.274191-0400 | INFO | scheduler:221 |   [market_settlement] Market Data (Settlement) — next run: 2026-04-03 16:15:00-04:00
+2026-04-03T13:23:32.274191-0400 | INFO | scheduler:221 |   [summary_evening] AI Summary (Evening) — next run: 2026-04-03 17:00:00-04:00
+2026-04-03T13:23:32.274191-0400 | INFO | scheduler:221 |   [scenario] Scenario Probability Update — next run: 2026-04-03 17:30:00-04:00
+2026-04-03T13:23:32.274191-0400 | INFO | scheduler:221 |   [trade] Trade Recommendation Analysis — next run: 2026-04-03 17:45:00-04:00
+2026-04-03T13:23:32.274191-0400 | INFO | scheduler:221 |   [pnl] P&L Projection — next run: 2026-04-03 18:00:00-04:00
+2026-04-03T13:23:32.274191-0400 | INFO | scheduler:221 |   [summary_morning] AI Summary (Morning) — next run: 2026-04-04 08:00:00-04:00
+2026-04-03T13:23:32.274191-0400 | INFO | scheduler:221 |   [market_morning] Market Data (Morning) — next run: 2026-04-06 10:00:00-04:00
+2026-04-03T13:23:32.274191-0400 | INFO | scheduler:221 |   [eia_fred] EIA + FRED Data Update — next run: 2026-04-06 11:00:00-04:00
+2026-04-03T13:23:32.274191-0400 | INFO | scheduler:221 |   [market_midday] Market Data (Midday) — next run: 2026-04-06 13:00:00-04:00
+2026-04-03T13:23:32.274191-0400 | INFO | main:82 | Scheduler started.
+2026-04-03T13:23:32.274191-0400 | INFO | main:87 | Launching Dash application...
+2026-04-03T14:00:00.005320-0400 | INFO | scheduler:31 | Job [news] started
+2026-04-03T14:00:00.006589-0400 | INFO | scheduler:31 | Job [news] started
+2026-04-03T14:00:00.873213-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T14:00:00.899756-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T14:00:01.678796-0400 | DEBUG | news_collector:72 | RSS google_red_sea: fetched 100 entries
+2026-04-03T14:00:01.705558-0400 | DEBUG | news_collector:72 | RSS reuters_world: fetched 0 entries
+2026-04-03T14:00:01.723835-0400 | DEBUG | news_collector:72 | RSS reuters_commodities: fetched 0 entries
+2026-04-03T14:00:01.732126-0400 | DEBUG | news_collector:72 | RSS google_red_sea: fetched 100 entries
+2026-04-03T14:00:01.749720-0400 | DEBUG | news_collector:72 | RSS reuters_world: fetched 0 entries
+2026-04-03T14:00:01.761987-0400 | DEBUG | news_collector:72 | RSS reuters_commodities: fetched 0 entries
+2026-04-03T14:00:02.678730-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T14:00:02.940541-0400 | DEBUG | news_collector:72 | RSS aljazeera: fetched 25 entries
+2026-04-03T14:00:03.040913-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T14:00:03.249464-0400 | DEBUG | news_collector:72 | RSS aljazeera: fetched 25 entries
+2026-04-03T14:00:03.256659-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 30 entries
+2026-04-03T14:00:03.257657-0400 | INFO | news_collector:76 | RSS total: 76 keyword-matched articles
+2026-04-03T14:00:03.497887-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 30 entries
+2026-04-03T14:00:03.497887-0400 | INFO | news_collector:76 | RSS total: 76 keyword-matched articles
+2026-04-03T14:00:25.940255-0400 | WARNING | news_collector:119 | GDELT fetch failed: Expecting value: line 1 column 1 (char 0)
+2026-04-03T14:00:25.985224-0400 | INFO | news_collector:246 | Dedup: removed 10 duplicates, 66 unique remain
+2026-04-03T14:00:25.989467-0400 | DEBUG | news_collector:347 | DB dedup: skipped 64 already-stored articles
+2026-04-03T14:00:26.092358-0400 | INFO | news_collector:419 | Stored 2 new articles in geopolitical_events
+2026-04-03T14:00:26.130883-0400 | WARNING | news_collector:119 | GDELT fetch failed: Expecting value: line 1 column 1 (char 0)
+2026-04-03T14:00:26.191249-0400 | INFO | news_collector:246 | Dedup: removed 10 duplicates, 66 unique remain
+2026-04-03T14:00:26.198289-0400 | DEBUG | news_collector:347 | DB dedup: skipped 66 already-stored articles
+2026-04-03T14:00:26.198289-0400 | INFO | news_collector:392 | All articles already in DB
+2026-04-03T14:00:26.199291-0400 | INFO | scheduler:35 | Job [news] completed in 26.2s — 0 articles
+2026-04-03T14:00:29.075415-0400 | INFO | geopolitical_agent:220 | Classified 2/2 events
+2026-04-03T14:00:29.077451-0400 | INFO | scheduler:35 | Job [news] completed in 29.1s — 2 articles
+2026-04-03T14:02:22.208071-0400 | INFO | main:36 | === Oil Super Spike Analyzer starting ===
+2026-04-03T14:02:22.208071-0400 | INFO | main:39 | Initializing database...
+2026-04-03T14:02:22.774559-0400 | INFO | main:42 | Database ready.
+2026-04-03T14:02:22.774559-0400 | INFO | main:46 | Running backfill (incremental — fetches any new data since last run)...
+2026-04-03T14:02:22.863949-0400 | INFO | backfill_manager:110 | Starting backfill [fred]...
+2026-04-03T14:02:23.391310-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILWTICO (CL) from 2026-02-28 to 2026-04-03
+2026-04-03T14:02:24.056456-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 0 records for CL
+2026-04-03T14:02:24.056456-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILBRENTEU (BZ) from 2026-02-28 to 2026-04-03
+2026-04-03T14:02:24.376927-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 0 records for BZ
+2026-04-03T14:02:24.423674-0400 | INFO | backfill_manager:129 | Backfill [fred] complete: 0 records.
+2026-04-03T14:02:24.443331-0400 | INFO | backfill_manager:110 | Starting backfill [yahoo]...
+2026-04-03T14:02:24.880180-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching CL=F (CL) from 2026-02-28
+2026-04-03T14:02:25.406556-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 0 new records for CL
+2026-04-03T14:02:25.406556-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching BZ=F (BZ) from 2026-02-28
+2026-04-03T14:02:25.618398-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 0 new records for BZ
+2026-04-03T14:02:25.653991-0400 | INFO | backfill_manager:129 | Backfill [yahoo] complete: 0 records.
+2026-04-03T14:02:25.685401-0400 | INFO | backfill_manager:110 | Starting backfill [eia]...
+2026-04-03T14:02:25.708429-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Inventories (PET.WCESTUS1.W) from 2026-02-28
+2026-04-03T14:02:27.263297-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Inventories
+2026-04-03T14:02:27.263297-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Production (PET.WCRFPUS2.W) from 2026-02-28
+2026-04-03T14:02:28.872916-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Production
+2026-04-03T14:02:28.929829-0400 | INFO | backfill_manager:129 | Backfill [eia] complete: 0 records.
+2026-04-03T14:02:29.020071-0400 | INFO | backfill_manager:110 | Starting backfill [gdelt]...
+2026-04-03T14:02:29.112450-0400 | INFO | gdelt_backfill:60 | GDELT backfill: 2026-03-08 → 2026-04-03 (27 days)
+2026-04-03T14:02:39.050010-0400 | INFO | news_collector:149 | GDELT 429 for 2026-03-08, retry 1/3 in 5s
+2026-04-03T14:02:50.883043-0400 | INFO | news_collector:149 | GDELT 429 for 2026-03-08, retry 2/3 in 10s
+2026-04-03T14:03:13.230491-0400 | INFO | news_collector:149 | GDELT 429 for 2026-03-08, retry 3/3 in 20s
+2026-04-03T14:03:33.232007-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T14:04:10.281472-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 1/3 in 5s
+2026-04-03T14:04:25.469574-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 2/3 in 10s
+2026-04-03T14:04:46.122952-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 3/3 in 20s
+2026-04-03T14:05:06.128119-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T14:05:06.128119-0400 | WARNING | gdelt_backfill:73 | GDELT backfill: 2 consecutive failures, stopping at 2026-03-08 (will resume next run)
+2026-04-03T14:05:06.128119-0400 | INFO | gdelt_backfill:199 | GDELT backfill partial (stopped at 2026-03-08): 0 articles, 0 classified
+2026-04-03T14:05:06.245007-0400 | INFO | backfill_manager:129 | Backfill [gdelt] complete: 0 records.
+2026-04-03T14:05:07.042188-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T14:05:07.909588-0400 | DEBUG | news_collector:72 | RSS google_red_sea: fetched 100 entries
+2026-04-03T14:05:07.928411-0400 | DEBUG | news_collector:72 | RSS reuters_world: fetched 0 entries
+2026-04-03T14:05:07.974365-0400 | DEBUG | news_collector:72 | RSS reuters_commodities: fetched 0 entries
+2026-04-03T14:05:08.606488-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T14:05:08.927679-0400 | DEBUG | news_collector:72 | RSS aljazeera: fetched 25 entries
+2026-04-03T14:05:09.287443-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 30 entries
+2026-04-03T14:05:09.287443-0400 | INFO | news_collector:76 | RSS total: 75 keyword-matched articles
+2026-04-03T14:05:42.718671-0400 | WARNING | news_collector:119 | GDELT fetch failed: Expecting value: line 1 column 1 (char 0)
+2026-04-03T14:05:42.753513-0400 | INFO | news_collector:246 | Dedup: removed 10 duplicates, 65 unique remain
+2026-04-03T14:05:42.767671-0400 | DEBUG | news_collector:347 | DB dedup: skipped 65 already-stored articles
+2026-04-03T14:05:42.767671-0400 | INFO | news_collector:392 | All articles already in DB
+2026-04-03T14:05:42.767671-0400 | INFO | main:57 | News pipeline: 0 new articles from RSS/GDELT live.
+2026-04-03T14:05:42.767671-0400 | INFO | main:60 | Backfill complete.
+2026-04-03T14:05:43.216558-0400 | INFO | production_tracker:301 | Daily status for 2026-04-03: oil offline=6.30 mbd (6.1% global), shut-in=0.00, damaged=0.00, hormuz=6.30, bab_el_mandeb=0.00
+2026-04-03T14:05:43.216558-0400 | INFO | main:68 | Production tracker: daily status computed.
+2026-04-03T14:05:43.216558-0400 | INFO | main:78 | Starting APScheduler...
+2026-04-03T14:05:43.302443-0400 | INFO | scheduler:219 | Scheduler started with jobs:
+2026-04-03T14:05:43.302443-0400 | INFO | scheduler:221 |   [military] Military Intelligence Pipeline — next run: 2026-04-03 14:15:00-04:00
+2026-04-03T14:05:43.302443-0400 | INFO | scheduler:221 |   [news] News Collection Pipeline — next run: 2026-04-03 16:00:00-04:00
+2026-04-03T14:05:43.302443-0400 | INFO | scheduler:221 |   [market_settlement] Market Data (Settlement) — next run: 2026-04-03 16:15:00-04:00
+2026-04-03T14:05:43.302443-0400 | INFO | scheduler:221 |   [summary_evening] AI Summary (Evening) — next run: 2026-04-03 17:00:00-04:00
+2026-04-03T14:05:43.302443-0400 | INFO | scheduler:221 |   [scenario] Scenario Probability Update — next run: 2026-04-03 17:30:00-04:00
+2026-04-03T14:05:43.302443-0400 | INFO | scheduler:221 |   [trade] Trade Recommendation Analysis — next run: 2026-04-03 17:45:00-04:00
+2026-04-03T14:05:43.302443-0400 | INFO | scheduler:221 |   [pnl] P&L Projection — next run: 2026-04-03 18:00:00-04:00
+2026-04-03T14:05:43.302443-0400 | INFO | scheduler:221 |   [summary_morning] AI Summary (Morning) — next run: 2026-04-04 08:00:00-04:00
+2026-04-03T14:05:43.302443-0400 | INFO | scheduler:221 |   [market_morning] Market Data (Morning) — next run: 2026-04-06 10:00:00-04:00
+2026-04-03T14:05:43.302443-0400 | INFO | scheduler:221 |   [eia_fred] EIA + FRED Data Update — next run: 2026-04-06 11:00:00-04:00
+2026-04-03T14:05:43.302443-0400 | INFO | scheduler:221 |   [market_midday] Market Data (Midday) — next run: 2026-04-06 13:00:00-04:00
+2026-04-03T14:05:43.302443-0400 | INFO | main:82 | Scheduler started.
+2026-04-03T14:05:43.302443-0400 | INFO | main:87 | Launching Dash application...
+2026-04-03T14:14:25.000535-0400 | INFO | main:36 | === Oil Super Spike Analyzer starting ===
+2026-04-03T14:14:25.001547-0400 | INFO | main:39 | Initializing database...
+2026-04-03T14:14:25.485695-0400 | INFO | main:42 | Database ready.
+2026-04-03T14:14:25.485695-0400 | INFO | main:46 | Running backfill (incremental — fetches any new data since last run)...
+2026-04-03T14:14:25.575248-0400 | INFO | backfill_manager:110 | Starting backfill [fred]...
+2026-04-03T14:14:26.151198-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILWTICO (CL) from 2026-02-28 to 2026-04-03
+2026-04-03T14:14:26.783904-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 0 records for CL
+2026-04-03T14:14:26.783904-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILBRENTEU (BZ) from 2026-02-28 to 2026-04-03
+2026-04-03T14:14:27.029565-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 0 records for BZ
+2026-04-03T14:14:27.182661-0400 | INFO | backfill_manager:129 | Backfill [fred] complete: 0 records.
+2026-04-03T14:14:27.204770-0400 | INFO | backfill_manager:110 | Starting backfill [yahoo]...
+2026-04-03T14:14:27.664542-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching CL=F (CL) from 2026-02-28
+2026-04-03T14:14:28.129895-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 0 new records for CL
+2026-04-03T14:14:28.129895-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching BZ=F (BZ) from 2026-02-28
+2026-04-03T14:14:28.246755-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 0 new records for BZ
+2026-04-03T14:14:28.296653-0400 | INFO | backfill_manager:129 | Backfill [yahoo] complete: 0 records.
+2026-04-03T14:14:28.329906-0400 | INFO | backfill_manager:110 | Starting backfill [eia]...
+2026-04-03T14:14:28.351087-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Inventories (PET.WCESTUS1.W) from 2026-02-28
+2026-04-03T14:14:29.643320-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Inventories
+2026-04-03T14:14:29.643320-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Production (PET.WCRFPUS2.W) from 2026-02-28
+2026-04-03T14:14:30.841724-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Production
+2026-04-03T14:14:30.864576-0400 | INFO | backfill_manager:129 | Backfill [eia] complete: 0 records.
+2026-04-03T14:14:30.904843-0400 | INFO | backfill_manager:110 | Starting backfill [gdelt]...
+2026-04-03T14:14:31.056965-0400 | INFO | gdelt_backfill:60 | GDELT backfill: 2026-03-08 → 2026-04-03 (27 days)
+2026-04-03T14:14:46.622779-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 1/3 in 5s
+2026-04-03T14:15:00.011390-0400 | INFO | scheduler:31 | Job [military] started
+2026-04-03T14:15:08.292715-0400 | INFO | military_collector:115 | Created 0 military events for 2026-04-03
+2026-04-03T14:15:08.375302-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-04-01%7C2026-04-03&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-04-03T14:15:08.491977-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 2/3 in 10s
+2026-04-03T14:15:15.394180-0400 | INFO | summarizer:268 | Generated 2 military daily summaries for 2026-04-03
+2026-04-03T14:15:15.394180-0400 | INFO | scheduler:35 | Job [military] completed in 15.4s — {'military_events_from_news': 0, 'acled_events': 0, 'military_summaries': 2}
+2026-04-03T14:15:28.370180-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 3/3 in 20s
+2026-04-03T14:15:48.372794-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T14:16:39.416207-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC+OR+Houthi+OR+Bab+el-Mandeb+OR+Red+Sea+tanker&mode=ArtList&maxrecords=250&startdatetime=20260308000000&enddatetime=20260309000000&format=json&sort=DateDesc (Caused by ConnectTimeoutError(<HTTPSConnection(host='api.gdeltproject.org', port=443) at 0x1c45ac8fc20>, 'Connection to api.gdeltproject.org timed out. (connect timeout=30)'))), retry 1/3 in 5s
+2026-04-03T14:17:05.444584-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC+OR+Houthi+OR+Bab+el-Mandeb+OR+Red+Sea+tanker&mode=ArtList&maxrecords=250&startdatetime=20260308000000&enddatetime=20260309000000&format=json&sort=DateDesc (Caused by ConnectTimeoutError(<HTTPSConnection(host='api.gdeltproject.org', port=443) at 0x1c45acb4470>, 'Connection to api.gdeltproject.org timed out. (connect timeout=30)'))), retry 2/3 in 10s
+2026-04-03T14:17:25.051108-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 3/3 in 20s
+2026-04-03T14:17:45.059964-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T14:17:45.060858-0400 | WARNING | gdelt_backfill:73 | GDELT backfill: 2 consecutive failures, stopping at 2026-03-08 (will resume next run)
+2026-04-03T14:17:45.060858-0400 | INFO | gdelt_backfill:199 | GDELT backfill partial (stopped at 2026-03-08): 0 articles, 0 classified
+2026-04-03T14:17:45.409717-0400 | INFO | backfill_manager:129 | Backfill [gdelt] complete: 0 records.
+2026-04-03T14:17:46.174007-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T14:17:46.805857-0400 | DEBUG | news_collector:72 | RSS google_red_sea: fetched 100 entries
+2026-04-03T14:17:46.837675-0400 | DEBUG | news_collector:72 | RSS reuters_world: fetched 0 entries
+2026-04-03T14:17:46.839635-0400 | DEBUG | news_collector:72 | RSS reuters_commodities: fetched 0 entries
+2026-04-03T14:17:47.586187-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T14:17:47.835330-0400 | DEBUG | news_collector:72 | RSS aljazeera: fetched 25 entries
+2026-04-03T14:17:48.195023-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 30 entries
+2026-04-03T14:17:48.195023-0400 | INFO | news_collector:76 | RSS total: 74 keyword-matched articles
+2026-04-03T14:18:19.254216-0400 | WARNING | news_collector:119 | GDELT fetch failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC+OR+Houthi+OR+Bab+el-Mandeb+OR+Red+Sea+tanker&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc (Caused by ConnectTimeoutError(<HTTPSConnection(host='api.gdeltproject.org', port=443) at 0x1c45ada8fe0>, 'Connection to api.gdeltproject.org timed out. (connect timeout=30)'))
+2026-04-03T14:18:19.350512-0400 | INFO | news_collector:246 | Dedup: removed 10 duplicates, 64 unique remain
+2026-04-03T14:18:19.350512-0400 | DEBUG | news_collector:347 | DB dedup: skipped 64 already-stored articles
+2026-04-03T14:18:19.350512-0400 | INFO | news_collector:392 | All articles already in DB
+2026-04-03T14:18:19.350512-0400 | INFO | main:57 | News pipeline: 0 new articles from RSS/GDELT live.
+2026-04-03T14:18:19.350512-0400 | INFO | main:60 | Backfill complete.
+2026-04-03T14:18:19.448336-0400 | INFO | production_tracker:301 | Daily status for 2026-04-03: oil offline=6.30 mbd (6.1% global), shut-in=0.00, damaged=0.00, hormuz=6.30, bab_el_mandeb=0.00
+2026-04-03T14:18:19.448336-0400 | INFO | main:68 | Production tracker: daily status computed.
+2026-04-03T14:18:19.448336-0400 | INFO | main:78 | Starting APScheduler...
+2026-04-03T14:18:19.513961-0400 | INFO | scheduler:219 | Scheduler started with jobs:
+2026-04-03T14:18:19.529611-0400 | INFO | scheduler:221 |   [news] News Collection Pipeline — next run: 2026-04-03 16:00:00-04:00
+2026-04-03T14:18:19.529611-0400 | INFO | scheduler:221 |   [market_settlement] Market Data (Settlement) — next run: 2026-04-03 16:15:00-04:00
+2026-04-03T14:18:19.529611-0400 | INFO | scheduler:221 |   [military] Military Intelligence Pipeline — next run: 2026-04-03 16:15:00-04:00
+2026-04-03T14:18:19.529611-0400 | INFO | scheduler:221 |   [summary_evening] AI Summary (Evening) — next run: 2026-04-03 17:00:00-04:00
+2026-04-03T14:18:19.529611-0400 | INFO | scheduler:221 |   [scenario] Scenario Probability Update — next run: 2026-04-03 17:30:00-04:00
+2026-04-03T14:18:19.529611-0400 | INFO | scheduler:221 |   [trade] Trade Recommendation Analysis — next run: 2026-04-03 17:45:00-04:00
+2026-04-03T14:18:19.529611-0400 | INFO | scheduler:221 |   [pnl] P&L Projection — next run: 2026-04-03 18:00:00-04:00
+2026-04-03T14:18:19.529611-0400 | INFO | scheduler:221 |   [summary_morning] AI Summary (Morning) — next run: 2026-04-04 08:00:00-04:00
+2026-04-03T14:18:19.529611-0400 | INFO | scheduler:221 |   [market_morning] Market Data (Morning) — next run: 2026-04-06 10:00:00-04:00
+2026-04-03T14:18:19.529611-0400 | INFO | scheduler:221 |   [eia_fred] EIA + FRED Data Update — next run: 2026-04-06 11:00:00-04:00
+2026-04-03T14:18:19.533452-0400 | INFO | scheduler:221 |   [market_midday] Market Data (Midday) — next run: 2026-04-06 13:00:00-04:00
+2026-04-03T14:18:19.533452-0400 | INFO | main:82 | Scheduler started.
+2026-04-03T14:18:19.533452-0400 | INFO | main:87 | Launching Dash application...
+2026-04-03T14:19:18.159101-0400 | INFO | main:36 | === Oil Super Spike Analyzer starting ===
+2026-04-03T14:19:18.159101-0400 | INFO | main:39 | Initializing database...
+2026-04-03T14:19:18.623312-0400 | INFO | main:42 | Database ready.
+2026-04-03T14:19:18.623312-0400 | INFO | main:46 | Running backfill (incremental — fetches any new data since last run)...
+2026-04-03T14:19:18.773158-0400 | INFO | backfill_manager:110 | Starting backfill [fred]...
+2026-04-03T14:19:19.289946-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILWTICO (CL) from 2026-02-28 to 2026-04-03
+2026-04-03T14:19:19.622540-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 0 records for CL
+2026-04-03T14:19:19.622540-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILBRENTEU (BZ) from 2026-02-28 to 2026-04-03
+2026-04-03T14:19:19.889059-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 0 records for BZ
+2026-04-03T14:19:20.155173-0400 | INFO | backfill_manager:129 | Backfill [fred] complete: 0 records.
+2026-04-03T14:19:20.188456-0400 | INFO | backfill_manager:110 | Starting backfill [yahoo]...
+2026-04-03T14:19:20.670607-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching CL=F (CL) from 2026-02-28
+2026-04-03T14:19:21.217733-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 0 new records for CL
+2026-04-03T14:19:21.217733-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching BZ=F (BZ) from 2026-02-28
+2026-04-03T14:19:21.418616-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 0 new records for BZ
+2026-04-03T14:19:21.440203-0400 | INFO | backfill_manager:129 | Backfill [yahoo] complete: 0 records.
+2026-04-03T14:19:21.459016-0400 | INFO | backfill_manager:110 | Starting backfill [eia]...
+2026-04-03T14:19:21.489640-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Inventories (PET.WCESTUS1.W) from 2026-02-28
+2026-04-03T14:19:23.237785-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Inventories
+2026-04-03T14:19:23.237785-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Production (PET.WCRFPUS2.W) from 2026-02-28
+2026-04-03T14:19:24.496005-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Production
+2026-04-03T14:19:24.545741-0400 | INFO | backfill_manager:129 | Backfill [eia] complete: 0 records.
+2026-04-03T14:19:24.580082-0400 | INFO | backfill_manager:110 | Starting backfill [gdelt]...
+2026-04-03T14:19:24.728454-0400 | INFO | gdelt_backfill:60 | GDELT backfill: 2026-03-08 → 2026-04-03 (27 days)
+2026-04-03T14:19:41.177062-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 1/3 in 5s
+2026-04-03T14:19:58.489942-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 2/3 in 10s
+2026-04-03T14:20:29.541772-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC+OR+Houthi+OR+Bab+el-Mandeb+OR+Red+Sea+tanker&mode=ArtList&maxrecords=250&startdatetime=20260308000000&enddatetime=20260309000000&format=json&sort=DateDesc (Caused by ConnectTimeoutError(<HTTPSConnection(host='api.gdeltproject.org', port=443) at 0x1fb49c8bf50>, 'Connection to api.gdeltproject.org timed out. (connect timeout=30)'))), retry 3/3 in 20s
+2026-04-03T14:20:49.543575-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T14:21:40.604596-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC+OR+Houthi+OR+Bab+el-Mandeb+OR+Red+Sea+tanker&mode=ArtList&maxrecords=250&startdatetime=20260308000000&enddatetime=20260309000000&format=json&sort=DateDesc (Caused by ConnectTimeoutError(<HTTPSConnection(host='api.gdeltproject.org', port=443) at 0x1fb49b9a1e0>, 'Connection to api.gdeltproject.org timed out. (connect timeout=30)'))), retry 1/3 in 5s
+2026-04-03T14:22:06.651920-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC+OR+Houthi+OR+Bab+el-Mandeb+OR+Red+Sea+tanker&mode=ArtList&maxrecords=250&startdatetime=20260308000000&enddatetime=20260309000000&format=json&sort=DateDesc (Caused by ConnectTimeoutError(<HTTPSConnection(host='api.gdeltproject.org', port=443) at 0x1fb49cb0980>, 'Connection to api.gdeltproject.org timed out. (connect timeout=30)'))), retry 2/3 in 10s
+2026-04-03T14:22:32.064166-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 3/3 in 20s
+2026-04-03T14:22:52.074275-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T14:22:52.074536-0400 | WARNING | gdelt_backfill:73 | GDELT backfill: 2 consecutive failures, stopping at 2026-03-08 (will resume next run)
+2026-04-03T14:22:52.074536-0400 | INFO | gdelt_backfill:199 | GDELT backfill partial (stopped at 2026-03-08): 0 articles, 0 classified
+2026-04-03T14:22:52.184280-0400 | INFO | backfill_manager:129 | Backfill [gdelt] complete: 0 records.
+2026-04-03T14:22:52.983607-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T14:22:53.677093-0400 | DEBUG | news_collector:72 | RSS google_red_sea: fetched 100 entries
+2026-04-03T14:22:53.794076-0400 | DEBUG | news_collector:72 | RSS reuters_world: fetched 0 entries
+2026-04-03T14:22:53.806307-0400 | DEBUG | news_collector:72 | RSS reuters_commodities: fetched 0 entries
+2026-04-03T14:22:54.516270-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T14:22:54.713756-0400 | DEBUG | news_collector:72 | RSS aljazeera: fetched 25 entries
+2026-04-03T14:22:55.181490-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 30 entries
+2026-04-03T14:22:55.181490-0400 | INFO | news_collector:76 | RSS total: 74 keyword-matched articles
+2026-04-03T14:23:12.541510-0400 | WARNING | news_collector:119 | GDELT fetch failed: Expecting value: line 1 column 1 (char 0)
+2026-04-03T14:23:12.581831-0400 | INFO | news_collector:246 | Dedup: removed 10 duplicates, 64 unique remain
+2026-04-03T14:23:12.585841-0400 | DEBUG | news_collector:347 | DB dedup: skipped 64 already-stored articles
+2026-04-03T14:23:12.586842-0400 | INFO | news_collector:392 | All articles already in DB
+2026-04-03T14:23:12.586842-0400 | INFO | main:57 | News pipeline: 0 new articles from RSS/GDELT live.
+2026-04-03T14:23:12.586842-0400 | INFO | main:60 | Backfill complete.
+2026-04-03T14:23:12.656948-0400 | INFO | production_tracker:301 | Daily status for 2026-04-03: oil offline=6.30 mbd (6.1% global), shut-in=0.00, damaged=0.00, hormuz=6.30, bab_el_mandeb=0.00
+2026-04-03T14:23:12.656948-0400 | INFO | main:68 | Production tracker: daily status computed.
+2026-04-03T14:23:12.656948-0400 | INFO | main:78 | Starting APScheduler...
+2026-04-03T14:23:12.724326-0400 | INFO | scheduler:219 | Scheduler started with jobs:
+2026-04-03T14:23:12.740132-0400 | INFO | scheduler:221 |   [news] News Collection Pipeline — next run: 2026-04-03 16:00:00-04:00
+2026-04-03T14:23:12.740132-0400 | INFO | scheduler:221 |   [market_settlement] Market Data (Settlement) — next run: 2026-04-03 16:15:00-04:00
+2026-04-03T14:23:12.740132-0400 | INFO | scheduler:221 |   [military] Military Intelligence Pipeline — next run: 2026-04-03 16:15:00-04:00
+2026-04-03T14:23:12.741515-0400 | INFO | scheduler:221 |   [summary_evening] AI Summary (Evening) — next run: 2026-04-03 17:00:00-04:00
+2026-04-03T14:23:12.741515-0400 | INFO | scheduler:221 |   [scenario] Scenario Probability Update — next run: 2026-04-03 17:30:00-04:00
+2026-04-03T14:23:12.741515-0400 | INFO | scheduler:221 |   [trade] Trade Recommendation Analysis — next run: 2026-04-03 17:45:00-04:00
+2026-04-03T14:23:12.741515-0400 | INFO | scheduler:221 |   [pnl] P&L Projection — next run: 2026-04-03 18:00:00-04:00
+2026-04-03T14:23:12.741515-0400 | INFO | scheduler:221 |   [summary_morning] AI Summary (Morning) — next run: 2026-04-04 08:00:00-04:00
+2026-04-03T14:23:12.741515-0400 | INFO | scheduler:221 |   [market_morning] Market Data (Morning) — next run: 2026-04-06 10:00:00-04:00
+2026-04-03T14:23:12.741515-0400 | INFO | scheduler:221 |   [eia_fred] EIA + FRED Data Update — next run: 2026-04-06 11:00:00-04:00
+2026-04-03T14:23:12.741515-0400 | INFO | scheduler:221 |   [market_midday] Market Data (Midday) — next run: 2026-04-06 13:00:00-04:00
+2026-04-03T14:23:12.741515-0400 | INFO | main:82 | Scheduler started.
+2026-04-03T14:23:12.741515-0400 | INFO | main:87 | Launching Dash application...
+2026-04-03T14:24:38.807860-0400 | INFO | main:36 | === Oil Super Spike Analyzer starting ===
+2026-04-03T14:24:38.807860-0400 | INFO | main:39 | Initializing database...
+2026-04-03T14:24:39.231481-0400 | INFO | main:42 | Database ready.
+2026-04-03T14:24:39.231481-0400 | INFO | main:46 | Running backfill (incremental — fetches any new data since last run)...
+2026-04-03T14:24:39.385448-0400 | INFO | backfill_manager:110 | Starting backfill [fred]...
+2026-04-03T14:24:39.899742-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILWTICO (CL) from 2026-02-28 to 2026-04-03
+2026-04-03T14:24:40.586434-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 0 records for CL
+2026-04-03T14:24:40.586434-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILBRENTEU (BZ) from 2026-02-28 to 2026-04-03
+2026-04-03T14:24:40.962353-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 0 records for BZ
+2026-04-03T14:24:41.002752-0400 | INFO | backfill_manager:129 | Backfill [fred] complete: 0 records.
+2026-04-03T14:24:41.032140-0400 | INFO | backfill_manager:110 | Starting backfill [yahoo]...
+2026-04-03T14:24:41.464854-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching CL=F (CL) from 2026-02-28
+2026-04-03T14:24:41.935646-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 0 new records for CL
+2026-04-03T14:24:41.935646-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching BZ=F (BZ) from 2026-02-28
+2026-04-03T14:24:42.142110-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 0 new records for BZ
+2026-04-03T14:24:42.183440-0400 | INFO | backfill_manager:129 | Backfill [yahoo] complete: 0 records.
+2026-04-03T14:24:42.206350-0400 | INFO | backfill_manager:110 | Starting backfill [eia]...
+2026-04-03T14:24:42.233601-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Inventories (PET.WCESTUS1.W) from 2026-02-28
+2026-04-03T14:24:43.877418-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Inventories
+2026-04-03T14:24:43.877418-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Production (PET.WCRFPUS2.W) from 2026-02-28
+2026-04-03T14:24:45.036472-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Production
+2026-04-03T14:24:45.080083-0400 | INFO | backfill_manager:129 | Backfill [eia] complete: 0 records.
+2026-04-03T14:24:45.109322-0400 | INFO | backfill_manager:110 | Starting backfill [gdelt]...
+2026-04-03T14:24:45.255129-0400 | INFO | gdelt_backfill:60 | GDELT backfill: 2026-03-08 → 2026-04-03 (27 days)
+2026-04-03T14:25:00.761469-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 1/3 in 5s
+2026-04-03T14:25:16.061260-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 2/3 in 10s
+2026-04-03T14:25:36.258559-0400 | INFO | news_collector:149 | GDELT 429 for 2026-03-08, retry 3/3 in 20s
+2026-04-03T14:25:56.262224-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T14:26:35.326504-0400 | INFO | news_collector:149 | GDELT 429 for 2026-03-08, retry 1/3 in 5s
+2026-04-03T14:26:45.716621-0400 | INFO | news_collector:149 | GDELT 429 for 2026-03-08, retry 2/3 in 10s
+2026-04-03T14:27:01.221458-0400 | INFO | news_collector:149 | GDELT 429 for 2026-03-08, retry 3/3 in 20s
+2026-04-03T14:27:21.225654-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T14:27:21.225654-0400 | WARNING | gdelt_backfill:73 | GDELT backfill: 2 consecutive failures, stopping at 2026-03-08 (will resume next run)
+2026-04-03T14:27:21.225654-0400 | INFO | gdelt_backfill:227 | GDELT backfill partial (stopped at 2026-03-08): 0 articles, 0 classified
+2026-04-03T14:27:21.333797-0400 | INFO | backfill_manager:129 | Backfill [gdelt] complete: 0 records.
+2026-04-03T14:27:22.220657-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T14:27:22.875619-0400 | DEBUG | news_collector:72 | RSS google_red_sea: fetched 100 entries
+2026-04-03T14:27:22.902496-0400 | DEBUG | news_collector:72 | RSS reuters_world: fetched 0 entries
+2026-04-03T14:27:22.924290-0400 | DEBUG | news_collector:72 | RSS reuters_commodities: fetched 0 entries
+2026-04-03T14:27:23.651123-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T14:27:23.848936-0400 | DEBUG | news_collector:72 | RSS aljazeera: fetched 25 entries
+2026-04-03T14:27:24.140936-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 30 entries
+2026-04-03T14:27:24.140936-0400 | INFO | news_collector:76 | RSS total: 74 keyword-matched articles
+2026-04-03T14:27:44.992245-0400 | WARNING | news_collector:119 | GDELT fetch failed: Expecting value: line 1 column 1 (char 0)
+2026-04-03T14:27:45.043347-0400 | INFO | news_collector:246 | Dedup: removed 10 duplicates, 64 unique remain
+2026-04-03T14:27:45.043347-0400 | DEBUG | news_collector:347 | DB dedup: skipped 64 already-stored articles
+2026-04-03T14:27:45.043347-0400 | INFO | news_collector:392 | All articles already in DB
+2026-04-03T14:27:45.043347-0400 | INFO | main:57 | News pipeline: 0 new articles from RSS/GDELT live.
+2026-04-03T14:27:45.043347-0400 | INFO | main:60 | Backfill complete.
+2026-04-03T14:27:45.126453-0400 | INFO | production_tracker:301 | Daily status for 2026-04-03: oil offline=6.30 mbd (6.1% global), shut-in=0.00, damaged=0.00, hormuz=6.30, bab_el_mandeb=0.00
+2026-04-03T14:27:45.126453-0400 | INFO | main:68 | Production tracker: daily status computed.
+2026-04-03T14:27:45.126453-0400 | INFO | main:78 | Starting APScheduler...
+2026-04-03T14:27:45.208479-0400 | INFO | scheduler:219 | Scheduler started with jobs:
+2026-04-03T14:27:45.208479-0400 | INFO | scheduler:221 |   [news] News Collection Pipeline — next run: 2026-04-03 16:00:00-04:00
+2026-04-03T14:27:45.208479-0400 | INFO | scheduler:221 |   [market_settlement] Market Data (Settlement) — next run: 2026-04-03 16:15:00-04:00
+2026-04-03T14:27:45.208479-0400 | INFO | scheduler:221 |   [military] Military Intelligence Pipeline — next run: 2026-04-03 16:15:00-04:00
+2026-04-03T14:27:45.208479-0400 | INFO | scheduler:221 |   [summary_evening] AI Summary (Evening) — next run: 2026-04-03 17:00:00-04:00
+2026-04-03T14:27:45.208479-0400 | INFO | scheduler:221 |   [scenario] Scenario Probability Update — next run: 2026-04-03 17:30:00-04:00
+2026-04-03T14:27:45.208479-0400 | INFO | scheduler:221 |   [trade] Trade Recommendation Analysis — next run: 2026-04-03 17:45:00-04:00
+2026-04-03T14:27:45.208479-0400 | INFO | scheduler:221 |   [pnl] P&L Projection — next run: 2026-04-03 18:00:00-04:00
+2026-04-03T14:27:45.208479-0400 | INFO | scheduler:221 |   [summary_morning] AI Summary (Morning) — next run: 2026-04-04 08:00:00-04:00
+2026-04-03T14:27:45.208479-0400 | INFO | scheduler:221 |   [market_morning] Market Data (Morning) — next run: 2026-04-06 10:00:00-04:00
+2026-04-03T14:27:45.208479-0400 | INFO | scheduler:221 |   [eia_fred] EIA + FRED Data Update — next run: 2026-04-06 11:00:00-04:00
+2026-04-03T14:27:45.208479-0400 | INFO | scheduler:221 |   [market_midday] Market Data (Midday) — next run: 2026-04-06 13:00:00-04:00
+2026-04-03T14:27:45.208479-0400 | INFO | main:82 | Scheduler started.
+2026-04-03T14:27:45.208479-0400 | INFO | main:87 | Launching Dash application...
+2026-04-03T16:00:00.003979-0400 | INFO | scheduler:31 | Job [news] started
+2026-04-03T16:00:00.019820-0400 | INFO | scheduler:31 | Job [news] started
+2026-04-03T16:00:00.814885-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T16:00:00.826657-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T16:00:01.602290-0400 | DEBUG | news_collector:72 | RSS google_red_sea: fetched 100 entries
+2026-04-03T16:00:01.618268-0400 | DEBUG | news_collector:72 | RSS google_red_sea: fetched 100 entries
+2026-04-03T16:00:01.749660-0400 | DEBUG | news_collector:72 | RSS reuters_world: fetched 0 entries
+2026-04-03T16:00:01.749660-0400 | DEBUG | news_collector:72 | RSS reuters_world: fetched 0 entries
+2026-04-03T16:00:01.778158-0400 | DEBUG | news_collector:72 | RSS reuters_commodities: fetched 0 entries
+2026-04-03T16:00:01.778158-0400 | DEBUG | news_collector:72 | RSS reuters_commodities: fetched 0 entries
+2026-04-03T16:00:02.851459-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T16:00:03.062928-0400 | DEBUG | news_collector:72 | RSS aljazeera: fetched 25 entries
+2026-04-03T16:00:03.304460-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T16:00:03.506360-0400 | DEBUG | news_collector:72 | RSS aljazeera: fetched 25 entries
+2026-04-03T16:00:03.539730-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 31 entries
+2026-04-03T16:00:03.539730-0400 | INFO | news_collector:76 | RSS total: 74 keyword-matched articles
+2026-04-03T16:00:03.918854-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 31 entries
+2026-04-03T16:00:03.922910-0400 | INFO | news_collector:76 | RSS total: 74 keyword-matched articles
+2026-04-03T16:00:26.582716-0400 | WARNING | news_collector:119 | GDELT fetch failed: 429 Client Error: Too Many Requests for url: https://api.gdeltproject.org/api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC+OR+Houthi+OR+Bab+el-Mandeb+OR+Red+Sea+tanker&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc
+2026-04-03T16:00:26.624847-0400 | INFO | news_collector:246 | Dedup: removed 9 duplicates, 65 unique remain
+2026-04-03T16:00:26.624847-0400 | DEBUG | news_collector:347 | DB dedup: skipped 65 already-stored articles
+2026-04-03T16:00:26.624847-0400 | INFO | news_collector:392 | All articles already in DB
+2026-04-03T16:00:26.624847-0400 | INFO | scheduler:35 | Job [news] completed in 26.6s — 0 articles
+2026-04-03T16:00:26.650462-0400 | WARNING | news_collector:119 | GDELT fetch failed: 429 Client Error: Too Many Requests for url: https://api.gdeltproject.org/api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC+OR+Houthi+OR+Bab+el-Mandeb+OR+Red+Sea+tanker&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc
+2026-04-03T16:00:26.689325-0400 | INFO | news_collector:246 | Dedup: removed 9 duplicates, 65 unique remain
+2026-04-03T16:00:26.695441-0400 | DEBUG | news_collector:347 | DB dedup: skipped 65 already-stored articles
+2026-04-03T16:00:26.695441-0400 | INFO | news_collector:392 | All articles already in DB
+2026-04-03T16:00:26.696416-0400 | INFO | scheduler:35 | Job [news] completed in 26.7s — 0 articles
+2026-04-03T16:15:00.009806-0400 | INFO | scheduler:31 | Job [market_settlement] started
+2026-04-03T16:15:00.009806-0400 | INFO | scheduler:31 | Job [military] started
+2026-04-03T16:15:00.009806-0400 | INFO | scheduler:31 | Job [market_settlement] started
+2026-04-03T16:15:00.009806-0400 | INFO | scheduler:31 | Job [military] started
+2026-04-03T16:15:00.016441-0400 | ERROR | scheduler:63 | Futures collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_0'.
+2026-04-03T16:15:00.023666-0400 | ERROR | scheduler:63 | Futures collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_0'.
+2026-04-03T16:15:00.029202-0400 | ERROR | scheduler:70 | Options collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_0'.
+2026-04-03T16:15:00.029202-0400 | INFO | scheduler:35 | Job [market_settlement] completed in 0.0s — {'futures': "There is no current event loop in thread 'ThreadPoolExecutor-0_0'.", 'options': "There is no current event loop in thread 'ThreadPoolExecutor-0_0'."}
+2026-04-03T16:15:00.034501-0400 | ERROR | scheduler:70 | Options collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_0'.
+2026-04-03T16:15:00.034501-0400 | INFO | scheduler:35 | Job [market_settlement] completed in 0.0s — {'futures': "There is no current event loop in thread 'ThreadPoolExecutor-0_0'.", 'options': "There is no current event loop in thread 'ThreadPoolExecutor-0_0'."}
+2026-04-03T16:15:08.552843-0400 | INFO | military_collector:115 | Created 0 military events for 2026-04-03
+2026-04-03T16:15:08.631313-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-04-01%7C2026-04-03&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-04-03T16:15:10.101983-0400 | INFO | military_collector:115 | Created 0 military events for 2026-04-03
+2026-04-03T16:15:10.101983-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-04-01%7C2026-04-03&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-04-03T16:15:15.795582-0400 | INFO | summarizer:268 | Generated 2 military daily summaries for 2026-04-03
+2026-04-03T16:15:15.795582-0400 | INFO | scheduler:35 | Job [military] completed in 15.8s — {'military_events_from_news': 0, 'acled_events': 0, 'military_summaries': 2}
+2026-04-03T16:15:19.631172-0400 | INFO | summarizer:268 | Generated 2 military daily summaries for 2026-04-03
+2026-04-03T16:15:19.631172-0400 | INFO | scheduler:35 | Job [military] completed in 19.6s — {'military_events_from_news': 0, 'acled_events': 0, 'military_summaries': 2}
+2026-04-03T17:00:00.016069-0400 | INFO | scheduler:31 | Job [summary_evening] started
+2026-04-03T17:00:00.016069-0400 | INFO | scheduler:31 | Job [summary_evening] started
+2026-04-03T17:00:15.135973-0400 | INFO | summarizer:130 | Generated 4 daily summaries for 2026-04-03
+2026-04-03T17:00:15.152665-0400 | ERROR | summarizer:135 | Daily summary generation failed: (raised as a result of Query-invoked autoflush; consider using a session.no_autoflush block if this flush is occurring prematurely)
+(sqlite3.IntegrityError) UNIQUE constraint failed: daily_summaries.date, daily_summaries.category
+[SQL: INSERT INTO daily_summaries (date, category, summary_text, severity_avg, total_supply_impact_mbd, created_at) VALUES (?, ?, ?, ?, ?, ?)]
+[parameters: ('2026-04-03', 'geopolitical_development', 'Day 34 of the Iran conflict saw significant escalation in rhetoric as Trump declared the U.S. "hasn\'t even started destroying what\'s left" and clai ... (351 characters truncated) ... t\' refineries are helping cushion Beijing from the oil crisis, while international law experts raise violation concerns amid the prolonged conflict.', 5.5, 0.1, '2026-04-03 21:00:05.956440')]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-04-03T17:00:15.153489-0400 | ERROR | scheduler:38 | Job [summary_evening] failed after 15.1s: (raised as a result of Query-invoked autoflush; consider using a session.no_autoflush block if this flush is occurring prematurely)
+(sqlite3.IntegrityError) UNIQUE constraint failed: daily_summaries.date, daily_summaries.category
+[SQL: INSERT INTO daily_summaries (date, category, summary_text, severity_avg, total_supply_impact_mbd, created_at) VALUES (?, ?, ?, ?, ?, ?)]
+[parameters: ('2026-04-03', 'geopolitical_development', 'Day 34 of the Iran conflict saw significant escalation in rhetoric as Trump declared the U.S. "hasn\'t even started destroying what\'s left" and clai ... (351 characters truncated) ... t\' refineries are helping cushion Beijing from the oil crisis, while international law experts raise violation concerns amid the prolonged conflict.', 5.5, 0.1, '2026-04-03 21:00:05.956440')]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-04-03T17:00:22.457178-0400 | INFO | summarizer:268 | Generated 2 military daily summaries for 2026-04-03
+2026-04-03T17:00:22.457178-0400 | INFO | scheduler:35 | Job [summary_evening] completed in 22.4s — {'geopolitical_summaries': 4, 'military_summaries': 2}
+2026-04-03T17:30:00.122228-0400 | INFO | scheduler:31 | Job [scenario] started
+2026-04-03T17:30:00.122228-0400 | INFO | scheduler:31 | Job [scenario] started
+2026-04-03T17:30:03.731105-0400 | DEBUG | llm_client:88 | Agent tool call: get_latest_summaries({})
+2026-04-03T17:30:03.734430-0400 | DEBUG | llm_client:88 | Agent tool call: get_military_summary({})
+2026-04-03T17:30:03.734430-0400 | DEBUG | llm_client:88 | Agent tool call: get_latest_futures({})
+2026-04-03T17:30:03.738452-0400 | ERROR | llm_client:100 | Tool get_latest_futures failed: dictionary changed size during iteration
+2026-04-03T17:30:03.738452-0400 | DEBUG | llm_client:88 | Agent tool call: get_latest_vol_metrics({})
+2026-04-03T17:30:03.738452-0400 | DEBUG | llm_client:88 | Agent tool call: get_previous_probabilities({})
+2026-04-03T17:30:03.756502-0400 | DEBUG | llm_client:88 | Agent tool call: get_latest_summaries({})
+2026-04-03T17:30:03.758666-0400 | DEBUG | llm_client:88 | Agent tool call: get_military_summary({})
+2026-04-03T17:30:03.759665-0400 | DEBUG | llm_client:88 | Agent tool call: get_latest_futures({})
+2026-04-03T17:30:03.763193-0400 | ERROR | llm_client:100 | Tool get_latest_futures failed: dictionary changed size during iteration
+2026-04-03T17:30:03.763193-0400 | DEBUG | llm_client:88 | Agent tool call: get_latest_vol_metrics({})
+2026-04-03T17:30:03.766191-0400 | DEBUG | llm_client:88 | Agent tool call: get_previous_probabilities({})
+2026-04-03T17:30:20.212306-0400 | INFO | scenarios:72 | Stored 6 scenario probabilities for 2026-04-03
+2026-04-03T17:30:20.212306-0400 | DEBUG | scenarios:76 |   Super Spike: 35.0%
+2026-04-03T17:30:20.212306-0400 | DEBUG | scenarios:76 |   Major Disruption: 28.0%
+2026-04-03T17:30:20.212306-0400 | DEBUG | scenarios:76 |   Moderate Escalation: 20.0%
+2026-04-03T17:30:20.212306-0400 | DEBUG | scenarios:76 |   Current State: 12.0%
+2026-04-03T17:30:20.212306-0400 | DEBUG | scenarios:76 |   De-escalation: 4.0%
+2026-04-03T17:30:20.212306-0400 | DEBUG | scenarios:76 |   Resolution: 1.0%
+2026-04-03T17:30:20.212306-0400 | INFO | scheduler:35 | Job [scenario] completed in 20.1s — 6 scenarios updated
+2026-04-03T17:30:21.148709-0400 | INFO | scenarios:72 | Stored 6 scenario probabilities for 2026-04-03
+2026-04-03T17:30:21.148709-0400 | DEBUG | scenarios:76 |   Major Disruption: 35.0%
+2026-04-03T17:30:21.148709-0400 | DEBUG | scenarios:76 |   Super Spike: 25.0%
+2026-04-03T17:30:21.148709-0400 | DEBUG | scenarios:76 |   Moderate Escalation: 25.0%
+2026-04-03T17:30:21.148709-0400 | DEBUG | scenarios:76 |   Current State: 10.0%
+2026-04-03T17:30:21.148709-0400 | DEBUG | scenarios:76 |   De-escalation: 4.0%
+2026-04-03T17:30:21.148709-0400 | DEBUG | scenarios:76 |   Resolution: 1.0%
+2026-04-03T17:30:21.148709-0400 | INFO | scheduler:35 | Job [scenario] completed in 21.0s — 6 scenarios updated
+2026-04-03T17:45:00.077560-0400 | INFO | scheduler:31 | Job [trade] started
+2026-04-03T17:45:00.077560-0400 | INFO | scheduler:31 | Job [trade] started
+2026-04-03T17:45:09.990688-0400 | INFO | trade_recommender:31 | Computing scenario edges for 2026-04-03
+2026-04-03T17:45:09.990688-0400 | INFO | trade_recommender:31 | Computing scenario edges for 2026-04-03
+2026-04-03T17:45:09.993728-0400 | WARNING | mispricing:40 | No futures price for BZ on 2026-04-03
+2026-04-03T17:45:09.993728-0400 | WARNING | mispricing:40 | No futures price for BZ on 2026-04-03
+2026-04-03T17:45:09.994704-0400 | INFO | mispricing:114 | Scenario edges computed:
+2026-04-03T17:45:09.994704-0400 | DEBUG | mispricing:117 |   Major Disruption: AI=35.0% Mkt=16.7% Edge=+18.3% (UNDERPRICED)
+2026-04-03T17:45:09.994704-0400 | INFO | mispricing:114 | Scenario edges computed:
+2026-04-03T17:45:09.994704-0400 | DEBUG | mispricing:117 |   Resolution: AI=1.0% Mkt=16.7% Edge=-15.7% (OVERPRICED)
+2026-04-03T17:45:09.994704-0400 | DEBUG | mispricing:117 |   Major Disruption: AI=35.0% Mkt=16.7% Edge=+18.3% (UNDERPRICED)
+2026-04-03T17:45:09.994704-0400 | DEBUG | mispricing:117 |   De-escalation: AI=4.0% Mkt=16.7% Edge=-12.7% (OVERPRICED)
+2026-04-03T17:45:09.994704-0400 | DEBUG | mispricing:117 |   Resolution: AI=1.0% Mkt=16.7% Edge=-15.7% (OVERPRICED)
+2026-04-03T17:45:09.994704-0400 | DEBUG | mispricing:117 |   Super Spike: AI=25.0% Mkt=16.7% Edge=+8.3% (UNDERPRICED)
+2026-04-03T17:45:09.994704-0400 | DEBUG | mispricing:117 |   De-escalation: AI=4.0% Mkt=16.7% Edge=-12.7% (OVERPRICED)
+2026-04-03T17:45:09.994704-0400 | DEBUG | mispricing:117 |   Moderate Escalation: AI=25.0% Mkt=16.7% Edge=+8.3% (UNDERPRICED)
+2026-04-03T17:45:09.994704-0400 | DEBUG | mispricing:117 |   Super Spike: AI=25.0% Mkt=16.7% Edge=+8.3% (UNDERPRICED)
+2026-04-03T17:45:09.994704-0400 | DEBUG | mispricing:117 |   Current State: AI=10.0% Mkt=16.7% Edge=-6.7% (OVERPRICED)
+2026-04-03T17:45:09.994704-0400 | DEBUG | mispricing:117 |   Moderate Escalation: AI=25.0% Mkt=16.7% Edge=+8.3% (UNDERPRICED)
+2026-04-03T17:45:09.994704-0400 | DEBUG | mispricing:117 |   Current State: AI=10.0% Mkt=16.7% Edge=-6.7% (OVERPRICED)
+2026-04-03T17:45:09.994704-0400 | INFO | trade_recommender:35 | Running trading agent for 2026-04-03
+2026-04-03T17:45:09.994704-0400 | INFO | trade_recommender:35 | Running trading agent for 2026-04-03
+2026-04-03T17:45:12.162399-0400 | DEBUG | llm_client:88 | Agent tool call: get_scenario_edges({})
+2026-04-03T17:45:12.339742-0400 | DEBUG | llm_client:88 | Agent tool call: get_scenario_edges({})
+2026-04-03T17:45:14.472105-0400 | DEBUG | llm_client:88 | Agent tool call: get_options_chain({"underlying": "BZ"})
+2026-04-03T17:45:15.414818-0400 | DEBUG | llm_client:88 | Agent tool call: get_options_chain({"underlying": "BZ", "expiry": "2026-06"})
+2026-04-03T17:45:15.427817-0400 | DEBUG | llm_client:88 | Agent tool call: get_options_chain({"underlying": "CL", "expiry": "2026-06"})
+2026-04-03T17:45:18.023912-0400 | DEBUG | llm_client:88 | Agent tool call: get_options_chain({"underlying": "BZ"})
+2026-04-03T17:45:18.025910-0400 | DEBUG | llm_client:88 | Agent tool call: get_options_chain({"underlying": "CL"})
+2026-04-03T17:45:20.233457-0400 | DEBUG | llm_client:88 | Agent tool call: get_options_chain({"underlying": "CL"})
+2026-04-03T17:45:22.524823-0400 | DEBUG | llm_client:88 | Agent tool call: get_options_chain({"underlying": "BZ", "expiry": "2026-06"})
+2026-04-03T17:45:26.133963-0400 | DEBUG | llm_client:88 | Agent tool call: get_options_chain({"underlying": "CL", "expiry": "2026-06"})
+2026-04-03T17:45:27.196612-0400 | DEBUG | llm_client:88 | Agent tool call: price_option({"futures_price": 155, "strike": 120, "expiry_days": 89, "vol": 0.45, "option_type": "CALL"})
+2026-04-03T17:45:27.199639-0400 | DEBUG | llm_client:88 | Agent tool call: price_option({"futures_price": 155, "strike": 140, "expiry_days": 89, "vol": 0.45, "option_type": "CALL"})
+2026-04-03T17:45:27.199639-0400 | DEBUG | llm_client:88 | Agent tool call: price_option({"futures_price": 215, "strike": 150, "expiry_days": 89, "vol": 0.55, "option_type": "CALL"})
+2026-04-03T17:45:28.281706-0400 | DEBUG | llm_client:88 | Agent tool call: get_options_chain({"underlying": "CL", "expiry": "2026-05"})
+2026-04-03T17:45:30.262057-0400 | DEBUG | llm_client:88 | Agent tool call: get_options_chain({"underlying": "CL", "expiry": "2026-12"})
+2026-04-03T17:45:31.790619-0400 | DEBUG | llm_client:88 | Agent tool call: compute_trade_ev({"legs": [{"strike": 120, "type": "CALL", "side": "BUY", "price": 8.5}, {"strike": 150, "type": "CALL", "side": "SELL", "price": 3.2}], "scenario_prices": {"Major Disruption": 155, "Super Spike": 215,)
+2026-04-03T17:45:34.204025-0400 | DEBUG | llm_client:88 | Agent tool call: price_option({"futures_price": 85, "strike": 120, "expiry_days": 89, "vol": 0.45, "option_type": "CALL"})
+2026-04-03T17:45:35.389415-0400 | DEBUG | llm_client:88 | Agent tool call: compute_trade_ev({"legs": [{"strike": 140, "type": "CALL", "side": "BUY", "price": 6.8}], "scenario_prices": {"Major Disruption": 155, "Super Spike": 215, "Moderate Escalation": 115, "Current State": 90, "De-escalatio)
+2026-04-03T17:45:36.707611-0400 | DEBUG | llm_client:88 | Agent tool call: price_option({"futures_price": 85, "strike": 100, "expiry_days": 89, "vol": 0.45, "option_type": "CALL"})
+2026-04-03T17:45:39.796741-0400 | DEBUG | llm_client:88 | Agent tool call: price_option({"futures_price": 85, "strike": 110, "expiry_days": 89, "vol": 0.45, "option_type": "CALL"})
+2026-04-03T17:45:39.797735-0400 | WARNING | llm_client:117 | Agent loop hit max iterations (10)
+2026-04-03T17:45:39.798683-0400 | ERROR | trading_agent:317 | Trading agent failed: Expecting value: line 1 column 1 (char 0)
+2026-04-03T17:45:39.909092-0400 | INFO | trade_recommender:89 | Stored mispricing analysis and 0 trade recommendations
+2026-04-03T17:45:39.911133-0400 | INFO | scheduler:35 | Job [trade] completed in 39.8s — 0 trades recommended
+2026-04-03T17:45:45.321402-0400 | DEBUG | llm_client:88 | Agent tool call: compute_trade_ev({"legs": [{"strike": 100, "type": "CALL", "side": "BUY", "price": 12.5}, {"strike": 130, "type": "CALL", "side": "SELL", "price": 5.8}], "scenario_prices": {"Major Disruption": 155, "Super Spike": 215)
+2026-04-03T17:45:48.815062-0400 | DEBUG | llm_client:88 | Agent tool call: compute_trade_ev({"legs": [{"strike": 180, "type": "CALL", "side": "BUY", "price": 2.8}], "scenario_prices": {"Major Disruption": 155, "Super Spike": 215, "Moderate Escalation": 115, "Current State": 90, "De-escalatio)
+2026-04-03T17:45:53.990798-0400 | DEBUG | llm_client:88 | Agent tool call: compute_trade_ev({"legs": [{"strike": 120, "type": "CALL", "side": "BUY", "price": 8.5}, {"strike": 160, "type": "CALL", "side": "SELL", "price": 2.5}, {"strike": 160, "type": "CALL", "side": "SELL", "price": 2.5}], ")
+2026-04-03T17:46:23.288103-0400 | INFO | trading_agent:313 | Trading agent recommended 5 trades
+2026-04-03T17:46:23.404536-0400 | INFO | trade_recommender:89 | Stored mispricing analysis and 5 trade recommendations
+2026-04-03T17:46:23.405337-0400 | INFO | scheduler:35 | Job [trade] completed in 83.3s — 5 trades recommended
+2026-04-03T18:00:00.066643-0400 | INFO | scheduler:31 | Job [news] started
+2026-04-03T18:00:00.066643-0400 | INFO | scheduler:31 | Job [news] started
+2026-04-03T18:00:00.067661-0400 | INFO | scheduler:31 | Job [pnl] started
+2026-04-03T18:00:00.067661-0400 | INFO | scheduler:31 | Job [pnl] started
+2026-04-03T18:00:00.188078-0400 | INFO | pnl_projector:89 | No open positions to project
+2026-04-03T18:00:00.189078-0400 | INFO | pnl_projector:89 | No open positions to project
+2026-04-03T18:00:00.189078-0400 | INFO | scheduler:35 | Job [pnl] completed in 0.1s — 0 positions projected
+2026-04-03T18:00:00.190075-0400 | INFO | scheduler:35 | Job [pnl] completed in 0.1s — 0 positions projected
+2026-04-03T18:00:01.147194-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T18:00:01.163189-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T18:00:02.000160-0400 | DEBUG | news_collector:72 | RSS google_red_sea: fetched 100 entries
+2026-04-03T18:00:02.014213-0400 | DEBUG | news_collector:72 | RSS google_red_sea: fetched 100 entries
+2026-04-03T18:00:02.116393-0400 | DEBUG | news_collector:72 | RSS reuters_world: fetched 0 entries
+2026-04-03T18:00:02.116393-0400 | DEBUG | news_collector:72 | RSS reuters_world: fetched 0 entries
+2026-04-03T18:00:02.130395-0400 | DEBUG | news_collector:72 | RSS reuters_commodities: fetched 0 entries
+2026-04-03T18:00:02.130395-0400 | DEBUG | news_collector:72 | RSS reuters_commodities: fetched 0 entries
+2026-04-03T18:00:02.908100-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T18:00:02.920101-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T18:00:03.123386-0400 | DEBUG | news_collector:72 | RSS aljazeera: fetched 25 entries
+2026-04-03T18:00:03.426399-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 28 entries
+2026-04-03T18:00:03.426399-0400 | INFO | news_collector:76 | RSS total: 67 keyword-matched articles
+2026-04-03T18:00:03.450112-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 28 entries
+2026-04-03T18:00:03.450112-0400 | INFO | news_collector:76 | RSS total: 67 keyword-matched articles
+2026-04-03T18:00:16.729604-0400 | WARNING | news_collector:119 | GDELT fetch failed: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))
+2026-04-03T18:00:16.730609-0400 | WARNING | news_collector:119 | GDELT fetch failed: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))
+2026-04-03T18:00:16.769694-0400 | INFO | news_collector:246 | Dedup: removed 8 duplicates, 59 unique remain
+2026-04-03T18:00:16.769694-0400 | INFO | news_collector:246 | Dedup: removed 8 duplicates, 59 unique remain
+2026-04-03T18:00:16.772695-0400 | DEBUG | news_collector:347 | DB dedup: skipped 57 already-stored articles
+2026-04-03T18:00:16.772695-0400 | DEBUG | news_collector:347 | DB dedup: skipped 57 already-stored articles
+2026-04-03T18:00:16.882533-0400 | INFO | news_collector:419 | Stored 2 new articles in geopolitical_events
+2026-04-03T18:00:16.966730-0400 | INFO | news_collector:419 | Stored 2 new articles in geopolitical_events
+2026-04-03T18:00:19.785618-0400 | INFO | geopolitical_agent:220 | Classified 2/2 events
+2026-04-03T18:00:19.786916-0400 | INFO | scheduler:35 | Job [news] completed in 19.7s — 2 articles
+2026-04-03T18:00:21.706915-0400 | DEBUG | geopolitical_agent:300 | No facility match for 'unknown' from event 302
+2026-04-03T18:00:21.753369-0400 | INFO | geopolitical_agent:333 | Classified 2/2 events, created 0 disruption events
+2026-04-03T18:00:21.754123-0400 | INFO | scheduler:35 | Job [news] completed in 21.7s — 2 articles
+2026-04-03T18:15:00.046502-0400 | INFO | scheduler:31 | Job [military] started
+2026-04-03T18:15:00.046502-0400 | INFO | scheduler:31 | Job [military] started
+2026-04-03T18:15:08.448498-0400 | INFO | military_collector:115 | Created 0 military events for 2026-04-03
+2026-04-03T18:15:08.474564-0400 | INFO | military_collector:115 | Created 0 military events for 2026-04-03
+2026-04-03T18:15:08.523593-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-04-01%7C2026-04-03&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-04-03T18:15:08.523593-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-04-01%7C2026-04-03&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-04-03T18:15:16.049846-0400 | INFO | summarizer:268 | Generated 2 military daily summaries for 2026-04-03
+2026-04-03T18:15:16.050834-0400 | INFO | scheduler:35 | Job [military] completed in 16.0s — {'military_events_from_news': 0, 'acled_events': 0, 'military_summaries': 2}
+2026-04-03T18:15:20.075415-0400 | INFO | summarizer:268 | Generated 2 military daily summaries for 2026-04-03
+2026-04-03T18:15:20.077464-0400 | INFO | scheduler:35 | Job [military] completed in 20.0s — {'military_events_from_news': 0, 'acled_events': 0, 'military_summaries': 2}
+2026-04-03T19:27:24.751934-0400 | INFO | main:36 | === Oil Super Spike Analyzer starting ===
+2026-04-03T19:27:24.753936-0400 | INFO | main:39 | Initializing database...
+2026-04-03T19:27:25.265971-0400 | INFO | main:42 | Database ready.
+2026-04-03T19:27:25.265971-0400 | INFO | main:46 | Running backfill (incremental — fetches any new data since last run)...
+2026-04-03T19:27:25.361191-0400 | INFO | backfill_manager:110 | Starting backfill [fred]...
+2026-04-03T19:27:25.888505-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILWTICO (CL) from 2026-02-28 to 2026-04-03
+2026-04-03T19:27:26.574132-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 0 records for CL
+2026-04-03T19:27:26.574132-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILBRENTEU (BZ) from 2026-02-28 to 2026-04-03
+2026-04-03T19:27:26.896830-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 0 records for BZ
+2026-04-03T19:27:26.922024-0400 | INFO | backfill_manager:129 | Backfill [fred] complete: 0 records.
+2026-04-03T19:27:26.934834-0400 | INFO | backfill_manager:110 | Starting backfill [yahoo]...
+2026-04-03T19:27:27.379405-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching CL=F (CL) from 2026-02-28
+2026-04-03T19:27:27.927351-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 0 new records for CL
+2026-04-03T19:27:27.927351-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching BZ=F (BZ) from 2026-02-28
+2026-04-03T19:27:28.046394-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 0 new records for BZ
+2026-04-03T19:27:28.080639-0400 | INFO | backfill_manager:129 | Backfill [yahoo] complete: 0 records.
+2026-04-03T19:27:28.103374-0400 | INFO | backfill_manager:110 | Starting backfill [eia]...
+2026-04-03T19:27:28.130179-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Inventories (PET.WCESTUS1.W) from 2026-02-28
+2026-04-03T19:27:29.839325-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Inventories
+2026-04-03T19:27:29.839325-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Production (PET.WCRFPUS2.W) from 2026-02-28
+2026-04-03T19:27:31.088943-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Production
+2026-04-03T19:27:31.142565-0400 | INFO | backfill_manager:129 | Backfill [eia] complete: 0 records.
+2026-04-03T19:27:31.162705-0400 | INFO | backfill_manager:110 | Starting backfill [gdelt]...
+2026-04-03T19:27:31.272997-0400 | INFO | gdelt_backfill:60 | GDELT backfill: 2026-03-08 → 2026-04-03 (27 days)
+2026-04-03T19:27:41.085479-0400 | INFO | news_collector:149 | GDELT 429 for 2026-03-08, retry 1/3 in 5s
+2026-04-03T19:28:01.656836-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 2/3 in 10s
+2026-04-03T19:28:29.724204-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 3/3 in 20s
+2026-04-03T19:28:49.726598-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T19:29:34.665460-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 1/3 in 5s
+2026-04-03T19:29:51.970090-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 2/3 in 10s
+2026-04-03T19:30:23.011676-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC+OR+Houthi+OR+Bab+el-Mandeb+OR+Red+Sea+tanker&mode=ArtList&maxrecords=250&startdatetime=20260308000000&enddatetime=20260309000000&format=json&sort=DateDesc (Caused by ConnectTimeoutError(<HTTPSConnection(host='api.gdeltproject.org', port=443) at 0x2a3e96efe00>, 'Connection to api.gdeltproject.org timed out. (connect timeout=30)'))), retry 3/3 in 20s
+2026-04-03T19:30:43.013454-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T19:30:43.015063-0400 | WARNING | gdelt_backfill:73 | GDELT backfill: 2 consecutive failures, stopping at 2026-03-08 (will resume next run)
+2026-04-03T19:30:43.016061-0400 | INFO | gdelt_backfill:227 | GDELT backfill partial (stopped at 2026-03-08): 0 articles, 0 classified
+2026-04-03T19:30:43.142205-0400 | INFO | backfill_manager:129 | Backfill [gdelt] complete: 0 records.
+2026-04-03T19:30:44.068062-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T19:30:44.866274-0400 | DEBUG | news_collector:72 | RSS google_red_sea: fetched 100 entries
+2026-04-03T19:30:44.951384-0400 | DEBUG | news_collector:72 | RSS reuters_world: fetched 0 entries
+2026-04-03T19:30:44.966303-0400 | DEBUG | news_collector:72 | RSS reuters_commodities: fetched 0 entries
+2026-04-03T19:30:45.577910-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T19:30:45.858253-0400 | DEBUG | news_collector:72 | RSS aljazeera: fetched 25 entries
+2026-04-03T19:30:46.200512-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 30 entries
+2026-04-03T19:30:46.200512-0400 | INFO | news_collector:76 | RSS total: 69 keyword-matched articles
+2026-04-03T19:31:07.392863-0400 | WARNING | news_collector:119 | GDELT fetch failed: Expecting value: line 1 column 1 (char 0)
+2026-04-03T19:31:07.450358-0400 | INFO | news_collector:246 | Dedup: removed 6 duplicates, 63 unique remain
+2026-04-03T19:31:07.455360-0400 | DEBUG | news_collector:347 | DB dedup: skipped 60 already-stored articles
+2026-04-03T19:31:07.487944-0400 | INFO | news_collector:419 | Stored 3 new articles in geopolitical_events
+2026-04-03T19:31:15.477021-0400 | DEBUG | geopolitical_agent:300 | No facility match for 'unknown' from event 303
+2026-04-03T19:31:15.478027-0400 | DEBUG | geopolitical_agent:300 | No facility match for 'unknown' from event 304
+2026-04-03T19:31:15.512645-0400 | INFO | geopolitical_agent:333 | Classified 3/3 events, created 0 disruption events
+2026-04-03T19:31:15.513650-0400 | INFO | main:57 | News pipeline: 3 new articles from RSS/GDELT live.
+2026-04-03T19:31:15.513650-0400 | INFO | main:60 | Backfill complete.
+2026-04-03T19:31:15.636458-0400 | INFO | production_tracker:301 | Daily status for 2026-04-03: oil offline=6.30 mbd (6.1% global), shut-in=0.00, damaged=0.00, hormuz=6.30, bab_el_mandeb=0.00
+2026-04-03T19:31:15.637472-0400 | INFO | main:68 | Production tracker: daily status computed.
+2026-04-03T19:31:15.637472-0400 | INFO | main:78 | Starting APScheduler...
+2026-04-03T19:31:15.714957-0400 | INFO | scheduler:219 | Scheduler started with jobs:
+2026-04-03T19:31:15.714957-0400 | INFO | scheduler:221 |   [news] News Collection Pipeline — next run: 2026-04-03 20:00:00-04:00
+2026-04-03T19:31:15.714957-0400 | INFO | scheduler:221 |   [military] Military Intelligence Pipeline — next run: 2026-04-03 20:15:00-04:00
+2026-04-03T19:31:15.714957-0400 | INFO | scheduler:221 |   [summary_morning] AI Summary (Morning) — next run: 2026-04-04 08:00:00-04:00
+2026-04-03T19:31:15.716483-0400 | INFO | scheduler:221 |   [summary_evening] AI Summary (Evening) — next run: 2026-04-04 17:00:00-04:00
+2026-04-03T19:31:15.716483-0400 | INFO | scheduler:221 |   [market_morning] Market Data (Morning) — next run: 2026-04-06 10:00:00-04:00
+2026-04-03T19:31:15.717491-0400 | INFO | scheduler:221 |   [eia_fred] EIA + FRED Data Update — next run: 2026-04-06 11:00:00-04:00
+2026-04-03T19:31:15.717491-0400 | INFO | scheduler:221 |   [market_midday] Market Data (Midday) — next run: 2026-04-06 13:00:00-04:00
+2026-04-03T19:31:15.717491-0400 | INFO | scheduler:221 |   [market_settlement] Market Data (Settlement) — next run: 2026-04-06 16:15:00-04:00
+2026-04-03T19:31:15.718524-0400 | INFO | scheduler:221 |   [scenario] Scenario Probability Update — next run: 2026-04-06 17:30:00-04:00
+2026-04-03T19:31:15.718524-0400 | INFO | scheduler:221 |   [trade] Trade Recommendation Analysis — next run: 2026-04-06 17:45:00-04:00
+2026-04-03T19:31:15.718524-0400 | INFO | scheduler:221 |   [pnl] P&L Projection — next run: 2026-04-06 18:00:00-04:00
+2026-04-03T19:31:15.719544-0400 | INFO | main:82 | Scheduler started.
+2026-04-03T19:31:15.719544-0400 | INFO | main:87 | Launching Dash application...
+2026-04-03T19:31:17.231661-0400 | INFO | main:36 | === Oil Super Spike Analyzer starting ===
+2026-04-03T19:31:17.231661-0400 | INFO | main:39 | Initializing database...
+2026-04-03T19:31:17.759264-0400 | INFO | main:42 | Database ready.
+2026-04-03T19:31:17.759264-0400 | INFO | main:46 | Running backfill (incremental — fetches any new data since last run)...
+2026-04-03T19:31:17.857152-0400 | INFO | backfill_manager:110 | Starting backfill [fred]...
+2026-04-03T19:31:18.449246-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILWTICO (CL) from 2026-02-28 to 2026-04-03
+2026-04-03T19:31:18.780861-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 0 records for CL
+2026-04-03T19:31:18.781861-0400 | INFO | fred_backfill:26 | FRED backfill: fetching DCOILBRENTEU (BZ) from 2026-02-28 to 2026-04-03
+2026-04-03T19:31:19.189991-0400 | INFO | fred_backfill:59 | FRED backfill: inserted 0 records for BZ
+2026-04-03T19:31:19.220987-0400 | INFO | backfill_manager:129 | Backfill [fred] complete: 0 records.
+2026-04-03T19:31:19.241135-0400 | INFO | backfill_manager:110 | Starting backfill [yahoo]...
+2026-04-03T19:31:19.804343-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching CL=F (CL) from 2026-02-28
+2026-04-03T19:31:20.320521-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 0 new records for CL
+2026-04-03T19:31:20.320521-0400 | INFO | yahoo_backfill:25 | Yahoo backfill: fetching BZ=F (BZ) from 2026-02-28
+2026-04-03T19:31:20.548899-0400 | INFO | yahoo_backfill:65 | Yahoo backfill: 0 new records for BZ
+2026-04-03T19:31:20.572684-0400 | INFO | backfill_manager:129 | Backfill [yahoo] complete: 0 records.
+2026-04-03T19:31:20.594472-0400 | INFO | backfill_manager:110 | Starting backfill [eia]...
+2026-04-03T19:31:20.617215-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Inventories (PET.WCESTUS1.W) from 2026-02-28
+2026-04-03T19:31:22.244266-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Inventories
+2026-04-03T19:31:22.244266-0400 | INFO | eia_backfill:58 | EIA backfill: US Crude Production (PET.WCRFPUS2.W) from 2026-02-28
+2026-04-03T19:31:23.503722-0400 | INFO | eia_backfill:61 | EIA returned 0 records for US Crude Production
+2026-04-03T19:31:23.585602-0400 | INFO | backfill_manager:129 | Backfill [eia] complete: 0 records.
+2026-04-03T19:31:23.664696-0400 | INFO | backfill_manager:110 | Starting backfill [gdelt]...
+2026-04-03T19:31:23.844435-0400 | INFO | gdelt_backfill:60 | GDELT backfill: 2026-03-08 → 2026-04-03 (27 days)
+2026-04-03T19:31:36.796583-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 1/3 in 5s
+2026-04-03T19:31:54.240809-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 2/3 in 10s
+2026-04-03T19:32:23.602059-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 3/3 in 20s
+2026-04-03T19:32:43.604311-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T19:33:24.229171-0400 | INFO | news_collector:149 | GDELT 429 for 2026-03-08, retry 1/3 in 5s
+2026-04-03T19:33:39.573535-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 2/3 in 10s
+2026-04-03T19:34:04.512029-0400 | INFO | news_collector:174 | GDELT error for 2026-03-08 (Expecting value: line 1 column 1 (char 0)), retry 3/3 in 20s
+2026-04-03T19:34:24.514780-0400 | WARNING | news_collector:177 | GDELT backfill 2026-03-08 failed after 3 retries
+2026-04-03T19:34:24.516147-0400 | WARNING | gdelt_backfill:73 | GDELT backfill: 2 consecutive failures, stopping at 2026-03-08 (will resume next run)
+2026-04-03T19:34:24.516147-0400 | INFO | gdelt_backfill:227 | GDELT backfill partial (stopped at 2026-03-08): 0 articles, 0 classified
+2026-04-03T19:34:24.625628-0400 | INFO | backfill_manager:129 | Backfill [gdelt] complete: 0 records.
+2026-04-03T19:34:25.583923-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T19:34:26.386046-0400 | DEBUG | news_collector:72 | RSS google_red_sea: fetched 100 entries
+2026-04-03T19:34:26.406050-0400 | DEBUG | news_collector:72 | RSS reuters_world: fetched 0 entries
+2026-04-03T19:34:26.419047-0400 | DEBUG | news_collector:72 | RSS reuters_commodities: fetched 0 entries
+2026-04-03T19:34:27.116031-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T19:34:27.377504-0400 | DEBUG | news_collector:72 | RSS aljazeera: fetched 25 entries
+2026-04-03T19:34:27.999231-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 30 entries
+2026-04-03T19:34:27.999231-0400 | INFO | news_collector:76 | RSS total: 69 keyword-matched articles
+2026-04-03T19:34:50.945100-0400 | WARNING | news_collector:119 | GDELT fetch failed: Expecting value: line 1 column 1 (char 0)
+2026-04-03T19:34:50.992124-0400 | INFO | news_collector:246 | Dedup: removed 6 duplicates, 63 unique remain
+2026-04-03T19:34:50.997390-0400 | DEBUG | news_collector:347 | DB dedup: skipped 63 already-stored articles
+2026-04-03T19:34:50.997390-0400 | INFO | news_collector:392 | All articles already in DB
+2026-04-03T19:34:50.998357-0400 | INFO | main:57 | News pipeline: 0 new articles from RSS/GDELT live.
+2026-04-03T19:34:50.998357-0400 | INFO | main:60 | Backfill complete.
+2026-04-03T19:34:51.104572-0400 | INFO | production_tracker:301 | Daily status for 2026-04-03: oil offline=6.30 mbd (6.1% global), shut-in=0.00, damaged=0.00, hormuz=6.30, bab_el_mandeb=0.00
+2026-04-03T19:34:51.104572-0400 | INFO | main:68 | Production tracker: daily status computed.
+2026-04-03T19:34:51.105573-0400 | INFO | main:78 | Starting APScheduler...
+2026-04-03T19:34:51.196373-0400 | INFO | scheduler:219 | Scheduler started with jobs:
+2026-04-03T19:34:51.197371-0400 | INFO | scheduler:221 |   [news] News Collection Pipeline — next run: 2026-04-03 20:00:00-04:00
+2026-04-03T19:34:51.197371-0400 | INFO | scheduler:221 |   [military] Military Intelligence Pipeline — next run: 2026-04-03 20:15:00-04:00
+2026-04-03T19:34:51.197371-0400 | INFO | scheduler:221 |   [summary_morning] AI Summary (Morning) — next run: 2026-04-04 08:00:00-04:00
+2026-04-03T19:34:51.198372-0400 | INFO | scheduler:221 |   [summary_evening] AI Summary (Evening) — next run: 2026-04-04 17:00:00-04:00
+2026-04-03T19:34:51.198372-0400 | INFO | scheduler:221 |   [market_morning] Market Data (Morning) — next run: 2026-04-06 10:00:00-04:00
+2026-04-03T19:34:51.198372-0400 | INFO | scheduler:221 |   [eia_fred] EIA + FRED Data Update — next run: 2026-04-06 11:00:00-04:00
+2026-04-03T19:34:51.198372-0400 | INFO | scheduler:221 |   [market_midday] Market Data (Midday) — next run: 2026-04-06 13:00:00-04:00
+2026-04-03T19:34:51.199373-0400 | INFO | scheduler:221 |   [market_settlement] Market Data (Settlement) — next run: 2026-04-06 16:15:00-04:00
+2026-04-03T19:34:51.199373-0400 | INFO | scheduler:221 |   [scenario] Scenario Probability Update — next run: 2026-04-06 17:30:00-04:00
+2026-04-03T19:34:51.199373-0400 | INFO | scheduler:221 |   [trade] Trade Recommendation Analysis — next run: 2026-04-06 17:45:00-04:00
+2026-04-03T19:34:51.200368-0400 | INFO | scheduler:221 |   [pnl] P&L Projection — next run: 2026-04-06 18:00:00-04:00
+2026-04-03T19:34:51.200368-0400 | INFO | main:82 | Scheduler started.
+2026-04-03T19:34:51.200368-0400 | INFO | main:87 | Launching Dash application...
+2026-04-03T20:00:00.022438-0400 | INFO | scheduler:31 | Job [news] started
+2026-04-03T20:00:00.022438-0400 | INFO | scheduler:31 | Job [news] started
+2026-04-03T20:00:00.967706-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T20:00:00.983845-0400 | DEBUG | news_collector:72 | RSS google_news: fetched 100 entries
+2026-04-03T20:00:01.843707-0400 | DEBUG | news_collector:72 | RSS google_red_sea: fetched 100 entries
+2026-04-03T20:00:01.862865-0400 | DEBUG | news_collector:72 | RSS reuters_world: fetched 0 entries
+2026-04-03T20:00:01.876388-0400 | DEBUG | news_collector:72 | RSS reuters_commodities: fetched 0 entries
+2026-04-03T20:00:01.927108-0400 | DEBUG | news_collector:72 | RSS google_red_sea: fetched 100 entries
+2026-04-03T20:00:01.940629-0400 | DEBUG | news_collector:72 | RSS reuters_world: fetched 0 entries
+2026-04-03T20:00:01.953668-0400 | DEBUG | news_collector:72 | RSS reuters_commodities: fetched 0 entries
+2026-04-03T20:00:02.596493-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T20:00:02.794016-0400 | DEBUG | news_collector:72 | RSS aljazeera: fetched 25 entries
+2026-04-03T20:00:03.088608-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 30 entries
+2026-04-03T20:00:03.088608-0400 | INFO | news_collector:76 | RSS total: 66 keyword-matched articles
+2026-04-03T20:00:03.919712-0400 | DEBUG | news_collector:72 | RSS oilprice: fetched 15 entries
+2026-04-03T20:00:04.107317-0400 | DEBUG | news_collector:72 | RSS aljazeera: fetched 25 entries
+2026-04-03T20:00:04.385968-0400 | DEBUG | news_collector:72 | RSS bbc_world: fetched 30 entries
+2026-04-03T20:00:04.385968-0400 | INFO | news_collector:76 | RSS total: 66 keyword-matched articles
+2026-04-03T20:00:26.036374-0400 | WARNING | news_collector:119 | GDELT fetch failed: 429 Client Error: Too Many Requests for url: https://api.gdeltproject.org/api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC+OR+Houthi+OR+Bab+el-Mandeb+OR+Red+Sea+tanker&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc
+2026-04-03T20:00:26.092722-0400 | INFO | news_collector:246 | Dedup: removed 6 duplicates, 60 unique remain
+2026-04-03T20:00:26.096301-0400 | DEBUG | news_collector:347 | DB dedup: skipped 59 already-stored articles
+2026-04-03T20:00:26.201445-0400 | INFO | news_collector:419 | Stored 1 new articles in geopolitical_events
+2026-04-03T20:00:30.227990-0400 | DEBUG | geopolitical_agent:300 | No facility match for 'unknown' from event 306
+2026-04-03T20:00:30.259207-0400 | INFO | geopolitical_agent:333 | Classified 1/1 events, created 0 disruption events
+2026-04-03T20:00:30.260025-0400 | INFO | scheduler:35 | Job [news] completed in 30.2s — 1 articles
+2026-04-03T20:00:35.422670-0400 | WARNING | news_collector:119 | GDELT fetch failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC+OR+Houthi+OR+Bab+el-Mandeb+OR+Red+Sea+tanker&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc (Caused by ConnectTimeoutError(<HTTPSConnection(host='api.gdeltproject.org', port=443) at 0x1e5f75c36e0>, 'Connection to api.gdeltproject.org timed out. (connect timeout=30)'))
+2026-04-03T20:00:35.463799-0400 | INFO | news_collector:246 | Dedup: removed 6 duplicates, 60 unique remain
+2026-04-03T20:00:35.467793-0400 | DEBUG | news_collector:347 | DB dedup: skipped 60 already-stored articles
+2026-04-03T20:00:35.467793-0400 | INFO | news_collector:392 | All articles already in DB
+2026-04-03T20:00:35.468795-0400 | INFO | scheduler:35 | Job [news] completed in 35.4s — 0 articles
+2026-04-03T20:15:00.023537-0400 | INFO | scheduler:31 | Job [military] started
+2026-04-03T20:15:00.023537-0400 | INFO | scheduler:31 | Job [military] started
+2026-04-03T20:15:08.193623-0400 | INFO | military_collector:115 | Created 0 military events for 2026-04-03
+2026-04-03T20:15:08.268632-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-04-01%7C2026-04-03&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-04-03T20:15:08.795354-0400 | INFO | military_collector:115 | Created 0 military events for 2026-04-03
+2026-04-03T20:15:08.797325-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-04-01%7C2026-04-03&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-04-03T20:15:16.439382-0400 | INFO | summarizer:268 | Generated 2 military daily summaries for 2026-04-03
+2026-04-03T20:15:16.440382-0400 | INFO | scheduler:35 | Job [military] completed in 16.4s — {'military_events_from_news': 0, 'acled_events': 0, 'military_summaries': 2}
+2026-04-03T20:15:20.344939-0400 | INFO | summarizer:268 | Generated 2 military daily summaries for 2026-04-03
+2026-04-03T20:15:20.345958-0400 | INFO | scheduler:35 | Job [military] completed in 20.3s — {'military_events_from_news': 0, 'acled_events': 0, 'military_summaries': 2}

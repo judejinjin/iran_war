@@ -1,0 +1,312 @@
+2026-03-24T10:00:23.639001-0400 | INFO | main:36 | === Oil Super Spike Analyzer starting ===
+2026-03-24T10:00:23.640002-0400 | INFO | main:39 | Initializing database...
+2026-03-24T10:00:25.611687-0400 | INFO | main:42 | Database ready.
+2026-03-24T10:00:25.611687-0400 | INFO | main:72 | Launching Dash application...
+2026-03-24T11:00:00.014279-0400 | INFO | scheduler:31 | Job [eia_fred] started
+2026-03-24T11:00:00.014279-0400 | INFO | scheduler:31 | Job [eia_fred] started
+2026-03-24T11:00:00.379397-0400 | ERROR | scheduler:84 | EIA update failed: run_backfill() missing 2 required positional arguments: 'start_from' and 'session'
+2026-03-24T11:00:00.379397-0400 | ERROR | scheduler:84 | EIA update failed: run_backfill() missing 2 required positional arguments: 'start_from' and 'session'
+2026-03-24T11:00:04.606934-0400 | ERROR | scheduler:92 | FRED update failed: run_backfill() missing 2 required positional arguments: 'start_from' and 'session'
+2026-03-24T11:00:04.606934-0400 | ERROR | scheduler:92 | FRED update failed: run_backfill() missing 2 required positional arguments: 'start_from' and 'session'
+2026-03-24T11:00:04.606934-0400 | INFO | scheduler:35 | Job [eia_fred] completed in 4.6s — {'eia': "run_backfill() missing 2 required positional arguments: 'start_from' and 'session'", 'fred': "run_backfill() missing 2 required positional arguments: 'start_from' and 'session'"}
+2026-03-24T11:00:04.606934-0400 | INFO | scheduler:35 | Job [eia_fred] completed in 4.6s — {'eia': "run_backfill() missing 2 required positional arguments: 'start_from' and 'session'", 'fred': "run_backfill() missing 2 required positional arguments: 'start_from' and 'session'"}
+2026-03-24T12:00:00.004765-0400 | INFO | scheduler:31 | Job [news] started
+2026-03-24T12:00:00.004765-0400 | INFO | scheduler:31 | Job [news] started
+2026-03-24T12:00:01.044161-0400 | DEBUG | news_collector:64 | RSS google_news: fetched 100 entries
+2026-03-24T12:00:01.058213-0400 | DEBUG | news_collector:64 | RSS google_news: fetched 100 entries
+2026-03-24T12:00:01.202791-0400 | DEBUG | news_collector:64 | RSS reuters_world: fetched 0 entries
+2026-03-24T12:00:01.216797-0400 | DEBUG | news_collector:64 | RSS reuters_commodities: fetched 0 entries
+2026-03-24T12:00:01.216797-0400 | DEBUG | news_collector:64 | RSS reuters_commodities: fetched 0 entries
+2026-03-24T12:00:01.902656-0400 | DEBUG | news_collector:64 | RSS oilprice: fetched 15 entries
+2026-03-24T12:00:02.103664-0400 | DEBUG | news_collector:64 | RSS oilprice: fetched 15 entries
+2026-03-24T12:00:02.193761-0400 | DEBUG | news_collector:64 | RSS aljazeera: fetched 25 entries
+2026-03-24T12:00:02.363064-0400 | DEBUG | news_collector:64 | RSS aljazeera: fetched 25 entries
+2026-03-24T12:00:02.617002-0400 | DEBUG | news_collector:64 | RSS bbc_world: fetched 40 entries
+2026-03-24T12:00:02.617002-0400 | INFO | news_collector:68 | RSS total: 42 keyword-matched articles
+2026-03-24T12:00:02.768698-0400 | DEBUG | news_collector:64 | RSS bbc_world: fetched 40 entries
+2026-03-24T12:00:02.768698-0400 | INFO | news_collector:68 | RSS total: 42 keyword-matched articles
+2026-03-24T12:00:14.254617-0400 | WARNING | news_collector:111 | GDELT fetch failed: 429 Client Error: Too Many Requests for url: https://api.gdeltproject.org/api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc
+2026-03-24T12:00:14.276418-0400 | INFO | news_collector:224 | Dedup: removed 3 duplicates, 39 unique remain
+2026-03-24T12:00:14.280418-0400 | DEBUG | news_collector:325 | DB dedup: skipped 29 already-stored articles
+2026-03-24T12:00:14.342746-0400 | WARNING | news_collector:111 | GDELT fetch failed: 429 Client Error: Too Many Requests for url: https://api.gdeltproject.org/api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc
+2026-03-24T12:00:14.360751-0400 | INFO | news_collector:224 | Dedup: removed 3 duplicates, 39 unique remain
+2026-03-24T12:00:14.363758-0400 | DEBUG | news_collector:325 | DB dedup: skipped 29 already-stored articles
+2026-03-24T12:00:14.407431-0400 | INFO | news_collector:397 | Stored 10 new articles in geopolitical_events
+2026-03-24T12:00:14.409511-0400 | ERROR | geopolitical_agent:225 | Event classification failed: [Errno 2] No such file or directory
+2026-03-24T12:00:14.410511-0400 | ERROR | news_collector:405 | Classification failed (events stored unclassified): [Errno 2] No such file or directory
+2026-03-24T12:00:14.412511-0400 | INFO | scheduler:35 | Job [news] completed in 14.4s — 10 articles
+2026-03-24T12:00:14.450724-0400 | INFO | news_collector:397 | Stored 10 new articles in geopolitical_events
+2026-03-24T12:00:14.453693-0400 | ERROR | geopolitical_agent:225 | Event classification failed: [Errno 2] No such file or directory
+2026-03-24T12:00:14.454684-0400 | ERROR | news_collector:405 | Classification failed (events stored unclassified): [Errno 2] No such file or directory
+2026-03-24T12:00:14.456684-0400 | INFO | scheduler:35 | Job [news] completed in 14.5s — 10 articles
+2026-03-24T12:00:15.455531-0400 | INFO | main:36 | === Oil Super Spike Analyzer starting ===
+2026-03-24T12:00:15.456497-0400 | INFO | main:39 | Initializing database...
+2026-03-24T12:00:16.031981-0400 | INFO | main:42 | Database ready.
+2026-03-24T12:00:16.031981-0400 | INFO | main:72 | Launching Dash application...
+2026-03-24T12:15:00.003680-0400 | INFO | scheduler:31 | Job [military] started
+2026-03-24T12:15:00.006178-0400 | INFO | scheduler:31 | Job [military] started
+2026-03-24T12:15:00.006691-0400 | INFO | military_collector:39 | No military events to process for 2026-03-24
+2026-03-24T12:15:00.007708-0400 | INFO | military_collector:39 | No military events to process for 2026-03-24
+2026-03-24T12:15:00.089383-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-03-17%7C2026-03-24&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-03-24T12:15:00.089383-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-03-17%7C2026-03-24&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-03-24T12:15:00.091383-0400 | ERROR | scheduler:38 | Job [military] failed after 0.1s: [Errno 2] No such file or directory
+2026-03-24T12:15:00.091383-0400 | ERROR | scheduler:38 | Job [military] failed after 0.1s: [Errno 2] No such file or directory
+2026-03-24T13:00:00.010462-0400 | INFO | scheduler:31 | Job [market_midday] started
+2026-03-24T13:00:00.010462-0400 | INFO | scheduler:31 | Job [market_midday] started
+2026-03-24T13:00:00.020461-0400 | ERROR | scheduler:63 | Futures collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_2'.
+2026-03-24T13:00:00.020461-0400 | ERROR | scheduler:63 | Futures collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_2'.
+2026-03-24T13:00:00.027493-0400 | ERROR | scheduler:70 | Options collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_2'.
+2026-03-24T13:00:00.027493-0400 | ERROR | scheduler:70 | Options collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_2'.
+2026-03-24T13:00:00.027493-0400 | INFO | scheduler:35 | Job [market_midday] completed in 0.0s — {'futures': "There is no current event loop in thread 'ThreadPoolExecutor-0_2'.", 'options': "There is no current event loop in thread 'ThreadPoolExecutor-0_2'."}
+2026-03-24T13:00:00.028461-0400 | INFO | scheduler:35 | Job [market_midday] completed in 0.0s — {'futures': "There is no current event loop in thread 'ThreadPoolExecutor-0_2'.", 'options': "There is no current event loop in thread 'ThreadPoolExecutor-0_2'."}
+2026-03-24T14:00:00.010983-0400 | INFO | scheduler:31 | Job [news] started
+2026-03-24T14:00:00.011982-0400 | INFO | scheduler:31 | Job [news] started
+2026-03-24T14:00:00.886287-0400 | DEBUG | news_collector:64 | RSS google_news: fetched 100 entries
+2026-03-24T14:00:00.897279-0400 | DEBUG | news_collector:64 | RSS google_news: fetched 100 entries
+2026-03-24T14:00:01.012026-0400 | DEBUG | news_collector:64 | RSS reuters_world: fetched 0 entries
+2026-03-24T14:00:01.015055-0400 | DEBUG | news_collector:64 | RSS reuters_world: fetched 0 entries
+2026-03-24T14:00:01.026023-0400 | DEBUG | news_collector:64 | RSS reuters_commodities: fetched 0 entries
+2026-03-24T14:00:01.038029-0400 | DEBUG | news_collector:64 | RSS reuters_commodities: fetched 0 entries
+2026-03-24T14:00:01.677276-0400 | DEBUG | news_collector:64 | RSS oilprice: fetched 15 entries
+2026-03-24T14:00:01.849234-0400 | DEBUG | news_collector:64 | RSS aljazeera: fetched 25 entries
+2026-03-24T14:00:01.857234-0400 | DEBUG | news_collector:64 | RSS oilprice: fetched 15 entries
+2026-03-24T14:00:02.038605-0400 | DEBUG | news_collector:64 | RSS aljazeera: fetched 25 entries
+2026-03-24T14:00:02.190166-0400 | DEBUG | news_collector:64 | RSS bbc_world: fetched 39 entries
+2026-03-24T14:00:02.190166-0400 | INFO | news_collector:68 | RSS total: 46 keyword-matched articles
+2026-03-24T14:00:02.278491-0400 | DEBUG | news_collector:64 | RSS bbc_world: fetched 39 entries
+2026-03-24T14:00:02.278491-0400 | INFO | news_collector:68 | RSS total: 46 keyword-matched articles
+2026-03-24T14:00:16.007901-0400 | WARNING | news_collector:111 | GDELT fetch failed: 429 Client Error: Too Many Requests for url: https://api.gdeltproject.org/api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc
+2026-03-24T14:00:16.035912-0400 | INFO | news_collector:224 | Dedup: removed 3 duplicates, 43 unique remain
+2026-03-24T14:00:16.039911-0400 | DEBUG | news_collector:325 | DB dedup: skipped 36 already-stored articles
+2026-03-24T14:00:16.152272-0400 | INFO | news_collector:397 | Stored 7 new articles in geopolitical_events
+2026-03-24T14:00:16.156226-0400 | ERROR | geopolitical_agent:225 | Event classification failed: [Errno 2] No such file or directory
+2026-03-24T14:00:16.156226-0400 | ERROR | news_collector:405 | Classification failed (events stored unclassified): [Errno 2] No such file or directory
+2026-03-24T14:00:16.159253-0400 | INFO | scheduler:35 | Job [news] completed in 16.1s — 7 articles
+2026-03-24T14:00:17.140787-0400 | INFO | main:36 | === Oil Super Spike Analyzer starting ===
+2026-03-24T14:00:17.140787-0400 | INFO | main:39 | Initializing database...
+2026-03-24T14:00:17.286443-0400 | WARNING | news_collector:111 | GDELT fetch failed: 429 Client Error: Too Many Requests for url: https://api.gdeltproject.org/api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc
+2026-03-24T14:00:17.319455-0400 | INFO | news_collector:224 | Dedup: removed 3 duplicates, 43 unique remain
+2026-03-24T14:00:17.323453-0400 | DEBUG | news_collector:325 | DB dedup: skipped 43 already-stored articles
+2026-03-24T14:00:17.323453-0400 | INFO | news_collector:370 | All articles already in DB
+2026-03-24T14:00:17.324457-0400 | INFO | scheduler:35 | Job [news] completed in 17.3s — 0 articles
+2026-03-24T14:00:17.718608-0400 | INFO | main:42 | Database ready.
+2026-03-24T14:00:17.718608-0400 | INFO | main:72 | Launching Dash application...
+2026-03-24T14:15:00.004847-0400 | INFO | scheduler:31 | Job [military] started
+2026-03-24T14:15:00.004847-0400 | INFO | scheduler:31 | Job [military] started
+2026-03-24T14:15:00.006849-0400 | INFO | military_collector:39 | No military events to process for 2026-03-24
+2026-03-24T14:15:00.006849-0400 | INFO | military_collector:39 | No military events to process for 2026-03-24
+2026-03-24T14:15:00.084846-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-03-17%7C2026-03-24&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-03-24T14:15:00.084846-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-03-17%7C2026-03-24&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-03-24T14:15:00.086883-0400 | ERROR | scheduler:38 | Job [military] failed after 0.1s: [Errno 2] No such file or directory
+2026-03-24T14:15:00.086883-0400 | ERROR | scheduler:38 | Job [military] failed after 0.1s: [Errno 2] No such file or directory
+2026-03-24T16:00:00.015385-0400 | INFO | scheduler:31 | Job [news] started
+2026-03-24T16:00:00.015385-0400 | INFO | scheduler:31 | Job [news] started
+2026-03-24T16:00:00.920980-0400 | DEBUG | news_collector:64 | RSS google_news: fetched 100 entries
+2026-03-24T16:00:00.939980-0400 | DEBUG | news_collector:64 | RSS google_news: fetched 100 entries
+2026-03-24T16:00:01.008144-0400 | DEBUG | news_collector:64 | RSS reuters_world: fetched 0 entries
+2026-03-24T16:00:01.008144-0400 | DEBUG | news_collector:64 | RSS reuters_world: fetched 0 entries
+2026-03-24T16:00:01.023162-0400 | DEBUG | news_collector:64 | RSS reuters_commodities: fetched 0 entries
+2026-03-24T16:00:01.026156-0400 | DEBUG | news_collector:64 | RSS reuters_commodities: fetched 0 entries
+2026-03-24T16:00:01.699987-0400 | DEBUG | news_collector:64 | RSS oilprice: fetched 15 entries
+2026-03-24T16:00:02.030290-0400 | DEBUG | news_collector:64 | RSS aljazeera: fetched 25 entries
+2026-03-24T16:00:02.485984-0400 | DEBUG | news_collector:64 | RSS bbc_world: fetched 39 entries
+2026-03-24T16:00:02.486986-0400 | INFO | news_collector:68 | RSS total: 48 keyword-matched articles
+2026-03-24T16:00:02.511586-0400 | DEBUG | news_collector:64 | RSS oilprice: fetched 15 entries
+2026-03-24T16:00:02.784105-0400 | DEBUG | news_collector:64 | RSS aljazeera: fetched 25 entries
+2026-03-24T16:00:03.174446-0400 | DEBUG | news_collector:64 | RSS bbc_world: fetched 39 entries
+2026-03-24T16:00:03.174446-0400 | INFO | news_collector:68 | RSS total: 48 keyword-matched articles
+2026-03-24T16:00:14.896821-0400 | WARNING | news_collector:111 | GDELT fetch failed: 429 Client Error: Too Many Requests for url: https://api.gdeltproject.org/api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc
+2026-03-24T16:00:14.928758-0400 | INFO | news_collector:224 | Dedup: removed 5 duplicates, 43 unique remain
+2026-03-24T16:00:14.932770-0400 | DEBUG | news_collector:325 | DB dedup: skipped 36 already-stored articles
+2026-03-24T16:00:15.028699-0400 | WARNING | news_collector:111 | GDELT fetch failed: 429 Client Error: Too Many Requests for url: https://api.gdeltproject.org/api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc
+2026-03-24T16:00:15.041763-0400 | INFO | news_collector:397 | Stored 7 new articles in geopolitical_events
+2026-03-24T16:00:15.048827-0400 | ERROR | geopolitical_agent:225 | Event classification failed: [Errno 2] No such file or directory
+2026-03-24T16:00:15.049823-0400 | ERROR | news_collector:405 | Classification failed (events stored unclassified): [Errno 2] No such file or directory
+2026-03-24T16:00:15.085409-0400 | INFO | news_collector:224 | Dedup: removed 5 duplicates, 43 unique remain
+2026-03-24T16:00:15.088414-0400 | DEBUG | news_collector:325 | DB dedup: skipped 43 already-stored articles
+2026-03-24T16:00:15.088414-0400 | INFO | news_collector:370 | All articles already in DB
+2026-03-24T16:00:15.088414-0400 | INFO | scheduler:35 | Job [news] completed in 15.1s — 0 articles
+2026-03-24T16:00:15.246542-0400 | INFO | scheduler:35 | Job [news] completed in 15.2s — 7 articles
+2026-03-24T16:00:17.892740-0400 | INFO | main:36 | === Oil Super Spike Analyzer starting ===
+2026-03-24T16:00:17.893742-0400 | INFO | main:39 | Initializing database...
+2026-03-24T16:00:18.988124-0400 | INFO | main:42 | Database ready.
+2026-03-24T16:00:18.988124-0400 | INFO | main:72 | Launching Dash application...
+2026-03-24T16:15:00.004318-0400 | INFO | scheduler:31 | Job [market_settlement] started
+2026-03-24T16:15:00.004318-0400 | INFO | scheduler:31 | Job [market_settlement] started
+2026-03-24T16:15:00.004318-0400 | INFO | scheduler:31 | Job [military] started
+2026-03-24T16:15:00.004318-0400 | INFO | scheduler:31 | Job [military] started
+2026-03-24T16:15:00.007320-0400 | INFO | military_collector:39 | No military events to process for 2026-03-24
+2026-03-24T16:15:00.007320-0400 | INFO | military_collector:39 | No military events to process for 2026-03-24
+2026-03-24T16:15:00.017682-0400 | ERROR | scheduler:63 | Futures collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_2'.
+2026-03-24T16:15:00.018697-0400 | ERROR | scheduler:63 | Futures collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_2'.
+2026-03-24T16:15:00.024690-0400 | ERROR | scheduler:70 | Options collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_2'.
+2026-03-24T16:15:00.025692-0400 | INFO | scheduler:35 | Job [market_settlement] completed in 0.0s — {'futures': "There is no current event loop in thread 'ThreadPoolExecutor-0_2'.", 'options': "There is no current event loop in thread 'ThreadPoolExecutor-0_2'."}
+2026-03-24T16:15:00.025692-0400 | ERROR | scheduler:70 | Options collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_2'.
+2026-03-24T16:15:00.026852-0400 | INFO | scheduler:35 | Job [market_settlement] completed in 0.0s — {'futures': "There is no current event loop in thread 'ThreadPoolExecutor-0_2'.", 'options': "There is no current event loop in thread 'ThreadPoolExecutor-0_2'."}
+2026-03-24T16:15:00.092528-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-03-17%7C2026-03-24&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-03-24T16:15:00.092528-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-03-17%7C2026-03-24&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-03-24T16:15:00.093528-0400 | ERROR | scheduler:38 | Job [military] failed after 0.1s: [Errno 2] No such file or directory
+2026-03-24T16:15:00.093528-0400 | ERROR | scheduler:38 | Job [military] failed after 0.1s: [Errno 2] No such file or directory
+2026-03-24T17:00:00.007472-0400 | INFO | scheduler:31 | Job [summary_evening] started
+2026-03-24T17:00:00.007472-0400 | INFO | scheduler:31 | Job [summary_evening] started
+2026-03-24T17:00:00.011470-0400 | ERROR | scheduler:38 | Job [summary_evening] failed after 0.0s: [Errno 2] No such file or directory
+2026-03-24T17:00:00.011470-0400 | ERROR | scheduler:38 | Job [summary_evening] failed after 0.0s: [Errno 2] No such file or directory
+2026-03-24T17:30:00.173514-0400 | INFO | scheduler:31 | Job [scenario] started
+2026-03-24T17:30:00.173514-0400 | INFO | scheduler:31 | Job [scenario] started
+2026-03-24T17:30:00.175549-0400 | ERROR | scheduler:38 | Job [scenario] failed after 0.0s: [Errno 2] No such file or directory
+2026-03-24T17:30:00.175549-0400 | ERROR | scheduler:38 | Job [scenario] failed after 0.0s: [Errno 2] No such file or directory
+2026-03-24T17:30:02.061171-0400 | INFO | main:36 | === Oil Super Spike Analyzer starting ===
+2026-03-24T17:30:02.062171-0400 | INFO | main:39 | Initializing database...
+2026-03-24T17:30:02.565387-0400 | INFO | main:42 | Database ready.
+2026-03-24T17:30:02.565387-0400 | INFO | main:72 | Launching Dash application...
+2026-03-24T17:45:00.070212-0400 | INFO | scheduler:31 | Job [trade] started
+2026-03-24T17:45:00.070212-0400 | INFO | scheduler:31 | Job [trade] started
+2026-03-24T17:45:00.070212-0400 | INFO | trade_recommender:31 | Computing scenario edges for 2026-03-24
+2026-03-24T17:45:00.070212-0400 | INFO | trade_recommender:31 | Computing scenario edges for 2026-03-24
+2026-03-24T17:45:00.084248-0400 | WARNING | mispricing:40 | No futures price for BZ on 2026-03-24
+2026-03-24T17:45:00.085252-0400 | INFO | mispricing:114 | Scenario edges computed:
+2026-03-24T17:45:00.086230-0400 | DEBUG | mispricing:117 |   Super Spike: AI=16.7% Mkt=16.7% Edge=+0.0% (fair)
+2026-03-24T17:45:00.086230-0400 | DEBUG | mispricing:117 |   Major Disruption: AI=16.7% Mkt=16.7% Edge=+0.0% (fair)
+2026-03-24T17:45:00.086230-0400 | DEBUG | mispricing:117 |   Moderate Escalation: AI=16.7% Mkt=16.7% Edge=+0.0% (fair)
+2026-03-24T17:45:00.086230-0400 | DEBUG | mispricing:117 |   Current State: AI=16.7% Mkt=16.7% Edge=+0.0% (fair)
+2026-03-24T17:45:00.086230-0400 | DEBUG | mispricing:117 |   De-escalation: AI=16.7% Mkt=16.7% Edge=+0.0% (fair)
+2026-03-24T17:45:00.086230-0400 | DEBUG | mispricing:117 |   Resolution: AI=16.7% Mkt=16.7% Edge=+0.0% (fair)
+2026-03-24T17:45:00.086230-0400 | INFO | trade_recommender:35 | Running trading agent for 2026-03-24
+2026-03-24T17:45:00.088248-0400 | ERROR | scheduler:38 | Job [trade] failed after 0.0s: [Errno 2] No such file or directory
+2026-03-24T17:45:00.431013-0400 | WARNING | mispricing:40 | No futures price for BZ on 2026-03-24
+2026-03-24T17:45:00.432001-0400 | INFO | mispricing:114 | Scenario edges computed:
+2026-03-24T17:45:00.432968-0400 | DEBUG | mispricing:117 |   Super Spike: AI=16.7% Mkt=16.7% Edge=+0.0% (fair)
+2026-03-24T17:45:00.432968-0400 | DEBUG | mispricing:117 |   Major Disruption: AI=16.7% Mkt=16.7% Edge=+0.0% (fair)
+2026-03-24T17:45:00.432968-0400 | DEBUG | mispricing:117 |   Moderate Escalation: AI=16.7% Mkt=16.7% Edge=+0.0% (fair)
+2026-03-24T17:45:00.432968-0400 | DEBUG | mispricing:117 |   Current State: AI=16.7% Mkt=16.7% Edge=+0.0% (fair)
+2026-03-24T17:45:00.432968-0400 | DEBUG | mispricing:117 |   De-escalation: AI=16.7% Mkt=16.7% Edge=+0.0% (fair)
+2026-03-24T17:45:00.432968-0400 | DEBUG | mispricing:117 |   Resolution: AI=16.7% Mkt=16.7% Edge=+0.0% (fair)
+2026-03-24T17:45:00.434009-0400 | INFO | trade_recommender:35 | Running trading agent for 2026-03-24
+2026-03-24T17:45:00.435014-0400 | ERROR | scheduler:38 | Job [trade] failed after 0.4s: [Errno 2] No such file or directory
+2026-03-24T18:00:00.063572-0400 | INFO | scheduler:31 | Job [news] started
+2026-03-24T18:00:00.063572-0400 | INFO | scheduler:31 | Job [news] started
+2026-03-24T18:00:00.063572-0400 | INFO | scheduler:31 | Job [pnl] started
+2026-03-24T18:00:00.065080-0400 | INFO | scheduler:31 | Job [pnl] started
+2026-03-24T18:00:00.088088-0400 | INFO | pnl_projector:89 | No open positions to project
+2026-03-24T18:00:00.088088-0400 | INFO | pnl_projector:89 | No open positions to project
+2026-03-24T18:00:00.093093-0400 | INFO | scheduler:35 | Job [pnl] completed in 0.0s — 0 positions projected
+2026-03-24T18:00:00.097094-0400 | INFO | scheduler:35 | Job [pnl] completed in 0.0s — 0 positions projected
+2026-03-24T18:00:01.049342-0400 | DEBUG | news_collector:64 | RSS google_news: fetched 100 entries
+2026-03-24T18:00:01.076369-0400 | DEBUG | news_collector:64 | RSS google_news: fetched 100 entries
+2026-03-24T18:00:01.164417-0400 | DEBUG | news_collector:64 | RSS reuters_world: fetched 0 entries
+2026-03-24T18:00:01.206022-0400 | DEBUG | news_collector:64 | RSS reuters_commodities: fetched 0 entries
+2026-03-24T18:00:01.208022-0400 | DEBUG | news_collector:64 | RSS reuters_commodities: fetched 0 entries
+2026-03-24T18:00:01.999812-0400 | DEBUG | news_collector:64 | RSS oilprice: fetched 15 entries
+2026-03-24T18:00:01.999812-0400 | DEBUG | news_collector:64 | RSS oilprice: fetched 15 entries
+2026-03-24T18:00:02.177577-0400 | DEBUG | news_collector:64 | RSS aljazeera: fetched 25 entries
+2026-03-24T18:00:02.180615-0400 | DEBUG | news_collector:64 | RSS aljazeera: fetched 25 entries
+2026-03-24T18:00:02.479552-0400 | DEBUG | news_collector:64 | RSS bbc_world: fetched 40 entries
+2026-03-24T18:00:02.479552-0400 | INFO | news_collector:68 | RSS total: 46 keyword-matched articles
+2026-03-24T18:00:02.481567-0400 | DEBUG | news_collector:64 | RSS bbc_world: fetched 40 entries
+2026-03-24T18:00:02.481567-0400 | INFO | news_collector:68 | RSS total: 46 keyword-matched articles
+2026-03-24T18:00:13.716956-0400 | WARNING | news_collector:111 | GDELT fetch failed: 429 Client Error: Too Many Requests for url: https://api.gdeltproject.org/api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc
+2026-03-24T18:00:13.729954-0400 | WARNING | news_collector:111 | GDELT fetch failed: 429 Client Error: Too Many Requests for url: https://api.gdeltproject.org/api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc
+2026-03-24T18:00:13.737954-0400 | INFO | news_collector:224 | Dedup: removed 7 duplicates, 39 unique remain
+2026-03-24T18:00:13.741961-0400 | DEBUG | news_collector:325 | DB dedup: skipped 36 already-stored articles
+2026-03-24T18:00:13.756956-0400 | INFO | news_collector:224 | Dedup: removed 7 duplicates, 39 unique remain
+2026-03-24T18:00:13.762966-0400 | DEBUG | news_collector:325 | DB dedup: skipped 36 already-stored articles
+2026-03-24T18:00:13.786000-0400 | INFO | news_collector:397 | Stored 3 new articles in geopolitical_events
+2026-03-24T18:00:13.788969-0400 | ERROR | geopolitical_agent:225 | Event classification failed: [Errno 2] No such file or directory
+2026-03-24T18:00:13.788969-0400 | ERROR | news_collector:405 | Classification failed (events stored unclassified): [Errno 2] No such file or directory
+2026-03-24T18:00:13.790961-0400 | INFO | scheduler:35 | Job [news] completed in 13.7s — 3 articles
+2026-03-24T18:00:13.816261-0400 | INFO | news_collector:397 | Stored 3 new articles in geopolitical_events
+2026-03-24T18:00:13.820261-0400 | ERROR | geopolitical_agent:225 | Event classification failed: [Errno 2] No such file or directory
+2026-03-24T18:00:13.821262-0400 | ERROR | news_collector:405 | Classification failed (events stored unclassified): [Errno 2] No such file or directory
+2026-03-24T18:00:13.824272-0400 | INFO | scheduler:35 | Job [news] completed in 13.8s — 3 articles
+2026-03-24T18:15:00.046216-0400 | INFO | scheduler:31 | Job [military] started
+2026-03-24T18:15:00.046216-0400 | INFO | scheduler:31 | Job [military] started
+2026-03-24T18:15:00.048181-0400 | INFO | military_collector:39 | No military events to process for 2026-03-24
+2026-03-24T18:15:00.049183-0400 | INFO | military_collector:39 | No military events to process for 2026-03-24
+2026-03-24T18:15:00.133002-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-03-17%7C2026-03-24&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-03-24T18:15:00.133002-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-03-17%7C2026-03-24&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-03-24T18:15:00.134026-0400 | ERROR | scheduler:38 | Job [military] failed after 0.1s: [Errno 2] No such file or directory
+2026-03-24T18:15:00.134026-0400 | ERROR | scheduler:38 | Job [military] failed after 0.1s: [Errno 2] No such file or directory
+2026-03-24T20:00:00.130541-0400 | INFO | scheduler:31 | Job [news] started
+2026-03-24T20:00:00.130541-0400 | INFO | scheduler:31 | Job [news] started
+2026-03-24T20:00:01.176862-0400 | DEBUG | news_collector:64 | RSS google_news: fetched 100 entries
+2026-03-24T20:00:01.186864-0400 | DEBUG | news_collector:64 | RSS google_news: fetched 100 entries
+2026-03-24T20:00:01.298438-0400 | DEBUG | news_collector:64 | RSS reuters_world: fetched 0 entries
+2026-03-24T20:00:01.315584-0400 | DEBUG | news_collector:64 | RSS reuters_commodities: fetched 0 entries
+2026-03-24T20:00:01.324612-0400 | DEBUG | news_collector:64 | RSS reuters_commodities: fetched 0 entries
+2026-03-24T20:00:02.070697-0400 | DEBUG | news_collector:64 | RSS oilprice: fetched 15 entries
+2026-03-24T20:00:02.071698-0400 | DEBUG | news_collector:64 | RSS oilprice: fetched 15 entries
+2026-03-24T20:00:02.347178-0400 | DEBUG | news_collector:64 | RSS aljazeera: fetched 25 entries
+2026-03-24T20:00:02.379179-0400 | DEBUG | news_collector:64 | RSS aljazeera: fetched 25 entries
+2026-03-24T20:00:02.832333-0400 | DEBUG | news_collector:64 | RSS bbc_world: fetched 40 entries
+2026-03-24T20:00:02.833332-0400 | INFO | news_collector:68 | RSS total: 44 keyword-matched articles
+2026-03-24T20:00:02.896191-0400 | DEBUG | news_collector:64 | RSS bbc_world: fetched 40 entries
+2026-03-24T20:00:02.896191-0400 | INFO | news_collector:68 | RSS total: 44 keyword-matched articles
+2026-03-24T20:00:13.636399-0400 | WARNING | news_collector:111 | GDELT fetch failed: 429 Client Error: Too Many Requests for url: https://api.gdeltproject.org/api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc
+2026-03-24T20:00:13.789490-0400 | INFO | news_collector:224 | Dedup: removed 5 duplicates, 39 unique remain
+2026-03-24T20:00:13.795522-0400 | DEBUG | news_collector:325 | DB dedup: skipped 34 already-stored articles
+2026-03-24T20:00:13.830993-0400 | INFO | news_collector:397 | Stored 5 new articles in geopolitical_events
+2026-03-24T20:00:13.834035-0400 | ERROR | geopolitical_agent:225 | Event classification failed: [Errno 2] No such file or directory
+2026-03-24T20:00:13.835002-0400 | ERROR | news_collector:405 | Classification failed (events stored unclassified): [Errno 2] No such file or directory
+2026-03-24T20:00:13.837000-0400 | INFO | scheduler:35 | Job [news] completed in 13.7s — 5 articles
+2026-03-24T20:00:15.640157-0400 | INFO | main:36 | === Oil Super Spike Analyzer starting ===
+2026-03-24T20:00:15.640157-0400 | INFO | main:39 | Initializing database...
+2026-03-24T20:00:16.260552-0400 | INFO | main:42 | Database ready.
+2026-03-24T20:00:16.260552-0400 | INFO | main:72 | Launching Dash application...
+2026-03-24T20:00:27.131690-0400 | WARNING | news_collector:111 | GDELT fetch failed: 429 Client Error: Too Many Requests for url: https://api.gdeltproject.org/api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc
+2026-03-24T20:00:27.148654-0400 | INFO | news_collector:224 | Dedup: removed 5 duplicates, 39 unique remain
+2026-03-24T20:00:27.154690-0400 | DEBUG | news_collector:325 | DB dedup: skipped 39 already-stored articles
+2026-03-24T20:00:27.154690-0400 | INFO | news_collector:370 | All articles already in DB
+2026-03-24T20:00:27.155699-0400 | INFO | scheduler:35 | Job [news] completed in 27.0s — 0 articles
+2026-03-24T20:15:00.011089-0400 | INFO | scheduler:31 | Job [military] started
+2026-03-24T20:15:00.011089-0400 | INFO | scheduler:31 | Job [military] started
+2026-03-24T20:15:00.013095-0400 | INFO | military_collector:39 | No military events to process for 2026-03-24
+2026-03-24T20:15:00.014086-0400 | INFO | military_collector:39 | No military events to process for 2026-03-24
+2026-03-24T20:15:00.097085-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-03-17%7C2026-03-24&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-03-24T20:15:00.097085-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-03-17%7C2026-03-24&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-03-24T20:15:00.098092-0400 | ERROR | scheduler:38 | Job [military] failed after 0.1s: [Errno 2] No such file or directory
+2026-03-24T20:15:00.098092-0400 | ERROR | scheduler:38 | Job [military] failed after 0.1s: [Errno 2] No such file or directory
+2026-03-25T10:00:00.121502-0400 | INFO | scheduler:31 | Job [market_morning] started
+2026-03-25T10:00:00.139483-0400 | INFO | scheduler:31 | Job [news] started
+2026-03-25T10:00:00.176101-0400 | INFO | scheduler:31 | Job [news] started
+2026-03-25T10:00:00.100997-0400 | INFO | scheduler:31 | Job [market_morning] started
+2026-03-25T10:00:01.028243-0400 | ERROR | scheduler:63 | Futures collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_1'.
+2026-03-25T10:00:01.067908-0400 | ERROR | scheduler:70 | Options collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_1'.
+2026-03-25T10:00:01.068910-0400 | INFO | scheduler:35 | Job [market_morning] completed in 0.9s — {'futures': "There is no current event loop in thread 'ThreadPoolExecutor-0_1'.", 'options': "There is no current event loop in thread 'ThreadPoolExecutor-0_1'."}
+2026-03-25T10:00:01.109240-0400 | ERROR | scheduler:63 | Futures collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_2'.
+2026-03-25T10:00:01.118239-0400 | ERROR | scheduler:70 | Options collection failed: There is no current event loop in thread 'ThreadPoolExecutor-0_2'.
+2026-03-25T10:00:01.118239-0400 | INFO | scheduler:35 | Job [market_morning] completed in 1.0s — {'futures': "There is no current event loop in thread 'ThreadPoolExecutor-0_2'.", 'options': "There is no current event loop in thread 'ThreadPoolExecutor-0_2'."}
+2026-03-25T10:00:01.621607-0400 | DEBUG | news_collector:64 | RSS google_news: fetched 100 entries
+2026-03-25T10:00:01.623609-0400 | DEBUG | news_collector:64 | RSS google_news: fetched 100 entries
+2026-03-25T10:00:01.777168-0400 | DEBUG | news_collector:64 | RSS reuters_world: fetched 0 entries
+2026-03-25T10:00:01.798175-0400 | DEBUG | news_collector:64 | RSS reuters_commodities: fetched 0 entries
+2026-03-25T10:00:01.842222-0400 | DEBUG | news_collector:64 | RSS reuters_commodities: fetched 0 entries
+2026-03-25T10:00:02.576683-0400 | DEBUG | news_collector:64 | RSS oilprice: fetched 15 entries
+2026-03-25T10:00:02.638824-0400 | DEBUG | news_collector:64 | RSS oilprice: fetched 15 entries
+2026-03-25T10:00:02.931117-0400 | DEBUG | news_collector:64 | RSS aljazeera: fetched 25 entries
+2026-03-25T10:00:02.941623-0400 | DEBUG | news_collector:64 | RSS aljazeera: fetched 25 entries
+2026-03-25T10:00:03.492271-0400 | DEBUG | news_collector:64 | RSS bbc_world: fetched 44 entries
+2026-03-25T10:00:03.492271-0400 | INFO | news_collector:68 | RSS total: 45 keyword-matched articles
+2026-03-25T10:00:03.496281-0400 | DEBUG | news_collector:64 | RSS bbc_world: fetched 44 entries
+2026-03-25T10:00:03.496281-0400 | INFO | news_collector:68 | RSS total: 45 keyword-matched articles
+2026-03-25T10:00:18.427668-0400 | WARNING | news_collector:111 | GDELT fetch failed: Expecting value: line 1 column 1 (char 0)
+2026-03-25T10:00:18.497691-0400 | WARNING | news_collector:111 | GDELT fetch failed: 429 Client Error: Too Many Requests for url: https://api.gdeltproject.org/api/v2/doc/doc?query=Iran+war+OR+Hormuz+OR+oil+infrastructure+OR+IRGC&mode=ArtList&maxrecords=75&timespan=2h&format=json&sort=DateDesc
+2026-03-25T10:00:18.517635-0400 | INFO | news_collector:224 | Dedup: removed 6 duplicates, 39 unique remain
+2026-03-25T10:00:18.587118-0400 | DEBUG | news_collector:325 | DB dedup: skipped 25 already-stored articles
+2026-03-25T10:00:18.704017-0400 | INFO | news_collector:224 | Dedup: removed 6 duplicates, 39 unique remain
+2026-03-25T10:00:18.779953-0400 | DEBUG | news_collector:325 | DB dedup: skipped 25 already-stored articles
+2026-03-25T10:00:18.910246-0400 | INFO | news_collector:397 | Stored 14 new articles in geopolitical_events
+2026-03-25T10:00:18.996089-0400 | ERROR | geopolitical_agent:225 | Event classification failed: [Errno 2] No such file or directory
+2026-03-25T10:00:18.997063-0400 | ERROR | news_collector:405 | Classification failed (events stored unclassified): [Errno 2] No such file or directory
+2026-03-25T10:00:19.439262-0400 | INFO | news_collector:397 | Stored 14 new articles in geopolitical_events
+2026-03-25T10:00:19.611913-0400 | ERROR | geopolitical_agent:225 | Event classification failed: [Errno 2] No such file or directory
+2026-03-25T10:00:19.611913-0400 | ERROR | news_collector:405 | Classification failed (events stored unclassified): [Errno 2] No such file or directory
+2026-03-25T10:00:24.925248-0400 | INFO | scheduler:35 | Job [news] completed in 24.7s — 14 articles
+2026-03-25T10:00:24.965914-0400 | INFO | scheduler:35 | Job [news] completed in 24.8s — 14 articles
+2026-03-25T10:15:00.022107-0400 | INFO | scheduler:31 | Job [military] started
+2026-03-25T10:15:00.012865-0400 | INFO | scheduler:31 | Job [military] started
+2026-03-25T10:15:00.076662-0400 | INFO | military_collector:39 | No military events to process for 2026-03-25
+2026-03-25T10:15:00.154565-0400 | INFO | military_collector:39 | No military events to process for 2026-03-25
+2026-03-25T10:15:00.414025-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-03-18%7C2026-03-25&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-03-25T10:15:00.414025-0400 | WARNING | military_collector:175 | ACLED fetch failed (may require API key): HTTPSConnectionPool(host='api.acleddata.com', port=443): Max retries exceeded with url: /acled/read?event_date=2026-03-18%7C2026-03-25&event_date_where=BETWEEN&region=11&limit=500 (Caused by NameResolutionError("HTTPSConnection(host='api.acleddata.com', port=443): Failed to resolve 'api.acleddata.com' ([Errno 11001] getaddrinfo failed)"))
+2026-03-25T10:15:00.416041-0400 | ERROR | scheduler:38 | Job [military] failed after 0.4s: [Errno 2] No such file or directory
+2026-03-25T10:15:00.429447-0400 | ERROR | scheduler:38 | Job [military] failed after 0.4s: [Errno 2] No such file or directory

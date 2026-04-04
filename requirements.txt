@@ -1,0 +1,39 @@
+# Broker & Market Data
+ib_insync>=0.9.86
+yfinance>=0.2.36
+fredapi>=0.5.2
+
+# Web UI
+dash>=2.17
+dash-bootstrap-components>=1.6
+dash-leaflet>=1.0
+plotly>=5.22
+
+# AI / LLM
+anthropic>=0.42
+openai>=1.30
+
+# Data & Analysis
+pandas>=2.2
+numpy>=1.26
+scipy>=1.13
+py_vollib>=1.0
+
+# Database
+sqlalchemy>=2.0
+alembic>=1.13
+
+# News & Web
+requests>=2.32
+feedparser>=6.0
+beautifulsoup4>=4.12
+newsapi-python>=0.2.7
+
+# Scheduling
+apscheduler>=3.10
+
+# Utilities
+python-dotenv>=1.0
+loguru>=0.7
+thefuzz>=0.22
+pytz>=2024.1
