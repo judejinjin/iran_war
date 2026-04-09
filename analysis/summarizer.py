@@ -13,7 +13,7 @@ from db.database import (
     get_session, GeopoliticalEvent, DailySummary,
     MilitaryEvent, MilitaryDeployment, MilitaryDailySummary,
 )
-from agents.llm_client import get_llm_client
+from agents.llm_client import get_llm_client, extract_json
 
 
 GEO_SUMMARY_SYSTEM = """You are an expert geopolitical analyst summarizing the day's events related to the Iran conflict and oil markets.
@@ -97,10 +97,7 @@ Produce the daily summary."""
 
             try:
                 response = client.simple_prompt(GEO_SUMMARY_SYSTEM, prompt)
-                text = response.strip()
-                if text.startswith("```"):
-                    text = text.split("\n", 1)[-1].rsplit("```", 1)[0]
-                result = json.loads(text)
+                result = extract_json(response)
 
                 # Upsert daily summary
                 existing = session.query(DailySummary).filter(
@@ -208,10 +205,7 @@ Produce the military daily summary."""
 
             try:
                 response = client.simple_prompt(MILITARY_SUMMARY_SYSTEM, prompt)
-                text = response.strip()
-                if text.startswith("```"):
-                    text = text.split("\n", 1)[-1].rsplit("```", 1)[0]
-                result = json.loads(text)
+                result = extract_json(response)
 
                 # Compute cumulative losses from previous day
                 prev_summary = session.query(MilitaryDailySummary).filter(

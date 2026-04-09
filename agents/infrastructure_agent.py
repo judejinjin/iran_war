@@ -15,7 +15,7 @@ from db.database import (
     CountryProduction, DisruptionEvent, HormuzStatus, ChokepointStatus,
     RegionSupplySummary,
 )
-from agents.llm_client import get_llm_client
+from agents.llm_client import get_llm_client, extract_json
 
 # Country baselines for rollup
 _BASELINES = {
@@ -142,14 +142,8 @@ def extract_disruption_from_event(event_id: int) -> dict | None:
 
         # Parse JSON response
         try:
-            # Strip markdown code fences if present
-            text = response.strip()
-            if text.startswith("```"):
-                text = text.split("\n", 1)[1] if "\n" in text else text[3:]
-                if text.endswith("```"):
-                    text = text[:-3]
-            data = json.loads(text)
-        except json.JSONDecodeError:
+            data = extract_json(response)
+        except ValueError:
             logger.warning(f"Failed to parse LLM response for event {event_id}: {response[:200]}")
             return None
 

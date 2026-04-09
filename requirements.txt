@@ -12,6 +12,7 @@ plotly>=5.22
 # AI / LLM
 anthropic>=0.42
 openai>=1.30
+github-copilot-sdk>=0.2.0
 
 # Data & Analysis
 pandas>=2.2

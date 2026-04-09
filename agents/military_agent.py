@@ -8,7 +8,7 @@ equipment, deployments, coordinates from military news.
 import json
 from loguru import logger
 
-from agents.llm_client import get_llm_client
+from agents.llm_client import get_llm_client, extract_json
 
 
 MILITARY_SYSTEM = """You are a military intelligence analyst. Given news articles about the Iran conflict, extract structured military data.
@@ -78,13 +78,7 @@ def extract_military_data(articles: list[dict]) -> list[dict]:
 
     try:
         response = client.simple_prompt(MILITARY_SYSTEM, prompt)
-        text = response.strip()
-
-        # Handle markdown code blocks
-        if text.startswith("```"):
-            text = text.split("\n", 1)[-1].rsplit("```", 1)[0]
-
-        results = json.loads(text)
+        results = extract_json(response)
         if not isinstance(results, list):
             results = [results]
 

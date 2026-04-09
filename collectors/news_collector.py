@@ -5,6 +5,7 @@ Orchestrates: fetch all sources → deduplicate → store → classify via geopo
 """
 
 import hashlib
+import json
 import re
 import time
 from datetime import datetime, timedelta, date
@@ -121,7 +122,7 @@ def fetch_gdelt_articles(
     return articles
 
 
-def fetch_gdelt_for_date(target_date: date, max_records: int = 250, max_retries: int = 3) -> list[dict]:
+def fetch_gdelt_for_date(target_date: date, max_records: int = 250, max_retries: int = 5) -> list[dict]:
     """Fetch GDELT articles for a specific historical date (for backfill).
     Retries with exponential backoff on 429 / empty responses.
     Returns None if all retries exhausted, [] if no articles for this day."""
@@ -142,15 +143,42 @@ def fetch_gdelt_for_date(target_date: date, max_records: int = 250, max_retries:
 
     articles = []
     for attempt in range(max_retries):
+        # Always wait before each attempt — GDELT enforces "one request per 5s"
+        # and aggressive callers get IP-banned for minutes.
+        if attempt == 0:
+            time.sleep(GDELT_RATE_LIMIT_SECONDS)   # 10s pre-delay on first try
+        else:
+            wait = GDELT_RATE_LIMIT_SECONDS * (2 ** attempt)  # 20, 40, 80, 160s
+            logger.info(f"GDELT retry {attempt+1}/{max_retries} for {target_date} in {wait}s")
+            time.sleep(wait)
+
         try:
-            resp = requests.get(GDELT_DOC_API, params=params, timeout=30)
+            resp = requests.get(GDELT_DOC_API, params=params, timeout=60)
             if resp.status_code == 429:
-                wait = 5 * (2 ** attempt)  # 5, 10, 20s
-                logger.info(f"GDELT 429 for {target_date}, retry {attempt+1}/{max_retries} in {wait}s")
-                time.sleep(wait)
+                logger.info(f"GDELT 429 for {target_date} (attempt {attempt+1}/{max_retries})")
                 continue
             resp.raise_for_status()
-            data = resp.json()
+
+            # GDELT stealth rate-limit: returns 200 with empty body or HTML error page.
+            body = resp.text.strip()
+            if not body:
+                logger.info(f"GDELT empty response for {target_date} (attempt {attempt+1}/{max_retries})")
+                continue
+
+            # Parse JSON ourselves — resp.json() throws JSONDecodeError which is
+            # a subclass of RequestException in modern `requests`, hiding the real cause.
+            try:
+                data = json.loads(body)
+            except (json.JSONDecodeError, ValueError):
+                logger.info(
+                    f"GDELT non-JSON response for {target_date} (attempt {attempt+1}/{max_retries}): "
+                    f"{body[:120]}"
+                )
+                continue
+
+            if not isinstance(data, dict) or "articles" not in data:
+                logger.info(f"GDELT unexpected payload for {target_date} (attempt {attempt+1}/{max_retries}): {body[:120]}")
+                continue
 
             for art in data.get("articles", []):
                 pub_date = datetime.strptime(
@@ -169,10 +197,8 @@ def fetch_gdelt_for_date(target_date: date, max_records: int = 250, max_retries:
             return articles  # success — exit retry loop
         except requests.exceptions.HTTPError:
             raise  # already handled 429 above; re-raise others
-        except (requests.exceptions.RequestException, ValueError) as e:
-            wait = 5 * (2 ** attempt)
-            logger.info(f"GDELT error for {target_date} ({e}), retry {attempt+1}/{max_retries} in {wait}s")
-            time.sleep(wait)
+        except requests.exceptions.RequestException as e:
+            logger.info(f"GDELT network error for {target_date} ({e}), attempt {attempt+1}/{max_retries}")
 
     logger.warning(f"GDELT backfill {target_date} failed after {max_retries} retries")
     return None  # None = fetch failed; [] = no articles for this day
@@ -248,6 +274,68 @@ def deduplicate_articles(articles: list[dict]) -> list[dict]:
 
 
 # ─── Fallback Fetchers ───────────────────────────────────────────────────────
+
+
+def fetch_newsapi_for_date(
+    target_date: date,
+    query: str = "Iran OR Hormuz OR oil infrastructure OR IRGC OR Houthi OR Red Sea tanker",
+    page_size: int = 100,
+) -> list[dict] | None:
+    """Fetch NewsAPI articles for a specific date (for backfill).
+    Returns list of articles, [] if none found, or None on failure."""
+    if not NEWSAPI_KEY:
+        logger.warning("NewsAPI key not configured")
+        return None
+
+    from_date = target_date.isoformat()
+    to_date = target_date.isoformat()
+
+    try:
+        resp = requests.get(
+            "https://newsapi.org/v2/everything",
+            params={
+                "q": query,
+                "from": from_date,
+                "to": to_date,
+                "pageSize": str(page_size),
+                "sortBy": "publishedAt",
+                "language": "en",
+                "apiKey": NEWSAPI_KEY,
+            },
+            timeout=30,
+        )
+        if resp.status_code == 429:
+            logger.warning(f"NewsAPI 429 rate limit for {target_date}")
+            return None
+        resp.raise_for_status()
+        data = resp.json()
+
+        if data.get("status") != "ok":
+            logger.warning(f"NewsAPI error for {target_date}: {data.get('message', 'unknown')}")
+            return None
+
+        articles = []
+        for art in data.get("articles", []):
+            pub_date = (
+                datetime.fromisoformat(art["publishedAt"].replace("Z", "+00:00")).replace(tzinfo=None)
+                if art.get("publishedAt")
+                else datetime.combine(target_date, datetime.min.time())
+            )
+            articles.append({
+                "headline": _strip_html(art.get("title", "")),
+                "summary": _strip_html(art.get("description", ""))[:500],
+                "source_url": art.get("url", ""),
+                "source": f"newsapi_{art.get('source', {}).get('name', 'unknown')}",
+                "timestamp": pub_date,
+            })
+
+        logger.debug(f"NewsAPI backfill {target_date}: {len(articles)} articles")
+        return articles
+
+    except requests.exceptions.RequestException as e:
+        logger.warning(f"NewsAPI fetch failed for {target_date}: {e}")
+        return None
+
 
 def fetch_newsapi(query: str = "Iran war oil", page_size: int = 20) -> list[dict]:
     """Fallback: NewsAPI.org (requires NEWSAPI_KEY)."""

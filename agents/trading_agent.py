@@ -11,7 +11,7 @@ from loguru import logger
 
 from config import SCENARIOS
 from db.database import get_session, OptionsChain, FuturesCurve
-from agents.llm_client import get_llm_client
+from agents.llm_client import get_llm_client, extract_json
 from analysis.options_analysis import black76_price, black76_greeks
 
 
@@ -292,20 +292,11 @@ Then recommend the top 3-5 trades ranked by expected value / risk ratio."""
         )
 
         # Parse JSON array from response
-        text = response.strip()
-        if text.startswith("```"):
-            text = text.split("\n", 1)[-1].rsplit("```", 1)[0]
-
-        # Find JSON array
-        arr_start = text.find("[")
-        arr_end = text.rfind("]") + 1
-        if arr_start >= 0 and arr_end > arr_start:
-            text = text[arr_start:arr_end]
-            trades = json.loads(text)
+        parsed = extract_json(response)
+        if isinstance(parsed, list):
+            trades = parsed
         else:
-            # Try as object with trades key
-            obj = json.loads(text)
-            trades = obj.get("trades", obj.get("recommendations", []))
+            trades = parsed.get("trades", parsed.get("recommendations", []))
 
         if not isinstance(trades, list):
             trades = [trades]

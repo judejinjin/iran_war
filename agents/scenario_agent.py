@@ -15,7 +15,7 @@ from db.database import (
     get_session, DailySummary, MilitaryDailySummary,
     FuturesCurve, VolSurface, ScenarioProbability,
 )
-from agents.llm_client import get_llm_client
+from agents.llm_client import get_llm_client, extract_json
 
 
 SCENARIO_SYSTEM = """You are an elite geopolitical risk analyst and oil market strategist. 
@@ -272,17 +272,7 @@ Then produce your scenario probability assessment as JSON."""
         )
 
         # Parse JSON from response
-        text = response.strip()
-        if text.startswith("```"):
-            text = text.split("\n", 1)[-1].rsplit("```", 1)[0]
-
-        # Find JSON in response
-        json_start = text.find("{")
-        json_end = text.rfind("}") + 1
-        if json_start >= 0 and json_end > json_start:
-            text = text[json_start:json_end]
-
-        result = json.loads(text)
+        result = extract_json(response)
         return result
 
     except Exception as e:

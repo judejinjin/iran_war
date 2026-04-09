@@ -1,7 +1,7 @@
 """
-GDELT Historical Backfill — Day-by-day fetch from WAR_START_DATE.
+News Backfill — Day-by-day fetch from WAR_START_DATE using NewsAPI.
 
-Fetches GDELT articles for each day, classifies them, extracts military data,
+Fetches articles for each day, classifies them, extracts military data,
 and generates retroactive summaries.
 """
 
@@ -9,25 +9,25 @@ import time
 from datetime import date, datetime, timedelta
 from loguru import logger
 
-from config import WAR_START_DATE, GDELT_RATE_LIMIT_SECONDS
+from config import WAR_START_DATE
 from db.database import get_session, BackfillStatus, GeopoliticalEvent, DisruptionEvent
 from collectors.news_collector import (
-    fetch_gdelt_for_date, deduplicate_articles, extract_article_body,
+    fetch_newsapi_for_date, deduplicate_articles, extract_article_body,
 )
 from agents.geopolitical_agent import classify_batch, _fuzzy_match_facility
 from collectors.military_collector import collect_military_from_events
 from analysis.summarizer import generate_daily_summaries, generate_military_daily_summary
 
+# NewsAPI free tier: 100 req/day — one request per date is fine for 29 days.
+NEWSAPI_BETWEEN_DATES_SLEEP = 2  # seconds between date requests
+
 
 def run_backfill(start_from=None, session=None) -> dict:
     """
-    Backfill GDELT articles from WAR_START_DATE to today.
+    Backfill articles from WAR_START_DATE to today via NewsAPI.
     Processes each day: fetch → dedup → store → classify → military extract → summarize.
-    start_from is accepted for compatibility with BackfillManager but resume
-    logic uses backfill_status.last_backfilled_date internally.
 
     Resumes from last_backfilled_date if interrupted.
-
     Returns: dict with stats.
     """
     close_session = False
@@ -50,33 +50,32 @@ def run_backfill(start_from=None, session=None) -> dict:
             start_date = war_start
 
         if start_date > today:
-            logger.info("GDELT backfill already complete")
+            logger.info("News backfill already complete")
             return {"status": "complete", "days_processed": 0}
 
         total_days = (today - start_date).days + 1
         total_articles = 0
         total_classified = 0
 
-        logger.info(f"GDELT backfill: {start_date} → {today} ({total_days} days)")
+        logger.info(f"News backfill: {start_date} → {today} ({total_days} days)")
 
         current_date = start_date
         consecutive_failures = 0
         while current_date <= today:
             try:
                 # Fetch articles for this day (None = failed, [] = no articles)
-                articles = fetch_gdelt_for_date(current_date)
+                articles = fetch_newsapi_for_date(current_date)
 
                 if articles is None:
-                    # Fetch failed after retries — don't advance date
+                    # Fetch failed — don't advance date
                     consecutive_failures += 1
-                    if consecutive_failures >= 2:
+                    if consecutive_failures >= 3:
                         logger.warning(
-                            f"GDELT backfill: {consecutive_failures} consecutive failures, "
+                            f"News backfill: {consecutive_failures} consecutive failures, "
                             f"stopping at {current_date} (will resume next run)"
                         )
                         break
-                    # Don't advance current_date — wait and retry same day
-                    time.sleep(GDELT_RATE_LIMIT_SECONDS * 3)
+                    time.sleep(10)
                     continue
 
                 consecutive_failures = 0  # reset on success
@@ -206,14 +205,13 @@ def run_backfill(start_from=None, session=None) -> dict:
 
                 days_done = (current_date - start_date).days + 1
                 if days_done % 7 == 0:
-                    logger.info(f"GDELT backfill progress: {days_done}/{total_days} days, {total_articles} articles")
+                    logger.info(f"News backfill progress: {days_done}/{total_days} days, {total_articles} articles")
 
             except Exception as e:
-                logger.error(f"GDELT backfill day {current_date} failed: {e}")
+                logger.error(f"News backfill day {current_date} failed: {e}")
                 session.rollback()
 
-            # Rate limiting
-            time.sleep(GDELT_RATE_LIMIT_SECONDS)
+            time.sleep(NEWSAPI_BETWEEN_DATES_SLEEP)
             current_date += timedelta(days=1)
 
         # Mark complete only if we actually processed all days
@@ -224,7 +222,7 @@ def run_backfill(start_from=None, session=None) -> dict:
             session.commit()
 
         fin = "complete" if all_done else f"partial (stopped at {current_date})"
-        logger.info(f"GDELT backfill {fin}: {total_articles} articles, {total_classified} classified")
+        logger.info(f"News backfill {fin}: {total_articles} articles, {total_classified} classified")
         return {
             "status": "complete" if all_done else "partial",
             "days_processed": total_days,
@@ -233,7 +231,7 @@ def run_backfill(start_from=None, session=None) -> dict:
         }
 
     except Exception as e:
-        logger.error(f"GDELT backfill failed: {e}")
+        logger.error(f"News backfill failed: {e}")
         raise
     finally:
         if close_session:

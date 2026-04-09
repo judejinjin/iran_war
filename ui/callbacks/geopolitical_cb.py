@@ -57,21 +57,21 @@ def update_geopolitical(start_date, end_date, category, _n):
 
         metrics = [
             dbc.Col(dbc.Card(dbc.CardBody([
-                html.H6("Total Events", className="text-muted"),
-                html.H4(str(total)),
-            ])), width=2),
+                html.Small("Total Events", className="text-muted"),
+                html.P(str(total), className="fw-bold mb-0"),
+            ], className="p-2"), className="border-0"), width="auto"),
             dbc.Col(dbc.Card(dbc.CardBody([
-                html.H6("High Severity (7+)", className="text-muted"),
-                html.H4(str(high_sev)),
-            ])), width=2),
+                html.Small("High Sev (7+)", className="text-muted"),
+                html.P(str(high_sev), className="fw-bold mb-0"),
+            ], className="p-2"), className="border-0"), width="auto"),
             dbc.Col(dbc.Card(dbc.CardBody([
-                html.H6("Avg Severity", className="text-muted"),
-                html.H4(f"{avg_sev:.1f}"),
-            ])), width=2),
+                html.Small("Avg Severity", className="text-muted"),
+                html.P(f"{avg_sev:.1f}", className="fw-bold mb-0"),
+            ], className="p-2"), className="border-0"), width="auto"),
             dbc.Col(dbc.Card(dbc.CardBody([
-                html.H6("Supply Impact (mbd)", className="text-muted"),
-                html.H4(f"{total_impact:.2f}"),
-            ])), width=2),
+                html.Small("Impact (mbd)", className="text-muted"),
+                html.P(f"{total_impact:.2f}", className="fw-bold mb-0"),
+            ], className="p-2"), className="border-0"), width="auto"),
         ]
 
         # ─── Events list (master panel) ──────────────────────────────
@@ -109,16 +109,22 @@ def update_geopolitical(start_date, end_date, category, _n):
         summaries = session.query(DailySummary).filter(
             DailySummary.date >= start_date,
             DailySummary.date <= end_date,
-        ).order_by(DailySummary.date.desc()).limit(5).all()
+        ).order_by(DailySummary.date.desc()).limit(30).all()
 
         if summaries:
             summary_content = []
             for s in summaries:
                 summary_content.append(html.Div([
-                    html.H6(f"{s.date} — {s.category.replace('_', ' ').title()}",
-                             className="text-info"),
-                    html.P(_clean(s.summary_text), style={"fontSize": "0.9rem"}),
-                    html.Hr(),
+                    html.Div(
+                        f"{s.date} — {s.category.replace('_', ' ').title()}",
+                        className="text-info fw-bold",
+                        style={"fontSize": "0.85rem"},
+                    ),
+                    html.P(
+                        _clean(s.summary_text),
+                        style={"fontSize": "0.85rem", "marginBottom": "4px"},
+                    ),
+                    html.Hr(style={"margin": "6px 0"}),
                 ]))
             daily_summary = html.Div(summary_content)
         else:

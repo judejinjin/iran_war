@@ -10,11 +10,12 @@ infrastructure extraction) into one call per batch.
 
 import json
 from datetime import datetime, date
+
+from agents.llm_client import get_llm_client, extract_json
 from loguru import logger
 
 from config import EVENT_CATEGORIES
 from db.database import get_session, GeopoliticalEvent, Facility, DisruptionEvent
-from agents.llm_client import get_llm_client
 
 
 CLASSIFICATION_SYSTEM = """You are an expert geopolitical analyst specializing in Middle East conflict and global oil markets. 
@@ -139,14 +140,7 @@ def classify_single_article(headline: str, summary: str,
 
     try:
         response = client.simple_prompt(CLASSIFICATION_SYSTEM, prompt)
-
-        # Parse JSON from response
-        text = response.strip()
-        # Handle markdown code blocks
-        if text.startswith("```"):
-            text = text.split("\n", 1)[-1].rsplit("```", 1)[0]
-
-        result = json.loads(text)
+        result = extract_json(response)
 
         # Validate
         if result.get("category") not in EVENT_CATEGORIES:
@@ -202,11 +196,7 @@ def classify_batch(articles: list[dict]) -> list[dict]:
 
     try:
         response = client.simple_prompt(UNIFIED_BATCH_SYSTEM, prompt)
-        text = response.strip()
-        if text.startswith("```"):
-            text = text.split("\n", 1)[-1].rsplit("```", 1)[0]
-
-        results = json.loads(text)
+        results = extract_json(response)
         if not isinstance(results, list):
             results = [results]
 

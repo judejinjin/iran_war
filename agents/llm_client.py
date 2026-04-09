@@ -3,10 +3,68 @@ LLM Client — Anthropic Claude Sonnet 4.6 with tool-use loop and fallback.
 """
 
 import json
+import re
 import time
 from loguru import logger
 
 from config import CLAUDE_KEY, CLAUDE_MODEL, CLAUDE_MAX_TOKENS, OPENAI_KEY
+
+
+def extract_json(text: str):
+    """Extract JSON object or array from an LLM response that may contain
+    markdown fences, explanatory prose, or other non-JSON content.
+
+    Returns the parsed Python object (dict or list), or raises ValueError
+    if no valid JSON is found.
+    """
+    text = text.strip()
+
+    # 1. Try the text directly
+    try:
+        return json.loads(text)
+    except (json.JSONDecodeError, ValueError):
+        pass
+
+    # 2. Strip markdown code fences
+    fence_match = re.search(r"```(?:json)?\s*\n?(.*?)```", text, re.DOTALL)
+    if fence_match:
+        try:
+            return json.loads(fence_match.group(1).strip())
+        except (json.JSONDecodeError, ValueError):
+            pass
+
+    # 3. Find first [ ... ] or { ... } block via bracket matching
+    for opener, closer in [("[", "]"), ("{", "}")]:
+        start = text.find(opener)
+        if start == -1:
+            continue
+        depth = 0
+        in_string = False
+        escape = False
+        for i in range(start, len(text)):
+            ch = text[i]
+            if escape:
+                escape = False
+                continue
+            if ch == "\\":
+                escape = True
+                continue
+            if ch == '"':
+                in_string = not in_string
+                continue
+            if in_string:
+                continue
+            if ch == opener:
+                depth += 1
+            elif ch == closer:
+                depth -= 1
+                if depth == 0:
+                    try:
+                        return json.loads(text[start:i + 1])
+                    except (json.JSONDecodeError, ValueError):
+                        break
+
+    raise ValueError(f"No valid JSON found in LLM response: {text[:200]}")
 
 
 class LLMClient:
@@ -128,8 +186,14 @@ class LLMClient:
 _client = None
 
 
-def get_llm_client() -> LLMClient:
+def get_llm_client():
+    """Return the configured LLM client (Copilot SDK or Anthropic)."""
     global _client
     if _client is None:
-        _client = LLMClient()
+        from config import LLM_BACKEND
+        if LLM_BACKEND == "copilot_sdk":
+            from agents.copilot_llm import CopilotLLMClient
+            _client = CopilotLLMClient()
+        else:
+            _client = LLMClient()
     return _client

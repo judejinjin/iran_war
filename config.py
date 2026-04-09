@@ -35,9 +35,17 @@ NEWSAPI_KEY = os.environ.get("NEWSAPI_KEY", "")
 BING_NEWS_KEY = os.environ.get("BING_NEWS_KEY", "")
 EVENT_REGISTRY_KEY = os.environ.get("EVENT_REGISTRY_KEY", "")
 
-# ─── LLM ─────────────────────────────────────────────────────────────────────
+# ─── LLM Backend ─────────────────────────────────────────────────────────────
+# "copilot_sdk" (default) | "anthropic"
+LLM_BACKEND = os.environ.get("LLM_BACKEND", "copilot_sdk")
+
+# ─── LLM — Anthropic (used when LLM_BACKEND=anthropic) ──────────────────────
 CLAUDE_MODEL = "claude-sonnet-4-20250514"
 CLAUDE_MAX_TOKENS = 4096
+
+# ─── LLM — Copilot SDK (used when LLM_BACKEND=copilot_sdk) ─────────────────
+COPILOT_MODEL = os.environ.get("COPILOT_MODEL", "claude-sonnet-4.5")
+COPILOT_MAX_TOKENS = int(os.environ.get("COPILOT_MAX_TOKENS", "4096"))
 
 # ─── Futures Contracts ───────────────────────────────────────────────────────
 FUTURES_SYMBOLS = ["CL", "BZ"]
@@ -83,7 +91,7 @@ RSS_FEEDS = {
 # ─── GDELT API ───────────────────────────────────────────────────────────────
 GDELT_DOC_API = "https://api.gdeltproject.org/api/v2/doc/doc"
 GDELT_QUERY = "Iran war OR Hormuz OR oil infrastructure OR IRGC OR Houthi OR Bab el-Mandeb OR Red Sea tanker"
-GDELT_RATE_LIMIT_SECONDS = 10
+GDELT_RATE_LIMIT_SECONDS = 15
 
 # ─── Chokepoint Definitions ──────────────────────────────────────────────────
 CHOKEPOINT_BASELINES = {
