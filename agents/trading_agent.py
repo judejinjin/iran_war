@@ -40,7 +40,7 @@ Return a JSON array of ranked trade recommendations:
 [
   {
     "rank": 1,
-    "underlying": "BZ",
+    "underlying": "COIL",
     "structure": "call_spread",
     "legs": [
       {"strike": 120, "expiry": "2026-06", "type": "CALL", "side": "BUY"},
@@ -135,7 +135,7 @@ def _build_trading_tool_handlers(target_date: date, edges: dict) -> dict:
         return edges
 
     def get_options_chain(params):
-        underlying = params.get("underlying", "BZ")
+        underlying = params.get("underlying", "COIL")
         expiry_str = params.get("expiry")
 
         query = session.query(OptionsChain).filter(

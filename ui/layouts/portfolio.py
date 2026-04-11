@@ -17,7 +17,7 @@ layout = dbc.Container([
                             html.Label("Underlying"),
                             dcc.Dropdown(id="port-underlying",
                                          options=[{"label": "CL (WTI)", "value": "CL"},
-                                                  {"label": "BZ (Brent)", "value": "BZ"}],
+                                                  {"label": "COIL (Brent)", "value": "COIL"}],
                                          value="CL", clearable=False, style={"color": "#000"}),
                         ], width=2),
                         dbc.Col([

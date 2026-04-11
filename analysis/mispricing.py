@@ -15,7 +15,7 @@ from analysis.options_analysis import market_implied_scenario_probs
 from analysis.scenarios import get_latest_probabilities
 
 
-def get_market_implied_probs(underlying: str = "BZ",
+def get_market_implied_probs(underlying: str = "COIL",
                               target_date: date = None) -> dict[str, float]:
     """
     Extract market-implied scenario probabilities from options chain
@@ -92,7 +92,7 @@ def compute_scenario_edges(target_date: date = None) -> dict:
         target_date = date.today()
 
     ai_probs = get_latest_probabilities(target_date)
-    market_probs = get_market_implied_probs("BZ", target_date)
+    market_probs = get_market_implied_probs("COIL", target_date)
 
     edges = {}
     for scenario in SCENARIOS:

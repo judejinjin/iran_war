@@ -31,16 +31,16 @@ def update_futures(start_date, end_date, symbol_filter, _n):
         if isinstance(end_date, str):
             end_date = datetime.strptime(end_date[:10], "%Y-%m-%d").date()
 
-        symbols = ["CL", "BZ"] if symbol_filter == "BOTH" else [symbol_filter]
+        symbols = ["CL", "COIL"] if symbol_filter == "BOTH" else [symbol_filter]
 
         # ─── Key Metrics ──────────────────────────────────────────────
         metrics = []
-        for sym in ["CL", "BZ"]:
+        for sym in ["CL", "COIL"]:
             latest = session.query(FuturesCurve).filter(
                 FuturesCurve.symbol == sym,
             ).order_by(FuturesCurve.date.desc(), FuturesCurve.contract_month).first()
 
-            label = "WTI (CL)" if sym == "CL" else "Brent (BZ)"
+            label = "WTI (CL)" if sym == "CL" else "Brent (COIL)"
             price = f"${latest.settlement_price:.2f}" if latest and latest.settlement_price else "N/A"
             metrics.append(dbc.Col(dbc.Card(dbc.CardBody([
                 html.H6(label, className="text-muted"),
@@ -49,7 +49,7 @@ def update_futures(start_date, end_date, symbol_filter, _n):
 
         # Brent-WTI spread
         latest_spread = session.query(Spread).filter(
-            Spread.spread_type == "BZ-CL"
+            Spread.spread_type == "COIL-CL"
         ).order_by(Spread.date.desc()).first()
         spread_val = f"${latest_spread.spread_value:.2f}" if latest_spread and latest_spread.spread_value else "N/A"
         metrics.append(dbc.Col(dbc.Card(dbc.CardBody([
@@ -67,10 +67,10 @@ def update_futures(start_date, end_date, symbol_filter, _n):
             height=400,
         )
 
-        colors = {"CL": "#FF6B35", "BZ": "#1E90FF"}
+        colors = {"CL": "#FF6B35", "COIL": "#1E90FF"}
         has_curve = False
 
-        for sym in ["CL", "BZ"]:
+        for sym in ["CL", "COIL"]:
             latest_date_row = session.query(FuturesCurve.date).filter(
                 FuturesCurve.symbol == sym,
             ).order_by(FuturesCurve.date.desc()).first()
@@ -83,7 +83,7 @@ def update_futures(start_date, end_date, symbol_filter, _n):
 
                 if curves and len(curves) > 1:
                     has_curve = True
-                    label = "WTI (CL)" if sym == "CL" else "Brent (BZ)"
+                    label = "WTI (CL)" if sym == "CL" else "Brent (COIL)"
                     curve_fig.add_trace(go.Scatter(
                         x=[c.contract_month for c in curves],
                         y=[c.settlement_price for c in curves],
@@ -98,13 +98,13 @@ def update_futures(start_date, end_date, symbol_filter, _n):
                 title="Recent Spot Prices (term structure requires IB data)",
                 xaxis_title="Date",
             )
-            for sym in ["CL", "BZ"]:
+            for sym in ["CL", "COIL"]:
                 rows = session.query(FuturesCurve).filter(
                     FuturesCurve.symbol == sym,
                 ).order_by(FuturesCurve.date.desc()).limit(20).all()
                 rows = list(reversed(rows))
                 if rows:
-                    label = "WTI (CL)" if sym == "CL" else "Brent (BZ)"
+                    label = "WTI (CL)" if sym == "CL" else "Brent (COIL)"
                     curve_fig.add_trace(go.Scatter(
                         x=[r.date for r in rows],
                         y=[r.settlement_price for r in rows],
@@ -142,7 +142,7 @@ def update_futures(start_date, end_date, symbol_filter, _n):
             ).order_by(FuturesCurve.date).all()
 
             if rows:
-                label = "WTI (CL)" if sym == "CL" else "Brent (BZ)"
+                label = "WTI (CL)" if sym == "CL" else "Brent (COIL)"
                 history_fig.add_trace(go.Scatter(
                     x=[r.date for r in rows],
                     y=[r.settlement_price for r in rows],
@@ -162,8 +162,8 @@ def update_futures(start_date, end_date, symbol_filter, _n):
 
         # Always compute Brent-WTI spread on the fly from front-month prices
         cl_front = {}
-        bz_front = {}
-        for sym in ["CL", "BZ"]:
+        coil_front = {}
+        for sym in ["CL", "COIL"]:
             subq = session.query(
                 FuturesCurve.date,
                 sa_func.min(FuturesCurve.contract_month).label("front_month"),
@@ -183,13 +183,13 @@ def update_futures(start_date, end_date, symbol_filter, _n):
             if sym == "CL":
                 cl_front = {r.date: r.settlement_price for r in rows}
             else:
-                bz_front = {r.date: r.settlement_price for r in rows}
+                coil_front = {r.date: r.settlement_price for r in rows}
 
-        common_dates = sorted(set(cl_front) & set(bz_front))
+        common_dates = sorted(set(cl_front) & set(coil_front))
         if common_dates:
-            bz_cl_spreads = [bz_front[d] - cl_front[d] for d in common_dates]
+            coil_cl_spreads = [coil_front[d] - cl_front[d] for d in common_dates]
             spread_fig.add_trace(go.Scatter(
-                x=common_dates, y=bz_cl_spreads,
+                x=common_dates, y=coil_cl_spreads,
                 mode="lines+markers", name="Brent-WTI",
             ))
 
@@ -197,7 +197,7 @@ def update_futures(start_date, end_date, symbol_filter, _n):
         # For each date & symbol, rank contracts by contract_month and compute
         # M1-M6 and M1-M12 spreads (M1-M2 is often ~0, so skip it)
         from sqlalchemy import func as sa_f2
-        for sym in ["CL", "BZ"]:
+        for sym in ["CL", "COIL"]:
             curve_rows = session.query(FuturesCurve).filter(
                 FuturesCurve.symbol == sym,
                 FuturesCurve.date >= start_date,
@@ -242,8 +242,8 @@ def update_futures(start_date, end_date, symbol_filter, _n):
         ).distinct().all()
 
         # Only add from Spread table types not already computed above
-        skip_types = {"BZ-CL", "CL_M1-M2", "BZ_M1-M2", "CL_M1-M6", "BZ_M1-M6",
-                      "CL_M1-M12", "BZ_M1-M12"}
+        skip_types = {"COIL-CL", "CL_M1-M2", "COIL_M1-M2", "CL_M1-M6", "COIL_M1-M6",
+                      "CL_M1-M12", "COIL_M1-M12"}
         for (st,) in spread_types:
             if st in skip_types:
                 continue

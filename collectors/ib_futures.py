@@ -1,5 +1,5 @@
 """
-IB Futures Data Collector — fetches CL + BZ term structures and spreads.
+IB Futures Data Collector — fetches CL + COIL term structures and spreads.
 """
 
 from datetime import date, datetime, timedelta
@@ -34,7 +34,7 @@ def _make_ib_future(symbol: str, contract_month: str, exchange: str) -> Future:
 def collect_futures_snapshot(ib_conn: IBConnection = None) -> dict:
     """
     Fetch current futures curves for CL and BZ, store in DB.
-    Returns dict with counts: {"CL": n, "BZ": m}.
+    Returns dict with counts: {"CL": n, "COIL": m}.
     """
     own_connection = ib_conn is None
     if own_connection:
@@ -136,19 +136,19 @@ def _compute_spreads(session, today: date):
         date=today, symbol="CL"
     ).order_by(FuturesCurve.contract_month).all()
 
-    bz_rows = session.query(FuturesCurve).filter_by(
-        date=today, symbol="BZ"
+    coil_rows = session.query(FuturesCurve).filter_by(
+        date=today, symbol="COIL"
     ).order_by(FuturesCurve.contract_month).all()
 
-    if not cl_rows or not bz_rows:
+    if not cl_rows or not coil_rows:
         return
 
     # Brent-WTI spread (front month)
-    bz_front = bz_rows[0].settlement_price
+    coil_front = coil_rows[0].settlement_price
     cl_front = cl_rows[0].settlement_price
-    if bz_front and cl_front:
-        _upsert_spread(session, today, "BZ-CL", bz_rows[0].contract_month,
-                        bz_rows[0].contract_month, bz_front - cl_front)
+    if coil_front and cl_front:
+        _upsert_spread(session, today, "COIL-CL", coil_rows[0].contract_month,
+                        coil_rows[0].contract_month, coil_front - cl_front)
 
     # Calendar spreads for CL: M1-M2, M1-M6, M1-M12
     for label, back_idx in [("CL_M1-M2", 1), ("CL_M1-M6", 5), ("CL_M1-M12", 11)]:
@@ -160,14 +160,14 @@ def _compute_spreads(session, today: date):
                 cl_rows[0].settlement_price - cl_rows[back_idx].settlement_price,
             )
 
-    # Calendar spreads for BZ
-    for label, back_idx in [("BZ_M1-M2", 1), ("BZ_M1-M6", 5), ("BZ_M1-M12", 11)]:
-        if len(bz_rows) > back_idx and bz_rows[0].settlement_price and bz_rows[back_idx].settlement_price:
+    # Calendar spreads for COIL
+    for label, back_idx in [("COIL_M1-M2", 1), ("COIL_M1-M6", 5), ("COIL_M1-M12", 11)]:
+        if len(coil_rows) > back_idx and coil_rows[0].settlement_price and coil_rows[back_idx].settlement_price:
             _upsert_spread(
                 session, today, label,
-                bz_rows[0].contract_month,
-                bz_rows[back_idx].contract_month,
-                bz_rows[0].settlement_price - bz_rows[back_idx].settlement_price,
+                coil_rows[0].contract_month,
+                coil_rows[back_idx].contract_month,
+                coil_rows[0].settlement_price - coil_rows[back_idx].settlement_price,
             )
 
 
@@ -179,7 +179,7 @@ def collect_historical_curves(ib_conn: IBConnection = None, days_back: int = 30)
     and stores them in FuturesCurve.  Then computes spreads for every date that
     has enough contracts.
 
-    Returns {"CL": rows_inserted, "BZ": rows_inserted}.
+    Returns {"CL": rows_inserted, "COIL": rows_inserted}.
     """
     own_connection = ib_conn is None
     if own_connection:
@@ -190,7 +190,7 @@ def collect_historical_curves(ib_conn: IBConnection = None, days_back: int = 30)
         session = get_session()
         # Skip the first 2 months — near-term contracts may already be expired
         months = _build_contract_months(FUTURES_MONTHS_AHEAD)[2:]
-        counts = {"CL": 0, "BZ": 0}
+        counts = {"CL": 0, "COIL": 0}
         req_count = 0  # track IB requests for pacing
 
         for symbol in FUTURES_SYMBOLS:

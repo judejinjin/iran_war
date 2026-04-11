@@ -20,7 +20,7 @@ layout = dbc.Container([
                 id="opt-underlying-toggle",
                 options=[
                     {"label": "WTI (CL)", "value": "CL"},
-                    {"label": "Brent (BZ)", "value": "BZ"},
+                    {"label": "Brent (COIL)", "value": "COIL"},
                 ],
                 value="CL",
                 inline=True,

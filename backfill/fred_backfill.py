@@ -22,7 +22,7 @@ def run_backfill(start_from: date, session) -> int:
     today = date.today()
     total = 0
 
-    for series_id, symbol in [(FRED_WTI_SERIES, "CL"), (FRED_BRENT_SERIES, "BZ")]:
+    for series_id, symbol in [(FRED_WTI_SERIES, "CL"), (FRED_BRENT_SERIES, "COIL")]:
         logger.info(f"FRED backfill: fetching {series_id} ({symbol}) from {start_from} to {today}")
 
         try:

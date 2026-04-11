@@ -91,7 +91,7 @@ def project_all_positions(target_date: date = None) -> dict:
 
         # Get current prices
         current_prices = {}
-        for symbol in ["CL", "BZ"]:
+        for symbol in ["CL", "COIL"]:
             latest = session.query(FuturesCurve).filter(
                 FuturesCurve.symbol == symbol,
                 FuturesCurve.date <= target_date,

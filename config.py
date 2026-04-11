@@ -48,8 +48,8 @@ COPILOT_MODEL = os.environ.get("COPILOT_MODEL", "claude-sonnet-4.5")
 COPILOT_MAX_TOKENS = int(os.environ.get("COPILOT_MAX_TOKENS", "4096"))
 
 # ─── Futures Contracts ───────────────────────────────────────────────────────
-FUTURES_SYMBOLS = ["CL", "BZ"]
-FUTURES_EXCHANGE = {"CL": "NYMEX", "BZ": "NYMEX"}  # BZ listed on NYMEX via ICE
+FUTURES_SYMBOLS = ["CL", "COIL"]
+FUTURES_EXCHANGE = {"CL": "NYMEX", "COIL": "IPE"}
 FUTURES_MONTHS_AHEAD = 24          # Front 24 months for term structure
 OPTIONS_EXPIRIES_AHEAD = 6         # Front 6 expiries for options chains
 

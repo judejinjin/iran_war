@@ -9,7 +9,7 @@ import yfinance as yf
 from db.database import FuturesCurve
 
 
-YAHOO_TICKERS = {"CL=F": "CL", "BZ=F": "BZ"}
+YAHOO_TICKERS = {"CL=F": "CL", "BZ=F": "COIL"}
 
 
 def run_backfill(start_from: date, session) -> int:

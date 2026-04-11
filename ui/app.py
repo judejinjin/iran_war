@@ -46,6 +46,7 @@ stores = html.Div([
     dcc.Store(id="store-selected-date", storage_type="session"),
     dcc.Store(id="store-selected-scenario", storage_type="session"),
     dcc.Store(id="store-selected-underlying", data="CL", storage_type="session"),
+    dcc.Store(id="cfg-init", data=1),  # triggers config tab population
     dcc.Interval(id="auto-refresh", interval=300_000, n_intervals=0),  # 5 min
 ])
 
@@ -64,6 +65,7 @@ tabs = dbc.Tabs(
         dbc.Tab(label="Scenarios", tab_id="tab-scenarios", tab_style=TAB_STYLE),
         dbc.Tab(label="Analysis", tab_id="tab-analysis", tab_style=TAB_STYLE),
         dbc.Tab(label="Portfolio", tab_id="tab-portfolio", tab_style=TAB_STYLE),
+        dbc.Tab(label="Config", tab_id="tab-config", tab_style=TAB_STYLE),
     ],
 )
 
@@ -109,6 +111,9 @@ def render_tab(active_tab):
     elif active_tab == "tab-portfolio":
         from ui.layouts.portfolio import layout
         return layout
+    elif active_tab == "tab-config":
+        from ui.layouts.config_tab import layout
+        return layout
     return html.Div("Select a tab")
 
 
@@ -123,6 +128,7 @@ def start_app():
     import ui.callbacks.scenarios_cb
     import ui.callbacks.analysis_cb
     import ui.callbacks.portfolio_cb
+    import ui.callbacks.config_cb
 
     app.run(host=DASH_HOST, port=DASH_PORT, debug=DASH_DEBUG)
 
