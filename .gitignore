@@ -1,5 +1,7 @@
 .env
 db/oil_data.db
+db/oil_data.db-shm
+db/oil_data.db-wal
 __pycache__/
 *.pyc
 .venv/
