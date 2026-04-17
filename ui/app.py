@@ -61,6 +61,7 @@ tabs = dbc.Tabs(
         dbc.Tab(label="Infrastructure", tab_id="tab-infrastructure", tab_style=TAB_STYLE),
         dbc.Tab(label="Military", tab_id="tab-military", tab_style=TAB_STYLE),
         dbc.Tab(label="Futures", tab_id="tab-futures", tab_style=TAB_STYLE),
+        dbc.Tab(label="Physical", tab_id="tab-physical", tab_style=TAB_STYLE),
         dbc.Tab(label="Options", tab_id="tab-options", tab_style=TAB_STYLE),
         dbc.Tab(label="Scenarios", tab_id="tab-scenarios", tab_style=TAB_STYLE),
         dbc.Tab(label="Analysis", tab_id="tab-analysis", tab_style=TAB_STYLE),
@@ -99,6 +100,9 @@ def render_tab(active_tab):
     elif active_tab == "tab-futures":
         from ui.layouts.futures import layout
         return layout
+    elif active_tab == "tab-physical":
+        from ui.layouts.physical import layout
+        return layout
     elif active_tab == "tab-options":
         from ui.layouts.options import layout
         return layout
@@ -121,6 +125,7 @@ def start_app():
     """Start the Dash server."""
     # Import callbacks to register them
     import ui.callbacks.futures_cb
+    import ui.callbacks.physical_cb
     import ui.callbacks.geopolitical_cb
     import ui.callbacks.infrastructure_cb
     import ui.callbacks.military_cb

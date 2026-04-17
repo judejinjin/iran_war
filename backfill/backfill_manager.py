@@ -12,7 +12,7 @@ from config import WAR_START_DATE
 from db.database import get_session, BackfillStatus
 
 
-BACKFILL_SOURCES = ["fred", "yahoo", "ib_futures", "eia", "gdelt", "scenarios"]
+BACKFILL_SOURCES = ["fred", "yahoo", "ib_futures", "ib_options", "eia", "gdelt", "scenarios"]
 
 
 class BackfillManager:
@@ -146,6 +146,9 @@ class BackfillManager:
                 return run_backfill
             elif source == "eia":
                 from backfill.eia_backfill import run_backfill
+                return run_backfill
+            elif source == "ib_options":
+                from backfill.ib_options_backfill import run_backfill
                 return run_backfill
             elif source == "gdelt":
                 from backfill.gdelt_backfill import run_backfill

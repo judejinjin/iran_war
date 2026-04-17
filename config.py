@@ -51,11 +51,12 @@ COPILOT_MAX_TOKENS = int(os.environ.get("COPILOT_MAX_TOKENS", "4096"))
 FUTURES_SYMBOLS = ["CL", "COIL"]
 FUTURES_EXCHANGE = {"CL": "NYMEX", "COIL": "IPE"}
 FUTURES_MONTHS_AHEAD = 24          # Front 24 months for term structure
-OPTIONS_EXPIRIES_AHEAD = 6         # Front 6 expiries for options chains
+OPTIONS_EXPIRIES_AHEAD = 12        # Front 12 expiries for options chains
 
 # ─── FRED Series ─────────────────────────────────────────────────────────────
 FRED_WTI_SERIES = "DCOILWTICO"
 FRED_BRENT_SERIES = "DCOILBRENTEU"
+FRED_DUBAI_SERIES = "POILDUBUSDM"   # IMF monthly Dubai crude (1992+)
 
 # ─── EIA Series ──────────────────────────────────────────────────────────────
 EIA_CRUDE_INVENTORY = "PET.WCESTUS1.W"

@@ -20,7 +20,7 @@ BATCH_PAUSE_SECONDS = 65  # Wait between batches
 
 def run_backfill(start_from: date, session) -> int:
     """
-    Fetch historical daily bars for CL and BZ front 12 months from IB.
+    Fetch historical daily bars for CL and COIL front 12 months from IB.
     Pacing: batch 6 contracts, wait 1 minute, next batch.
     Returns total records inserted.
     """

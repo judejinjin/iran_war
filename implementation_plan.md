@@ -57,8 +57,8 @@ dependencies:
 | # | Task | Files | Dependencies | Test |
 |---|------|-------|-------------|------|
 | 1.4.1 | Write IB connection manager — connect/disconnect, reconnect logic, connection health check | `collectors/ib_connection.py` | 1.2.1 | Connect to TWS on 7496, print account info, disconnect |
-| 1.4.2 | Write futures data collector — request CL + BZ front 24 months, parse contract details, store in `futures_curves` and `spreads` tables | `collectors/ib_futures.py` | 1.4.1, 1.3.2 | Run collector, verify futures_curves table has rows for today |
-| 1.4.3 | Write options data collector — request CL + BZ options chains (front 6 expiries), compute Greeks via Black-76, store in `options_chains` and `vol_surface` | `collectors/ib_options.py` | 1.4.1, 1.3.2 | Run collector, verify options_chains table has rows |
+| 1.4.2 | Write futures data collector — request CL + COIL front 24 months, parse contract details, store in `futures_curves` and `spreads` tables | `collectors/ib_futures.py` | 1.4.1, 1.3.2 | Run collector, verify futures_curves table has rows for today |
+| 1.4.3 | Write options data collector — request CL + COIL options chains (front 6 expiries), compute Greeks via Black-76, store in `options_chains` and `vol_surface` | `collectors/ib_options.py` | 1.4.1, 1.3.2 | Run collector, verify options_chains table has rows |
 
 **Implementation notes for `collectors/ib_connection.py`:**
 ```python
@@ -88,7 +88,7 @@ class IBConnection:
 |---|------|-------|-------------|------|
 | 1.5.1 | Write backfill manager — checks `backfill_status` table, orchestrates steps, resumes from interruption | `backfill/backfill_manager.py` | 1.3.2 | Call manager on empty DB → all sources marked `pending` |
 | 1.5.2 | Write FRED backfill — fetch DCOILWTICO + DCOILBRENTEU from WAR_START_DATE to today, store in `futures_curves` | `backfill/fred_backfill.py` | 1.5.1 | Run → futures_curves has daily WTI + Brent from war start |
-| 1.5.3 | Write Yahoo Finance backfill — fetch CL=F + BZ=F daily OHLCV, store as cross-check | `backfill/yahoo_backfill.py` | 1.5.1 | Run → data matches FRED within ±$1 tolerance |
+| 1.5.3 | Write Yahoo Finance backfill — fetch CL=F daily OHLCV, store as cross-check | `backfill/yahoo_backfill.py` | 1.5.1 | Run → data matches FRED within ±$1 tolerance |
 | 1.5.4 | Write IB historical futures backfill — `reqHistoricalData()` for front 12 months, batch 6 contracts with 1-min pacing | `backfill/ib_backfill.py` | 1.4.1, 1.5.1 | Run → futures_curves has multi-month term structure for each historical day |
 | 1.5.5 | Write EIA backfill — weekly petroleum status, monthly production | `backfill/eia_backfill.py` | 1.5.1 | Run → EIA data in DB from war start |
 
@@ -135,7 +135,7 @@ class BackfillManager:
 ### Phase 1 Completion Criteria
 - [ ] Conda `oil` env with all deps installed
 - [ ] SQLite DB with all 14 tables created
-- [ ] IB TWS connects on port 7496 and fetches live CL/BZ futures + options
+- [ ] IB TWS connects on port 7496 and fetches live CL/COIL futures + options
 - [ ] Historical prices backfilled from WAR_START_DATE (FRED, Yahoo, IB, EIA)
 - [ ] Dash app runs with Futures tab showing real curve data
 - [ ] `main.py` orchestrates startup: DB init → backfill → app launch
@@ -230,7 +230,7 @@ class LLMClient:
 
 | # | Task | Files | Dependencies | Test |
 |---|------|-------|-------------|------|
-| 3.1.1 | Enhance `collectors/ib_options.py` — full options chain fetch for CL + BZ front 6 expiries, compute IV, store in `options_chains` | `collectors/ib_options.py` | 1.4.3 | Run → options_chains has rows for all strikes/expiries |
+| 3.1.1 | Enhance `collectors/ib_options.py` — full options chain fetch for CL + COIL front 6 expiries, compute IV, store in `options_chains` | `collectors/ib_options.py` | 1.4.3 | Run → options_chains has rows for all strikes/expiries |
 | 3.1.2 | Write Black-76 Greeks engine — delta, gamma, vega, theta for each option; compute ATM vol, 25-delta skew, butterfly | `analysis/options_analysis.py` | 3.1.1 | Given chain → compute Greeks that match IB within ±0.01 |
 | 3.1.3 | Write vol surface aggregator — compute ATM vol, 25-delta risk reversal, 25-delta butterfly per expiry, store in `vol_surface` | `analysis/options_analysis.py` (vol surface section) | 3.1.2 | Run → vol_surface table populated for today |
 
@@ -242,7 +242,7 @@ class LLMClient:
 | 3.2.2 | Create Options tab callbacks — query options_chains + vol_surface, render heatmaps and line charts, expiry selector, date selector | `ui/callbacks/options_cb.py` | 3.2.1 | Select expiry → smile chart updates, heatmap updates |
 
 ### Phase 3 Completion Criteria
-- [ ] Options chains fetched from IB for CL + BZ (front 6 expiries)
+- [ ] Options chains fetched from IB for CL + COIL (front 6 expiries)
 - [ ] Greeks computed via Black-76, vol surface metrics stored
 - [ ] Options tab shows vol surface heatmap, smile chart, skew tracker, OI profile
 - [ ] Historical data shows vol evolution over time
@@ -263,7 +263,7 @@ class LLMClient:
 Tools the scenario agent needs access to:
 - `get_latest_summaries()` — today's 5 category summaries + severity scores
 - `get_military_summary()` — today's military daily summary + escalation score
-- `get_latest_futures()` — current CL/BZ front-month prices + curve shape (contango/backwardation)
+- `get_latest_futures()` — current CL/COIL front-month prices + curve shape (contango/backwardation)
 - `get_latest_vol_metrics()` — current ATM vol, skew, butterfly
 - `get_previous_probabilities()` — yesterday's scenario probabilities (for continuity)
 
@@ -330,7 +330,7 @@ Agent outputs structured JSON:
 [
   {
     "rank": 1,
-    "underlying": "BZ",
+    "underlying": "COIL",
     "structure": "call_spread",
     "legs": [{"strike": 120, "expiry": "2026-06", "type": "CALL", "side": "BUY"}, ...],
     "entry_cost": 2.50,

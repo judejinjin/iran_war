@@ -41,6 +41,7 @@ def _mask(key: str) -> str:
     Output("cfg-futures", "children"),
     Output("cfg-market-apis", "children"),
     Output("cfg-ib", "children"),
+    Output("cfg-physical", "children"),
     Output("cfg-scenarios", "children"),
     Output("cfg-keywords", "children"),
     Output("cfg-schedule", "children"),
@@ -126,7 +127,36 @@ def populate_config(_):
         _kv("EIA US Production", config.EIA_US_PRODUCTION),
         _kv("FRED WTI Series", config.FRED_WTI_SERIES),
         _kv("FRED Brent Series", config.FRED_BRENT_SERIES),
+        _kv("FRED Dubai Series", config.FRED_DUBAI_SERIES),
     ])
+
+    # ── Physical Crude Sources ────────────────────────────────────────────
+    physical_rows = [
+        html.Thead(html.Tr([
+            html.Th("Symbol", style={"fontSize": "0.85rem", "width": "7%"}),
+            html.Th("Grade", style={"fontSize": "0.85rem", "width": "15%"}),
+            html.Th("Source", style={"fontSize": "0.85rem", "width": "12%"}),
+            html.Th("Frequency", style={"fontSize": "0.85rem", "width": "10%"}),
+            html.Th("History", style={"fontSize": "0.85rem", "width": "10%"}),
+            html.Th("Series / Endpoint", style={"fontSize": "0.85rem"}),
+        ])),
+        html.Tbody([
+            html.Tr([
+                html.Td(dbc.Badge("DUB", color="primary", style={"fontSize": "0.82rem"})),
+                html.Td("Dubai Crude (Middle East sour)", style={"fontSize": "0.85rem"}),
+                html.Td("FRED / IMF", className="text-muted", style={"fontSize": "0.85rem"}),
+                html.Td("Monthly", style={"fontSize": "0.85rem"}),
+                html.Td("1992+", style={"fontSize": "0.85rem"}),
+                html.Td(
+                    html.Code(config.FRED_DUBAI_SERIES, style={"fontSize": "0.82rem"}),
+                ),
+            ]),
+        ]),
+    ]
+    physical = html.Table(
+        physical_rows,
+        className="table table-sm table-borderless mb-0",
+    )
 
     # ── IB TWS ────────────────────────────────────────────────────────────
     ib = _table([
@@ -198,4 +228,4 @@ def populate_config(_):
         style={"tableLayout": "auto"},
     )
 
-    return llm, war, rss, news_apis, futures, market_apis, ib, scenarios, keywords, schedule, chokepoints
+    return llm, war, rss, news_apis, futures, market_apis, ib, physical, scenarios, keywords, schedule, chokepoints

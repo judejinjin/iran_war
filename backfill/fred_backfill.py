@@ -1,18 +1,19 @@
 """
-FRED Historical Backfill — fetch WTI + Brent daily spot prices.
+FRED Historical Backfill — fetch WTI + Brent daily spot prices, Dubai monthly.
 """
 
 from datetime import date, timedelta
 from loguru import logger
 from fredapi import Fred
 
-from config import FRED_API_KEY, FRED_WTI_SERIES, FRED_BRENT_SERIES
+from config import FRED_API_KEY, FRED_WTI_SERIES, FRED_BRENT_SERIES, FRED_DUBAI_SERIES
 from db.database import FuturesCurve
 
 
 def run_backfill(start_from: date, session) -> int:
     """
     Fetch FRED daily spot prices for WTI and Brent from start_from to today.
+    Also fetches monthly Dubai crude (POILDUBUSDM) from IMF via FRED.
     Returns total records inserted.
     """
     if not FRED_API_KEY:
@@ -22,11 +23,18 @@ def run_backfill(start_from: date, session) -> int:
     today = date.today()
     total = 0
 
-    for series_id, symbol in [(FRED_WTI_SERIES, "CL"), (FRED_BRENT_SERIES, "COIL")]:
-        logger.info(f"FRED backfill: fetching {series_id} ({symbol}) from {start_from} to {today}")
+    # Dubai is monthly (IMF, 1992+) — always fetch full history regardless of
+    # start_from so the physical tab always has a complete price series.
+    _SERIES_START = {
+        FRED_DUBAI_SERIES: date(1992, 1, 1),
+    }
+
+    for series_id, symbol in [(FRED_WTI_SERIES, "CL"), (FRED_BRENT_SERIES, "COIL"), (FRED_DUBAI_SERIES, "DUB")]:
+        effective_start = _SERIES_START.get(series_id, start_from)
+        logger.info(f"FRED backfill: fetching {series_id} ({symbol}) from {effective_start} to {today}")
 
         try:
-            data = fred.get_series(series_id, observation_start=start_from, observation_end=today)
+            data = fred.get_series(series_id, observation_start=effective_start, observation_end=today)
 
             if data is None or data.empty:
                 logger.warning(f"FRED returned no data for {series_id}")

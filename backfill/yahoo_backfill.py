@@ -1,5 +1,5 @@
 """
-Yahoo Finance Historical Backfill — fetch CL=F + BZ=F daily OHLCV.
+Yahoo Finance Historical Backfill — fetch CL=F daily OHLCV.
 """
 
 from datetime import date
@@ -9,7 +9,7 @@ import yfinance as yf
 from db.database import FuturesCurve
 
 
-YAHOO_TICKERS = {"CL=F": "CL", "BZ=F": "COIL"}
+YAHOO_TICKERS = {"CL=F": "CL"}
 
 
 def run_backfill(start_from: date, session) -> int:

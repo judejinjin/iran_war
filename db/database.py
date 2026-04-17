@@ -153,6 +153,7 @@ class OptionsChain(Base):
     theta = Column(Float)
     volume = Column(Integer)
     open_interest = Column(Integer)
+    underlying_contract_month = Column(Text)  # e.g. "2026-06" — the futures month this option settles into
     created_at = Column(DateTime, default=datetime.utcnow)
     __table_args__ = (UniqueConstraint("date", "underlying", "expiry_date", "strike", "option_type"),)
 

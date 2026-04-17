@@ -46,7 +46,10 @@ layout = dbc.Container([
         dbc.Col([
             dbc.Card([
                 dbc.CardHeader("Term Structure (Current)"),
-                dbc.CardBody(dcc.Graph(id="futures-curve-chart")),
+                dbc.CardBody([
+                    dcc.Graph(id="futures-curve-chart"),
+                    html.Div(id="futures-curve-footnotes"),
+                ]),
             ]),
         ], width=12),
     ], className="mb-3"),
@@ -55,13 +58,43 @@ layout = dbc.Container([
     dbc.Row([
         dbc.Col([
             dbc.Card([
-                dbc.CardHeader("Front-Month Price History"),
+                dbc.CardHeader([
+                    "Price History — ",
+                    dcc.Dropdown(
+                        id="futures-contract-cl",
+                        placeholder="WTI contract…",
+                        clearable=True,
+                        style={"width": "150px", "display": "inline-block",
+                               "verticalAlign": "middle", "marginRight": "12px"},
+                    ),
+                    dcc.Dropdown(
+                        id="futures-contract-coil",
+                        placeholder="Brent contract…",
+                        clearable=True,
+                        style={"width": "150px", "display": "inline-block",
+                               "verticalAlign": "middle", "marginRight": "12px"},
+                    ),
+                    dbc.Switch(
+                        id="futures-spread-toggle",
+                        label="Spread",
+                        value=False,
+                        style={"marginBottom": 0},
+                    ),
+                ], style={"display": "flex", "alignItems": "center", "gap": "6px"}),
                 dbc.CardBody(dcc.Graph(id="futures-price-history")),
             ]),
         ], width=6),
         dbc.Col([
             dbc.Card([
-                dbc.CardHeader("Spreads Over Time"),
+                dbc.CardHeader([
+                    "Calendar Spreads ",
+                    dbc.Switch(
+                        id="futures-cal-6m-toggle",
+                        label="Show 6M",
+                        value=False,
+                        style={"marginBottom": 0, "marginLeft": "12px"},
+                    ),
+                ], style={"display": "flex", "alignItems": "center"}),
                 dbc.CardBody(dcc.Graph(id="futures-spread-chart")),
             ]),
         ], width=6),

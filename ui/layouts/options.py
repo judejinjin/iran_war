@@ -70,5 +70,41 @@ layout = dbc.Container([
                 dbc.CardBody(dcc.Graph(id="opt-open-interest")),
             ]),
         ], width=6),
+    ], className="mb-3"),
+
+    # ─── Row 3: WTI Calls & Puts by Strike ───────────────────────────────
+    dbc.Row([
+        dbc.Col([
+            dbc.Card([
+                dbc.CardHeader([
+                    "WTI (CL) Calls & Puts",
+                    dcc.Dropdown(
+                        id="opt-wti-chain-expiry",
+                        placeholder="Select expiry...",
+                        style={"display": "inline-block", "width": "200px",
+                               "marginLeft": "15px", "verticalAlign": "middle"},
+                    ),
+                ], style={"display": "flex", "alignItems": "center"}),
+                dbc.CardBody(html.Div(id="opt-wti-chain-table")),
+            ]),
+        ], width=12),
+    ], className="mb-3"),
+
+    # ─── Row 4: Brent Calls & Puts by Strike ─────────────────────────────
+    dbc.Row([
+        dbc.Col([
+            dbc.Card([
+                dbc.CardHeader([
+                    "Brent (COIL) Calls & Puts",
+                    dcc.Dropdown(
+                        id="opt-brent-chain-expiry",
+                        placeholder="Select expiry...",
+                        style={"display": "inline-block", "width": "200px",
+                               "marginLeft": "15px", "verticalAlign": "middle"},
+                    ),
+                ], style={"display": "flex", "alignItems": "center"}),
+                dbc.CardBody(html.Div(id="opt-brent-chain-table")),
+            ]),
+        ], width=12),
     ]),
 ], fluid=True)

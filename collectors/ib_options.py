@@ -1,5 +1,5 @@
 """
-IB Options Data Collector — fetches options chains for CL + BZ, computes Greeks.
+IB Options Data Collector — fetches options chains for CL + COIL, computes Greeks.
 """
 
 import math
@@ -14,7 +14,7 @@ from db.database import get_session, OptionsChain, VolSurface
 
 def collect_options_snapshot(ib_conn: IBConnection = None) -> dict:
     """
-    Fetch options chains for CL and BZ (front N expiries), compute Greeks,
+    Fetch options chains for CL and COIL (front N expiries), compute Greeks,
     store in options_chains and vol_surface tables.
     """
     own_connection = ib_conn is None

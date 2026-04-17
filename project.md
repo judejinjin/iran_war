@@ -132,7 +132,7 @@ All primary data sources are **free**. Paid/limited sources are used only as fal
 |--------|----------|------|-------------------|-------------|------|
 | **Interactive Brokers TWS** | No (uses TWS Desktop already installed) | Free with IB account (market data subscription may apply) | Daily bars: up to 1 year via `reqHistoricalData` | 60 requests / 10 min (historical); real-time snapshots unlimited during market hours | **PRIMARY** — live futures curves, options chains, Greeks. Connects to TWS Desktop on `localhost:7497` (paper) or `localhost:7496` (live). |
 | **FRED API** (Federal Reserve) | Yes (free) | Completely free | Full history (decades) | 120 req/min | **PRIMARY for backfill** — daily WTI spot (series: `DCOILWTICO`) and Brent spot (series: `DCOILBRENTEU`). Register: fred.stlouisfed.org/docs/api/api_key.html |
-| **Yahoo Finance** (`yfinance`) | No | Free | Full history | No formal API (scraping-based, occasional throttling) | **PRIMARY for backfill** — daily OHLCV for `CL=F` (WTI front-month) and `BZ=F` (Brent front-month). Also useful as cross-check for IB data. |
+| **Yahoo Finance** (`yfinance`) | No | Free | Full history | No formal API (scraping-based, occasional throttling) | **PRIMARY for backfill** — daily OHLCV for `CL=F` (WTI front-month). Also useful as cross-check for IB data. |
 | **EIA API** (U.S. Energy Information Admin) | Yes (free) | Completely free | Full history (decades) | Generous (no published limit) | **PRIMARY** — weekly petroleum status report, crude inventories (series: `PET.WCESTUS1.W`), U.S. production, global production by country. Register: eia.gov/opendata/register.php |
 
 #### API KEY SUMMARY
@@ -346,23 +346,23 @@ CREATE TABLE military_daily_summary (
 
 ### 4.3 Module 3: Futures Market Data (Requirements 5–6)
 
-**Purpose**: Capture and display WTI (CL) and Brent (BZ) futures curves and spreads daily.
+**Purpose**: Capture and display WTI (CL) and Brent (COIL) futures curves and spreads daily.
 
 #### Interactive Brokers Integration
 - **IB TWS Desktop is already installed** on the development machine
 - Connect via `ib_insync` to TWS on `localhost:7497` (paper) or `localhost:7496` (live)
 - TWS must be running with API connections enabled (File → Global Configuration → API → Settings → Enable ActiveX and Socket Clients)
-- Request contract details for CL (NYMEX) and BZ (ICE via IB) front 24 months
+- Request contract details for CL (NYMEX) and COIL (ICE via IB) front 24 months
 - Snapshot prices multiple times per day during trading hours (see Section 5 schedule)
 - Store full curves with intraday timestamps; the latest snapshot each day serves as the "daily" view
-- **Historical backfill**: On first run, use `ib_insync`'s `reqHistoricalData()` to fetch daily bars for CL and BZ going back to war start date (configurable in `config.py`)
+- **Historical backfill**: On first run, use `ib_insync`'s `reqHistoricalData()` to fetch daily bars for CL and COIL going back to war start date (configurable in `config.py`)
 
 #### Database Schema — Futures
 ```sql
 CREATE TABLE futures_curves (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     date DATE NOT NULL,
-    symbol TEXT NOT NULL,       -- 'CL' or 'BZ'
+    symbol TEXT NOT NULL,       -- 'CL' or 'COIL'
     contract_month TEXT NOT NULL, -- '2026-04', '2026-05', etc.
     expiry_date DATE,
     settlement_price REAL,
@@ -375,7 +375,7 @@ CREATE TABLE futures_curves (
 CREATE TABLE spreads (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     date DATE NOT NULL,
-    spread_type TEXT NOT NULL,   -- 'BZ-CL' (Brent-WTI), 'CL_M1-M2' (calendar)
+    spread_type TEXT NOT NULL,   -- 'COIL-CL' (Brent-WTI), 'CL_M1-M2' (calendar)
     front_month TEXT,
     back_month TEXT,
     spread_value REAL,
@@ -385,7 +385,7 @@ CREATE TABLE spreads (
 ```
 
 #### UI Components
-- **Futures Curve Chart**: Plotly line chart showing current CL and BZ term structures (price vs. contract month)
+- **Futures Curve Chart**: Plotly line chart showing current CL and COIL term structures (price vs. contract month)
 - **Curve Animation**: Slider to replay how the curve shape evolved over time (contango → backwardation shifts)
 - **Spread Chart**: Brent-WTI spread over time; calendar spreads (M1-M2, M1-M6, M1-M12)
 - **Key Metrics Panel**: Current front-month prices, backwardation depth, spread levels
@@ -397,7 +397,7 @@ CREATE TABLE spreads (
 **Purpose**: Capture options chains for WTI and Brent, compute Greeks and implied volatilities, and track changes over time.
 
 #### Data Collection
-- Fetch full options chains from IB TWS (localhost) for CL and BZ (front 6 expiries)
+- Fetch full options chains from IB TWS (localhost) for CL and COIL (front 6 expiries)
 - Refresh options data 3× daily during trading hours (see Section 5)
 - For each strike: bid, ask, last, volume, open interest, implied volatility
 - Compute Greeks via Black-76: delta, gamma, vega, theta
@@ -408,7 +408,7 @@ CREATE TABLE spreads (
 CREATE TABLE options_chains (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     date DATE NOT NULL,
-    underlying TEXT NOT NULL,     -- 'CL' or 'BZ'
+    underlying TEXT NOT NULL,     -- 'CL' or 'COIL'
     expiry_date DATE NOT NULL,
     strike REAL NOT NULL,
     option_type TEXT NOT NULL,    -- 'CALL' or 'PUT'
@@ -527,7 +527,7 @@ client = anthropic.Anthropic(api_key=os.environ["CLAUDE_KEY"])
 
 # Agent has access to these tools (defined as Anthropic tool schemas):
 tools = [
-    get_current_futures_curves,      # Read latest CL/BZ curves from DB
+    get_current_futures_curves,      # Read latest CL/COIL curves from DB
     get_options_chain,               # Read latest options data from DB
     get_scenario_probabilities,      # Read AI scenario probs from DB
     compute_implied_distribution,    # Breeden-Litzenberger extraction
@@ -554,7 +554,7 @@ CREATE TABLE agent_analyses (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     date DATE NOT NULL,
     analysis_type TEXT NOT NULL,    -- 'mispricing' or 'trade_recommendation'
-    underlying TEXT,                -- 'CL', 'BZ', or 'BOTH'
+    underlying TEXT,                -- 'CL', 'COIL', or 'BOTH'
     summary TEXT NOT NULL,
     detailed_analysis TEXT,
     recommended_trades TEXT,        -- JSON array of trade suggestions
@@ -590,7 +590,7 @@ For each scenario's price range:
 ```sql
 CREATE TABLE positions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    underlying TEXT NOT NULL,       -- 'CL' or 'BZ'
+    underlying TEXT NOT NULL,       -- 'CL' or 'COIL'
     instrument_type TEXT NOT NULL,  -- 'FUTURE' or 'OPTION'
     contract_month TEXT NOT NULL,
     strike REAL,
@@ -648,7 +648,7 @@ MARKET DATA (IB TWS) — 3× daily during trading hours
   • 10:00 ET — Morning snapshot (after US open + initial volatility)
   • 13:00 ET — Midday snapshot
   • 16:15 ET — Settlement snapshot (after NYMEX close)
-  • Each run: futures curves (CL + BZ, 24 months) +
+  • Each run: futures curves (CL + COIL, 24 months) +
     options chains (front 6 expiries) + spreads + Greeks
 
 EIA / FRED DATA — Once daily at 11:00 ET
@@ -709,7 +709,7 @@ Step 2: HISTORICAL PRICE BACKFILL
   Source: FRED API (free key) + Yahoo Finance (no key)
   • FRED: fetch DCOILWTICO (WTI) and DCOILBRENTEU (Brent)
     daily spot prices from WAR_START_DATE to today
-  • Yahoo Finance: fetch CL=F and BZ=F daily OHLCV
+  • Yahoo Finance: fetch CL=F daily OHLCV
     as cross-check and for volume/OI data
   • Store in futures_curves table with one entry per day
 
@@ -967,7 +967,7 @@ thefuzz>=0.22             # Fuzzy string matching for headline deduplication
 | IB API rate limits / disconnections | Data gaps | Retry with exponential backoff; cache last-known data; graceful degradation in UI |
 | News source API limits / paywalls | Incomplete geopolitical picture | 7 free primary sources (RSS + GDELT); paid APIs are fallback only; manual entry option in UI |
 | LLM hallucination in analysis | Incorrect probabilities or trade recommendations | Always show reasoning; human review before execution; compare to market-implied as sanity check |
-| Brent options liquidity on IB | Thin options chains for BZ | Use ICE Brent (BRN) as fallback; flag low-liquidity strikes in UI |
+| Brent options liquidity on IB | Thin options chains for COIL | Use ICE Brent (BRN) as fallback; flag low-liquidity strikes in UI |
 | SQLite write contention | Scheduler conflicts with UI reads | Use WAL journal mode; read-only connections for UI |
 | Super spike doesn't materialize | Theta decay on options positions | Size positions for limited downside; use spreads to reduce cost; track thesis validity daily |
 

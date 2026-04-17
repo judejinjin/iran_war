@@ -30,6 +30,8 @@ def main():
     parser.add_argument("--skip-backfill", action="store_true", help="Skip historical backfill")
     parser.add_argument("--skip-scheduler", action="store_true", help="Don't start APScheduler")
     parser.add_argument("--backfill-only", action="store_true", help="Run backfill then exit")
+    parser.add_argument("--ib-options", action="store_true",
+                        help="Run IB options backfill (requires TWS, ~5 min)")
     args = parser.parse_args()
 
     setup_logging()
@@ -50,6 +52,23 @@ def main():
         bm.run_incremental(sources=["fred", "yahoo", "eia"])
         # News + geopolitical data (GDELT day-by-day)
         bm.run_incremental(sources=["gdelt"])
+
+        # IB historical options backfill (~5 min with parallel requests, needs TWS running)
+        if args.ib_options:
+            logger.info("Running IB options backfill (parallel async, ~5 minutes)...")
+            bm.run_incremental(sources=["ib_options"])
+
+        # Recompute IV/Greeks for any options rows missing them (uses DB data, no IB needed)
+        from backfill.ib_options_backfill import recompute_greeks
+        from db.database import get_session
+        _sess = get_session()
+        try:
+            n = recompute_greeks(_sess)
+            if n:
+                logger.info(f"Recomputed IV/Greeks for {n} options rows")
+        finally:
+            _sess.close()
+
         # Quick RSS + GDELT live fetch (gets current headlines even if backfill was rate-limited)
         try:
             from collectors.news_collector import run_news_pipeline

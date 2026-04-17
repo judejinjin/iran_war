@@ -63,6 +63,16 @@ layout = dbc.Container([
         ], width=4),
     ], className="mb-3"),
 
+    # ─── Row 3b: Physical Crude Sources ────────────────────────────────────
+    dbc.Row([
+        dbc.Col([
+            dbc.Card([
+                dbc.CardHeader("Physical Crude Data Sources"),
+                dbc.CardBody(html.Div(id="cfg-physical")),
+            ]),
+        ], width=12),
+    ], className="mb-3"),
+
     # ─── Row 4: Scenarios ────────────────────────────────────────────────
     dbc.Row([
         dbc.Col([

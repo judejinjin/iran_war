@@ -2,6 +2,7 @@
 IB TWS connection manager — connect/disconnect with reconnect logic.
 """
 
+import asyncio
 import time
 from loguru import logger
 from ib_insync import IB, util
@@ -23,23 +24,40 @@ class IBConnection:
         if self.ib.isConnected():
             return self.ib
 
+        # Ensure an asyncio event loop exists (needed by ib_insync)
+        try:
+            asyncio.get_event_loop()
+        except RuntimeError:
+            asyncio.set_event_loop(asyncio.new_event_loop())
+
+        cid = self.client_id
         for attempt in range(1, max_retries + 1):
             try:
                 self.ib.connect(
                     self.host, self.port,
-                    clientId=self.client_id,
+                    clientId=cid,
                     readonly=True,
                     timeout=20,
                 )
                 logger.info(
                     f"Connected to TWS at {self.host}:{self.port} "
-                    f"(account: {self.ib.managedAccounts()})"
+                    f"(clientId={cid}, account: {self.ib.managedAccounts()})"
                 )
+                self.client_id = cid
                 return self.ib
             except Exception as e:
-                logger.warning(f"TWS connect attempt {attempt}/{max_retries} failed: {e}")
+                err_msg = str(e)
+                is_client_id_err = "client id" in err_msg.lower() or "already in use" in err_msg.lower()
+                if is_client_id_err:
+                    cid += 1
+                    logger.warning(
+                        f"TWS client id {cid - 1} in use, trying id {cid} "
+                        f"(attempt {attempt}/{max_retries})"
+                    )
+                else:
+                    logger.warning(f"TWS connect attempt {attempt}/{max_retries} failed: {e}")
                 if attempt < max_retries:
-                    time.sleep(retry_delay * attempt)
+                    time.sleep(retry_delay if is_client_id_err else retry_delay * attempt)
         raise ConnectionError(f"Failed to connect to TWS after {max_retries} attempts")
 
     def disconnect(self):

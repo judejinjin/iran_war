@@ -33,7 +33,7 @@ def _make_ib_future(symbol: str, contract_month: str, exchange: str) -> Future:
 
 def collect_futures_snapshot(ib_conn: IBConnection = None) -> dict:
     """
-    Fetch current futures curves for CL and BZ, store in DB.
+    Fetch current futures curves for CL and COIL, store in DB.
     Returns dict with counts: {"CL": n, "COIL": m}.
     """
     own_connection = ib_conn is None
@@ -175,7 +175,7 @@ def collect_historical_curves(ib_conn: IBConnection = None, days_back: int = 30)
     """
     Backfill daily futures curves for the past *days_back* business days.
 
-    For each contract month of CL/BZ, fetches daily bars via reqHistoricalData
+    For each contract month of CL/COIL, fetches daily bars via reqHistoricalData
     and stores them in FuturesCurve.  Then computes spreads for every date that
     has enough contracts.
 

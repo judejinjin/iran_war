@@ -31,7 +31,7 @@ Given the AI-vs-market probability edges across 6 scenarios, recommend specific 
 - Focus on scenarios with largest positive edge (AI prob > market prob)
 - Prefer defined-risk structures (spreads over naked options)
 - Target payoff ratio > 3:1 for tail risk trades
-- Consider liquidity — prefer CL (WTI) for execution, BZ (Brent) for expression
+- Consider liquidity — prefer CL (WTI) for execution, COIL (Brent) for expression
 - Account for position sizing — max 2-5% portfolio risk per trade
 - Near-term expiries for high-conviction, far expiries for tail risk
 
@@ -73,7 +73,7 @@ TRADING_TOOLS = [
         "input_schema": {
             "type": "object",
             "properties": {
-                "underlying": {"type": "string", "description": "CL or BZ"},
+                "underlying": {"type": "string", "description": "CL or COIL"},
                 "expiry": {"type": "string", "description": "Expiry date YYYY-MM-DD or YYYY-MM"},
             },
             "required": ["underlying"],
@@ -276,7 +276,7 @@ def run_trading_agent(target_date: date = None, edges: dict = None) -> list[dict
 
 Use the tools to:
 1. Get the detailed scenario edges
-2. Look at available options chains (BZ and CL)
+2. Look at available options chains (COIL and CL)
 3. Price options at different scenario levels
 4. Compute expected value for potential trades
 

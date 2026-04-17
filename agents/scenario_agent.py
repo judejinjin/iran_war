@@ -78,7 +78,7 @@ SCENARIO_TOOLS = [
     },
     {
         "name": "get_latest_futures",
-        "description": "Get current CL (WTI) and BZ (Brent) futures prices, term structure shape (contango/backwardation), and key spreads.",
+        "description": "Get current CL (WTI) and COIL (Brent) futures prices, term structure shape (contango/backwardation), and key spreads.",
         "input_schema": {
             "type": "object",
             "properties": {},
@@ -87,7 +87,7 @@ SCENARIO_TOOLS = [
     },
     {
         "name": "get_latest_vol_metrics",
-        "description": "Get current volatility surface metrics: ATM vol, 25-delta skew, 25-delta butterfly for CL and BZ.",
+        "description": "Get current volatility surface metrics: ATM vol, 25-delta skew, 25-delta butterfly for CL and COIL.",
         "input_schema": {
             "type": "object",
             "properties": {},
