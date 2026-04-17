@@ -326,6 +326,19 @@ class DisruptionEvent(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
+class PhysicalPrice(Base):
+    """Daily (FRED/EIA) and monthly (IMF) Dated Brent physical spot prices, multi-source."""
+    __tablename__ = "physical_prices"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    date = Column(Date, nullable=False)
+    symbol = Column(Text, nullable=False)              # e.g. "DATED_BRENT"
+    price = Column(Float, nullable=False)
+    source = Column(Text, nullable=False)              # "FRED" | "EIA" | "IMF"
+    freq = Column(Text, nullable=False, default="daily")  # "daily" | "monthly"
+    created_at = Column(DateTime, default=datetime.utcnow)
+    __table_args__ = (UniqueConstraint("date", "symbol", "source"),)
+
+
 class HormuzStatus(Base):
     __tablename__ = "hormuz_status"
     id = Column(Integer, primary_key=True, autoincrement=True)

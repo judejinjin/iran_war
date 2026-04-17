@@ -160,6 +160,24 @@ CREATE TABLE IF NOT EXISTS vol_surface (
 );
 
 -- ═══════════════════════════════════════════════════════════════
+--  PHYSICAL CRUDE PRICES
+-- ═══════════════════════════════════════════════════════════════
+
+CREATE TABLE IF NOT EXISTS physical_prices (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date DATE NOT NULL,
+    symbol TEXT NOT NULL,         -- 'DATED_BRENT'
+    price REAL NOT NULL,
+    source TEXT NOT NULL,         -- 'FRED' | 'EIA' | 'IMF'
+    freq TEXT NOT NULL DEFAULT 'daily',  -- 'daily' | 'monthly'
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(date, symbol, source)
+);
+
+CREATE INDEX IF NOT EXISTS idx_physical_prices_date ON physical_prices(date);
+CREATE INDEX IF NOT EXISTS idx_physical_prices_source ON physical_prices(symbol, source);
+
+-- ═══════════════════════════════════════════════════════════════
 --  SCENARIOS
 -- ═══════════════════════════════════════════════════════════════
 

@@ -61,6 +61,7 @@ FRED_DUBAI_SERIES = "POILDUBUSDM"   # IMF monthly Dubai crude (1992+)
 # ─── EIA Series ──────────────────────────────────────────────────────────────
 EIA_CRUDE_INVENTORY = "PET.WCESTUS1.W"
 EIA_US_PRODUCTION = "PET.WCRFPUS2.W"
+EIA_BRENT_SERIES = "RBRTED"   # Daily Europe Brent spot (Dated Brent proxy)
 
 # ─── News Search Keywords ────────────────────────────────────────────────────
 NEWS_KEYWORDS = [

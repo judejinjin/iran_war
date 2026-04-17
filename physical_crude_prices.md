@@ -14,7 +14,7 @@ typically express as a **differential to a benchmark** (e.g. "Mars at Platts WTI
 
 | Grade | Region | Pricing Basis | Assessed By |
 |---|---|---|---|
-| **Dated Brent** | North Sea (Sullom Voe) | Self-referential; ~70% of world crude priced off it | Platts |
+| **Dated Brent** | North Sea (BFOETM basket) | Self-referential; ~70% of world crude priced off it | Platts (S&P Global) |
 | **WTI Midland** | Permian Basin → Cushing OK / MEH TX | Platts WTI MEH/Midland | Platts |
 | **LLS (Louisiana Light Sweet)** | US Gulf Coast (LOOP terminal) | Platts LLS vs. WTI | Platts |
 | **Mars Blend** | US Gulf Coast (offshore) | Platts Mars vs. WTI | Platts |
@@ -30,13 +30,84 @@ typically express as a **differential to a benchmark** (e.g. "Mars at Platts WTI
 
 ---
 
+## Dated Brent — Deep Dive
+
+### What Is Dated Brent?
+Dated Brent (also called **North Sea Dated** or BFOETM) is the daily physical spot
+price for Brent crude cargoes loading **10–25 days forward** from North Sea fields.
+The underlying basket of grades is: **B**rent, **F**orties, **O**seberg, **E**kofisk,
+**T**roll, and (since 2022) **M**idland US WTI — hence "BFOETM". It is:
+
+- Assessed by **S&P Global Platts** at ~4:30 PM London time each business day
+- Published as a spot price in $/bbl alongside a rolling forward curve
+- The reference benchmark for ~70% of global physical crude contracts
+- Distinct from the ICE Brent **futures** price (which is a paper/swap contract)
+
+The **Brent Complex spread** — Dated Brent minus ICE Brent 1st nearby — measures
+physical tightness vs. paper markets. When physical supply is tight, Dated Brent
+trades at a premium (backwardation); when supply is loose it goes to a discount.
+
+### Free Proxies for Dated Brent
+
+The EIA's daily `RBRTE` series and FRED's `DCOILBRENTEU` are **both derived directly
+from the Platts Dated Brent assessment**. The EIA surveys Platts and republishes the
+figure, typically with a 1–2 day lag. Practically all free "Brent" data is this proxy.
+
+**Status in this codebase:** `DCOILBRENTEU` is fetched via FRED as symbol `COIL` in
+`fred_backfill.py` with daily granularity back to 1987. This is the best free
+approximation of Dated Brent available without a Platts subscription.
+
+### Lag and Recency
+- EIA updates `RBRTE` each evening (target: same business day)
+- FRED mirrors EIA with 0–1 additional day lag
+- As of the last release date checked (Apr 15, 2026), data runs through Apr 13, 2026
+  (2-day lag typical around weekends/holidays)
+
+### To Reduce Lag: Query EIA Directly
+Fetching `RBRTED` from the EIA spot price endpoint gives same-day data before FRED
+updates, avoiding the extra FRED mirror lag:
+
+```python
+import requests
+from datetime import date
+
+def fetch_dated_brent_eia(api_key: str, start_date: date) -> list[dict]:
+    url = "https://api.eia.gov/v2/petroleum/pri/spt/data/"
+    params = {
+        "api_key": api_key,
+        "frequency": "daily",
+        "data[0]": "value",
+        "facets[series][]": "RBRTED",
+        "start": start_date.isoformat(),
+        "sort[0][column]": "period",
+        "sort[0][direction]": "asc",
+        "length": 5000,
+    }
+    resp = requests.get(url, params=params, timeout=30)
+    resp.raise_for_status()
+    return resp.json()["response"]["data"]
+    # Each item: {"period": "2026-04-16", "value": "123.28", "series": "RBRTED", ...}
+```
+
+### Dated Brent vs. ICE Brent Futures (`COIL`) — Key Differences
+
+| Attribute | Dated Brent (physical) | ICE Brent Futures (`COIL`) |
+|---|---|---|
+| What it is | Assessed physical cargo price | Exchange-traded paper contract |
+| Source | Platts assessment (OTC market) | ICE exchange (cleared) |
+| Delivery | Physical 10–25 day forward | Cash-settled vs. Brent Index |
+| Free proxy | FRED `DCOILBRENTEU` / EIA `RBRTED` | IB TWS live; IB backfill |
+| Lag (free) | 1–2 business days | Real-time (IB) / next day (backfill) |
+
+---
+
 ## Data Sources — Detailed Breakdown
 
 ### 1. EIA Open Data API (Free, daily, 1986–present)
 **URL:** `https://api.eia.gov/v2/petroleum/pri/spt/data/`  
 **What's available:**
 - WTI Cushing spot: series `RWTC` (`EER_EPCWTI_PF4_Y35NY_DPB`) — daily 1986+
-- Brent Europe spot: series `RBRTE` — daily 1987+
+- Brent Europe spot (Dated Brent proxy): series `RBRTED` — daily 1987+
 - **Nothing else** — no LLS, Mars, Dubai, Urals, etc.
 
 ```python
@@ -47,13 +118,15 @@ r = requests.get(
         "api_key": EIA_API_KEY,
         "frequency": "daily",
         "data[0]": "value",
-        "facets[series][]": "RWTC",   # or RBRTE
+        "facets[series][]": "RWTC",   # or RBRTED for Dated Brent proxy
         "start": "2024-01-01",
     }
 )
 ```
 
-**Verdict:** Good for WTI and Brent benchmarks only. Already implemented.
+**Verdict:** Good for WTI and Brent benchmarks only. The `RBRTED` series is the same
+underlying Platts assessment as `DCOILBRENTEU` on FRED — already implemented via FRED.
+EIA direct endpoint has marginally lower lag (~0–1 day vs. 1–2 for FRED).
 
 ---
 
@@ -204,15 +277,20 @@ of 13 OPEC member crudes and a good proxy for Middle East/heavy sour prices.
 ## Recommended Implementation for This Project
 
 ### Tier 1 — Implement now (free)
-1. ✅ **Dubai monthly via FRED** (`POILDUBUSDM`) — added to `fred_backfill.py` as symbol `DUB`;
+1. ✅ **Dated Brent (daily) via FRED** (`DCOILBRENTEU`) — already fetched as symbol `COIL`
+   in `fred_backfill.py`; daily 1987+. This is the EIA's republication of the Platts
+   Dated Brent assessment and is the industry-standard free proxy.
+   - To reduce lag, switch `COIL` backfill to EIA direct (`RBRTED`) instead of FRED;
+     identical data, ~0–1 day lag vs. 1–2 for FRED.
+2. ✅ **Dubai monthly via FRED** (`POILDUBUSDM`) — added to `fred_backfill.py` as symbol `DUB`;
    stored in `FuturesCurve` with monthly frequency (1992+)
-2. **OPEC Reference Basket** via Nasdaq Data Link (`OPEC/ORB`) — good heavy sour proxy
-3. **Oman futures via IB TWS** — `symbol="OQD"`, `exchange="DME"` — if IB account has
+3. **OPEC Reference Basket** via Nasdaq Data Link (`OPEC/ORB`) — good heavy sour proxy
+4. **Oman futures via IB TWS** — `symbol="OQD"`, `exchange="DME"` — if IB account has
    CME/DME data package
 
 ### Tier 2 — Add later (requires exchange data subscription)
-4. **ICE Murban** (`MBR` on ICE) — UAE physical; IB requires ICE bundle
-5. ✅ **DME Oman delayed scrape** — implemented in `backfill/dme_backfill.py`;
+5. **ICE Murban** (`MBR` on ICE) — UAE physical; IB requires ICE bundle
+6. ✅ **DME Oman delayed scrape** — implemented in `backfill/dme_backfill.py`;
    scrapes CME Group public settlement page (product ID `DME_CME_PRODUCT_ID=460`)
    for OQD contract months; stores symbol `OQD` in `FuturesCurve` daily.
 
@@ -222,15 +300,17 @@ of 13 OPEC member crudes and a good proxy for Middle East/heavy sour prices.
    > on 404/empty-table and return 0 (non-fatal).
 
 ### Tier 3 — Enterprise (not feasible without budget)
-6. Platts / Argus for Dated Brent differential, LLS, Mars, ASCI, Urals, ESPO
+7. Platts / Argus for true intraday Dated Brent, LLS, Mars, ASCI, Urals, ESPO
 
 ### Key Series IDs for Tier 1
 
-| Series | FRED ID | Frequency | History |
-|---|---|---|---|
-| Dubai crude | `POILDUBUSDM` | Monthly | 1992+ |
-| APSP Average | `POILAPSPUSDM` | Monthly | 1992+ |
-| OPEC Ref Basket | `OPEC/ORB` (Quandl) | Daily | 2003+ |
+| Series | ID | Source | Frequency | History |
+|---|---|---|---|---|
+| Dated Brent (proxy) | `DCOILBRENTEU` | FRED (via EIA/Platts) | Daily | 1987+ |
+| Dated Brent (lower lag) | `RBRTED` | EIA direct API | Daily | 1987+ |
+| Dubai crude | `POILDUBUSDM` | FRED (via IMF) | Monthly | 1992+ |
+| APSP Average | `POILAPSPUSDM` | FRED (via IMF) | Monthly | 1992+ |
+| OPEC Ref Basket | `OPEC/ORB` | Nasdaq Data Link | Daily | 2003+ |
 
 The Brent–Dubai EFS (Exchange of Futures for Swaps) spread is a key signal for
 East-West crude flow arbitrage and can be approximated from COIL futures (already
