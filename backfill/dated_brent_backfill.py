@@ -3,7 +3,7 @@ Dated Brent Physical Price Backfill — three independent sources.
 
 Sources:
   FRED — DCOILBRENTEU   daily 1987+  (EIA/Platts republication, 1-2 day lag)
-  EIA  — RBRTED         daily 1987+  (same underlying, 0-1 day lag)
+  EIA  — RBRTE          daily 1987+  (same underlying, 0-1 day lag)
   IMF  — POILBREUSDM    monthly 1990+ (via FRED; same IMF data as DUB series)
 
 All records stored in physical_prices table with symbol='DATED_BRENT'.
