@@ -2,12 +2,58 @@
 Futures Tab Callbacks — query DB for curves & spreads, render Plotly charts.
 """
 
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
+import calendar
 import plotly.graph_objects as go
 import dash_bootstrap_components as dbc
 from dash import html, callback, Input, Output, no_update
+from dateutil.relativedelta import relativedelta
 
 from db.database import get_session, FuturesCurve, Spread
+
+# ─── Contract label helpers ───────────────────────────────────────────────────
+_MONTH_CODES = {
+    1: "F", 2: "G", 3: "H", 4: "J",  5: "K", 6: "M",
+    7: "N", 8: "Q", 9: "U", 10: "V", 11: "X", 12: "Z",
+}
+
+
+def _biz_days_before(d: date, n: int) -> date:
+    result = d
+    counted = 0
+    while counted < n:
+        result -= timedelta(days=1)
+        if result.weekday() < 5:
+            counted += 1
+    return result
+
+
+def _contract_label(sym: str, contract_month: str) -> str:
+    """
+    Return 'CLK6 2026-04-21' from symbol and 'YYYY-MM' contract_month.
+    Expiry estimated:
+      CL   — 3 biz days before the 25th of the prior calendar month
+      COIL — last biz day of the 2nd calendar month before delivery
+    """
+    try:
+        year  = int(contract_month[:4])
+        month = int(contract_month[5:7])
+        ticker = f"{sym}{_MONTH_CODES.get(month, '?')}{str(year)[-1]}"
+
+        if sym == "CL":
+            prev_month = month - 1 if month > 1 else 12
+            prev_year  = year if month > 1 else year - 1
+            expiry = _biz_days_before(date(prev_year, prev_month, 25), 3)
+        else:
+            base  = date(year, month, 1) - relativedelta(months=2)
+            last  = calendar.monthrange(base.year, base.month)[1]
+            expiry = date(base.year, base.month, last)
+            while expiry.weekday() >= 5:
+                expiry -= timedelta(days=1)
+
+        return f"{ticker} {expiry.isoformat()}"
+    except Exception:
+        return contract_month
 
 
 # ─── Populate contract-month dropdowns from DB ────────────────────────────
@@ -33,7 +79,7 @@ def populate_contract_dropdowns(_n):
                 .order_by(FuturesCurve.contract_month)
                 .all()
             ]
-            opts[sym] = [{"label": m, "value": m} for m in months]
+            opts[sym] = [{"label": _contract_label(sym, m), "value": m} for m in months]
             # Default to front month (min contract_month on most recent date)
             front = (
                 session.query(sa_func.min(FuturesCurve.contract_month))
@@ -359,7 +405,7 @@ def populate_table_dropdowns(_n):
                 .order_by(FuturesCurve.contract_month)
                 .all()
             ]
-            opts[sym] = [{"label": m, "value": m} for m in months]
+            opts[sym] = [{"label": _contract_label(sym, m), "value": m} for m in months]
             front = (
                 session.query(sa_func.min(FuturesCurve.contract_month))
                 .filter(
