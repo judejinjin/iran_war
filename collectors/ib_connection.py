@@ -19,7 +19,7 @@ class IBConnection:
         self.port = port or TWS_PORT
         self.client_id = client_id or TWS_CLIENT_ID
 
-    def connect(self, max_retries=3, retry_delay=5):
+    def connect(self, max_retries=5, retry_delay=5):
         """Connect to TWS with retry logic."""
         if self.ib.isConnected():
             return self.ib
@@ -32,6 +32,10 @@ class IBConnection:
 
         cid = self.client_id
         for attempt in range(1, max_retries + 1):
+            # Recreate IB object on retries — stale internal state from a dropped
+            # connection can cause ib_insync to misbehave on the next connect().
+            if attempt > 1:
+                self.ib = IB()
             try:
                 self.ib.connect(
                     self.host, self.port,
@@ -39,12 +43,6 @@ class IBConnection:
                     readonly=True,
                     timeout=20,
                 )
-                logger.info(
-                    f"Connected to TWS at {self.host}:{self.port} "
-                    f"(clientId={cid}, account: {self.ib.managedAccounts()})"
-                )
-                self.client_id = cid
-                return self.ib
             except Exception as e:
                 err_msg = str(e)
                 is_client_id_err = "client id" in err_msg.lower() or "already in use" in err_msg.lower()
@@ -58,6 +56,33 @@ class IBConnection:
                     logger.warning(f"TWS connect attempt {attempt}/{max_retries} failed: {e}")
                 if attempt < max_retries:
                     time.sleep(retry_delay if is_client_id_err else retry_delay * attempt)
+                continue
+
+            # connect() didn't raise, but TWS may have sent error 326 and silently
+            # dropped the connection (ib_insync receives it as an error event, not an
+            # exception).  Detect this by checking the actual connection state.
+            if not self.ib.isConnected():
+                logger.warning(
+                    f"TWS rejected clientId={cid} after connect "
+                    f"(likely already in use), trying id {cid + 1} "
+                    f"(attempt {attempt}/{max_retries})"
+                )
+                try:
+                    self.ib.disconnect()
+                except Exception:
+                    pass
+                cid += 1
+                if attempt < max_retries:
+                    time.sleep(retry_delay)
+                continue
+
+            logger.info(
+                f"Connected to TWS at {self.host}:{self.port} "
+                f"(clientId={cid}, account: {self.ib.managedAccounts()})"
+            )
+            self.client_id = cid
+            return self.ib
+
         raise ConnectionError(f"Failed to connect to TWS after {max_retries} attempts")
 
     def disconnect(self):
