@@ -335,3 +335,88 @@ def update_futures(start_date, end_date, symbol_filter, cl_contract, coil_contra
 
     finally:
         session.close()
+
+
+# ─── Populate table contract dropdowns ───────────────────────────────────────
+
+@callback(
+    Output("futures-table-cl-contract",   "options"),
+    Output("futures-table-cl-contract",   "value"),
+    Output("futures-table-coil-contract", "options"),
+    Output("futures-table-coil-contract", "value"),
+    Input("auto-refresh", "n_intervals"),
+)
+def populate_table_dropdowns(_n):
+    session = get_session()
+    try:
+        from sqlalchemy import func as sa_func
+        opts, defaults = {}, {}
+        for sym in ("CL", "COIL"):
+            months = [
+                r[0] for r in session.query(FuturesCurve.contract_month)
+                .filter(FuturesCurve.symbol == sym)
+                .distinct()
+                .order_by(FuturesCurve.contract_month)
+                .all()
+            ]
+            opts[sym] = [{"label": m, "value": m} for m in months]
+            front = (
+                session.query(sa_func.min(FuturesCurve.contract_month))
+                .filter(
+                    FuturesCurve.symbol == sym,
+                    FuturesCurve.date == session.query(sa_func.max(FuturesCurve.date))
+                        .filter(FuturesCurve.symbol == sym).scalar_subquery(),
+                )
+                .scalar()
+            )
+            defaults[sym] = front or (months[0] if months else None)
+        return opts["CL"], defaults["CL"], opts["COIL"], defaults["COIL"]
+    finally:
+        session.close()
+
+
+# ─── Fill price history tables ────────────────────────────────────────────────
+
+@callback(
+    Output("futures-table-cl",   "data"),
+    Output("futures-table-coil", "data"),
+    Input("futures-table-cl-contract",   "value"),
+    Input("futures-table-coil-contract", "value"),
+    Input("futures-date-range", "start_date"),
+    Input("futures-date-range", "end_date"),
+)
+def update_history_tables(cl_contract, coil_contract, start_date, end_date):
+    session = get_session()
+    try:
+        if isinstance(start_date, str):
+            start_date = datetime.strptime(start_date[:10], "%Y-%m-%d").date()
+        if isinstance(end_date, str):
+            end_date = datetime.strptime(end_date[:10], "%Y-%m-%d").date()
+
+        def _rows(sym, contract):
+            if not contract:
+                return []
+            rows = (
+                session.query(FuturesCurve)
+                .filter(
+                    FuturesCurve.symbol == sym,
+                    FuturesCurve.contract_month == contract,
+                    FuturesCurve.date >= start_date,
+                    FuturesCurve.date <= end_date,
+                )
+                .order_by(FuturesCurve.date.desc())
+                .all()
+            )
+            return [
+                {
+                    "date":   r.date.strftime("%Y-%m-%d"),
+                    "price":  f"{r.settlement_price:.2f}" if r.settlement_price is not None else "\u2014",
+                    "volume": f"{r.volume:,}"        if r.volume        is not None else "\u2014",
+                    "oi":     f"{r.open_interest:,}" if r.open_interest is not None else "\u2014",
+                }
+                for r in rows
+            ]
+
+        return _rows("CL", cl_contract), _rows("COIL", coil_contract)
+    finally:
+        session.close()

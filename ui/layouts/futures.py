@@ -4,7 +4,7 @@ Futures Tab Layout — curve charts, spread charts, key metrics.
 
 from datetime import date, timedelta
 import dash_bootstrap_components as dbc
-from dash import html, dcc
+from dash import html, dcc, dash_table
 
 from config import DEFAULT_TIMELINE_DAYS
 
@@ -99,4 +99,110 @@ layout = dbc.Container([
             ]),
         ], width=6),
     ]),
+
+    # ─── Contract Price History Tables ────────────────────────────────────
+    dbc.Row([
+        dbc.Col([
+            dbc.Card([
+                dbc.CardHeader([
+                    "WTI (CL) Price History — ",
+                    dcc.Dropdown(
+                        id="futures-table-cl-contract",
+                        placeholder="Select contract…",
+                        clearable=False,
+                        style={"width": "160px", "display": "inline-block",
+                               "verticalAlign": "middle"},
+                    ),
+                ], style={"display": "flex", "alignItems": "center", "gap": "8px"}),
+                dbc.CardBody(
+                    dash_table.DataTable(
+                        id="futures-table-cl",
+                        columns=[
+                            {"name": "Date",           "id": "date"},
+                            {"name": "Settlement ($)", "id": "price"},
+                            {"name": "Volume",         "id": "volume"},
+                            {"name": "Open Interest",  "id": "oi"},
+                        ],
+                        page_size=20,
+                        sort_action="native",
+                        sort_by=[{"column_id": "date", "direction": "desc"}],
+                        style_table={"overflowY": "auto", "maxHeight": "460px"},
+                        style_cell={
+                            "backgroundColor": "#1a1a2e",
+                            "color": "#e0e0e0",
+                            "border": "1px solid #333",
+                            "textAlign": "right",
+                            "padding": "5px 12px",
+                            "fontSize": "0.83rem",
+                            "fontFamily": "monospace",
+                        },
+                        style_cell_conditional=[
+                            {"if": {"column_id": "date"}, "textAlign": "left"},
+                        ],
+                        style_header={
+                            "backgroundColor": "#16213e",
+                            "color": "#aaa",
+                            "fontWeight": "600",
+                            "border": "1px solid #333",
+                            "textAlign": "right",
+                        },
+                        style_header_conditional=[
+                            {"if": {"column_id": "date"}, "textAlign": "left"},
+                        ],
+                    ),
+                ),
+            ]),
+        ], width=6),
+        dbc.Col([
+            dbc.Card([
+                dbc.CardHeader([
+                    "Brent (COIL) Price History — ",
+                    dcc.Dropdown(
+                        id="futures-table-coil-contract",
+                        placeholder="Select contract…",
+                        clearable=False,
+                        style={"width": "160px", "display": "inline-block",
+                               "verticalAlign": "middle"},
+                    ),
+                ], style={"display": "flex", "alignItems": "center", "gap": "8px"}),
+                dbc.CardBody(
+                    dash_table.DataTable(
+                        id="futures-table-coil",
+                        columns=[
+                            {"name": "Date",           "id": "date"},
+                            {"name": "Settlement ($)", "id": "price"},
+                            {"name": "Volume",         "id": "volume"},
+                            {"name": "Open Interest",  "id": "oi"},
+                        ],
+                        page_size=20,
+                        sort_action="native",
+                        sort_by=[{"column_id": "date", "direction": "desc"}],
+                        style_table={"overflowY": "auto", "maxHeight": "460px"},
+                        style_cell={
+                            "backgroundColor": "#1a1a2e",
+                            "color": "#e0e0e0",
+                            "border": "1px solid #333",
+                            "textAlign": "right",
+                            "padding": "5px 12px",
+                            "fontSize": "0.83rem",
+                            "fontFamily": "monospace",
+                        },
+                        style_cell_conditional=[
+                            {"if": {"column_id": "date"}, "textAlign": "left"},
+                        ],
+                        style_header={
+                            "backgroundColor": "#16213e",
+                            "color": "#aaa",
+                            "fontWeight": "600",
+                            "border": "1px solid #333",
+                            "textAlign": "right",
+                        },
+                        style_header_conditional=[
+                            {"if": {"column_id": "date"}, "textAlign": "left"},
+                        ],
+                    ),
+                ),
+            ]),
+        ], width=6),
+    ], className="mt-3"),
 ], fluid=True)
