@@ -28,30 +28,40 @@ def _biz_days_before(d: date, n: int) -> date:
     return result
 
 
-def _contract_label(sym: str, contract_month: str) -> str:
+def _contract_expiry(sym: str, contract_month: str) -> date | None:
     """
-    Return 'CLK6 2026-04-21' from symbol and 'YYYY-MM' contract_month.
-    Expiry estimated:
+    Estimated last trading day for a contract.
       CL   — 3 biz days before the 25th of the prior calendar month
       COIL — last biz day of the 2nd calendar month before delivery
     """
     try:
         year  = int(contract_month[:4])
         month = int(contract_month[5:7])
-        ticker = f"{sym}{_MONTH_CODES.get(month, '?')}{str(year)[-1]}"
-
         if sym == "CL":
             prev_month = month - 1 if month > 1 else 12
             prev_year  = year if month > 1 else year - 1
-            expiry = _biz_days_before(date(prev_year, prev_month, 25), 3)
+            return _biz_days_before(date(prev_year, prev_month, 25), 3)
         else:
             base  = date(year, month, 1) - relativedelta(months=2)
             last  = calendar.monthrange(base.year, base.month)[1]
             expiry = date(base.year, base.month, last)
             while expiry.weekday() >= 5:
                 expiry -= timedelta(days=1)
+            return expiry
+    except Exception:
+        return None
 
-        return f"{ticker} {expiry.isoformat()}"
+
+def _contract_label(sym: str, contract_month: str) -> str:
+    """
+    Return 'CLK6 2026-04-21' from symbol and 'YYYY-MM' contract_month.
+    """
+    try:
+        year  = int(contract_month[:4])
+        month = int(contract_month[5:7])
+        ticker = f"{sym}{_MONTH_CODES.get(month, '?')}{str(year)[-1]}"
+        expiry = _contract_expiry(sym, contract_month)
+        return f"{ticker} {expiry.isoformat()}" if expiry else contract_month
     except Exception:
         return contract_month
 
@@ -442,13 +452,15 @@ def update_history_tables(cl_contract, coil_contract, start_date, end_date):
         def _rows(sym, contract):
             if not contract:
                 return []
+            expiry = _contract_expiry(sym, contract)
+            effective_end = min(end_date, expiry) if expiry else end_date
             rows = (
                 session.query(FuturesCurve)
                 .filter(
                     FuturesCurve.symbol == sym,
                     FuturesCurve.contract_month == contract,
                     FuturesCurve.date >= start_date,
-                    FuturesCurve.date <= end_date,
+                    FuturesCurve.date <= effective_end,
                 )
                 .order_by(FuturesCurve.date.desc())
                 .all()
