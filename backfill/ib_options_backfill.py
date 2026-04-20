@@ -265,11 +265,16 @@ def _build_underlying_price_maps(session, symbol, ib=None, futures_months=None, 
                         symbol=symbol, contract_month=cm
                     ).all()
                 )
+                today_date = date.today()
                 pm = {}
                 for bar in bars:
                     bar_date = bar.date if isinstance(bar.date, date) else bar.date.date()
                     pm[bar_date] = bar.close
-                    # Persist to futures_curves so recompute_greeks works offline
+                    # Persist to futures_curves so recompute_greeks works offline.
+                    # Skip today's bar — it is a partial/in-session MIDPOINT and
+                    # would overwrite (or create) a row with an incomplete price.
+                    if bar_date >= today_date:
+                        continue
                     if bar_date not in existing_dates:
                         session.add(FuturesCurve(
                             date=bar_date,

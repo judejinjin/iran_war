@@ -73,7 +73,10 @@ def collect_futures_snapshot(ib_conn: IBConnection = None) -> dict:
                     except Exception:
                         pass
 
-                    # Fallback to historical data (works outside market hours)
+                    # Fallback to historical data (works outside market hours).
+                    # Use the bar's own date rather than 'today' so a weekend
+                    # early-session bar isn't stamped as Sunday's settlement.
+                    hist_bar_date = None
                     if price is None or price <= 0:
                         bars = ib.reqHistoricalData(
                             contract, endDateTime="", durationStr="3 D",
@@ -81,15 +84,33 @@ def collect_futures_snapshot(ib_conn: IBConnection = None) -> dict:
                             useRTH=True, formatDate=1,
                         )
                         if bars:
-                            price = bars[-1].close
-                            volume = int(bars[-1].volume) if bars[-1].volume > 0 else None
+                            last_bar = bars[-1]
+                            hist_bar_date = last_bar.date if isinstance(last_bar.date, date) else last_bar.date.date()
+                            # Skip incomplete today-bar from historical fallback
+                            if hist_bar_date >= today:
+                                if len(bars) >= 2:
+                                    last_bar = bars[-2]
+                                    hist_bar_date = last_bar.date if isinstance(last_bar.date, date) else last_bar.date.date()
+                                else:
+                                    hist_bar_date = None
+                            if hist_bar_date:
+                                price = last_bar.close
+                                volume = int(last_bar.volume) if last_bar.volume > 0 else None
 
                     if price is None or price <= 0:
                         continue
 
+                    # For snapshot path use today; for hist fallback use the bar date
+                    write_date = hist_bar_date if hist_bar_date else today
+                    # On weekends the live snapshot price is pre-RTH / partial —
+                    # don't store it as a settled daily bar.
+                    if hist_bar_date is None and today.weekday() >= 5:
+                        logger.debug(f"Skip weekend snapshot for {symbol} {month_str}")
+                        continue
+
                     # Upsert into DB
                     existing = session.query(FuturesCurve).filter_by(
-                        date=today, symbol=symbol, contract_month=month_str
+                        date=write_date, symbol=symbol, contract_month=month_str
                     ).first()
 
                     if existing:
@@ -97,7 +118,7 @@ def collect_futures_snapshot(ib_conn: IBConnection = None) -> dict:
                         existing.volume = volume
                     else:
                         row = FuturesCurve(
-                            date=today,
+                            date=write_date,
                             symbol=symbol,
                             contract_month=month_str,
                             settlement_price=price,
