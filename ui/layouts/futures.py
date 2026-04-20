@@ -64,14 +64,14 @@ layout = dbc.Container([
                         id="futures-contract-cl",
                         placeholder="WTI contract…",
                         clearable=True,
-                        style={"width": "150px", "display": "inline-block",
+                        style={"width": "220px", "display": "inline-block",
                                "verticalAlign": "middle", "marginRight": "12px"},
                     ),
                     dcc.Dropdown(
                         id="futures-contract-coil",
                         placeholder="Brent contract…",
                         clearable=True,
-                        style={"width": "150px", "display": "inline-block",
+                        style={"width": "220px", "display": "inline-block",
                                "verticalAlign": "middle", "marginRight": "12px"},
                     ),
                     dbc.Switch(
@@ -104,16 +104,7 @@ layout = dbc.Container([
     dbc.Row([
         dbc.Col([
             dbc.Card([
-                dbc.CardHeader([
-                    "WTI (CL) Price History — ",
-                    dcc.Dropdown(
-                        id="futures-table-cl-contract",
-                        placeholder="Select contract…",
-                        clearable=False,
-                        style={"width": "160px", "display": "inline-block",
-                               "verticalAlign": "middle"},
-                    ),
-                ], style={"display": "flex", "alignItems": "center", "gap": "8px"}),
+                dbc.CardHeader("WTI (CL) Price History"),
                 dbc.CardBody(
                     dash_table.DataTable(
                         id="futures-table-cl",
@@ -155,16 +146,7 @@ layout = dbc.Container([
         ], width=6),
         dbc.Col([
             dbc.Card([
-                dbc.CardHeader([
-                    "Brent (COIL) Price History — ",
-                    dcc.Dropdown(
-                        id="futures-table-coil-contract",
-                        placeholder="Select contract…",
-                        clearable=False,
-                        style={"width": "160px", "display": "inline-block",
-                               "verticalAlign": "middle"},
-                    ),
-                ], style={"display": "flex", "alignItems": "center", "gap": "8px"}),
+                dbc.CardHeader("Brent (COIL) Price History"),
                 dbc.CardBody(
                     dash_table.DataTable(
                         id="futures-table-coil",

@@ -393,51 +393,13 @@ def update_futures(start_date, end_date, symbol_filter, cl_contract, coil_contra
         session.close()
 
 
-# ─── Populate table contract dropdowns ───────────────────────────────────────
-
-@callback(
-    Output("futures-table-cl-contract",   "options"),
-    Output("futures-table-cl-contract",   "value"),
-    Output("futures-table-coil-contract", "options"),
-    Output("futures-table-coil-contract", "value"),
-    Input("auto-refresh", "n_intervals"),
-)
-def populate_table_dropdowns(_n):
-    session = get_session()
-    try:
-        from sqlalchemy import func as sa_func
-        opts, defaults = {}, {}
-        for sym in ("CL", "COIL"):
-            months = [
-                r[0] for r in session.query(FuturesCurve.contract_month)
-                .filter(FuturesCurve.symbol == sym)
-                .distinct()
-                .order_by(FuturesCurve.contract_month)
-                .all()
-            ]
-            opts[sym] = [{"label": _contract_label(sym, m), "value": m} for m in months]
-            front = (
-                session.query(sa_func.min(FuturesCurve.contract_month))
-                .filter(
-                    FuturesCurve.symbol == sym,
-                    FuturesCurve.date == session.query(sa_func.max(FuturesCurve.date))
-                        .filter(FuturesCurve.symbol == sym).scalar_subquery(),
-                )
-                .scalar()
-            )
-            defaults[sym] = front or (months[0] if months else None)
-        return opts["CL"], defaults["CL"], opts["COIL"], defaults["COIL"]
-    finally:
-        session.close()
-
-
-# ─── Fill price history tables ────────────────────────────────────────────────
+# ─── Fill price history tables (shares contract selection with chart dropdowns) ─
 
 @callback(
     Output("futures-table-cl",   "data"),
     Output("futures-table-coil", "data"),
-    Input("futures-table-cl-contract",   "value"),
-    Input("futures-table-coil-contract", "value"),
+    Input("futures-contract-cl",   "value"),
+    Input("futures-contract-coil", "value"),
     Input("futures-date-range", "start_date"),
     Input("futures-date-range", "end_date"),
 )
