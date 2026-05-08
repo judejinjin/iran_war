@@ -18,7 +18,7 @@ DB_URL = f"sqlite:///{DB_PATH}"
 LOG_DIR = BASE_DIR / "logs"
 
 # ─── War Parameters ──────────────────────────────────────────────────────────
-WAR_START_DATE = "2026-02-28"
+WAR_START_DATE = "2026-01-01"
 
 # ─── IB TWS ──────────────────────────────────────────────────────────────────
 TWS_HOST = os.environ.get("TWS_HOST", "127.0.0.1")

@@ -74,7 +74,7 @@ def _run_market_data():
 
 
 def _run_eia_fred():
-    """Scheduled: EIA + FRED weekly data."""
+    """Scheduled: EIA + FRED weekly data + Dated Brent physical prices."""
     results = {}
     try:
         from backfill.eia_backfill import run_backfill as eia_backfill
@@ -91,6 +91,18 @@ def _run_eia_fred():
     except Exception as e:
         logger.error(f"FRED update failed: {e}")
         results["fred"] = str(e)
+
+    try:
+        from datetime import date
+        from db.database import get_session
+        from backfill.dated_brent_backfill import run_backfill as dated_brent_backfill
+        session = get_session()
+        count = dated_brent_backfill(start_from=date.today(), session=session)
+        session.close()
+        results["dated_brent"] = f"{count} records"
+    except Exception as e:
+        logger.error(f"Dated Brent update failed: {e}")
+        results["dated_brent"] = str(e)
 
     return results
 
