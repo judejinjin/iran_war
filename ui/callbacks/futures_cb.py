@@ -6,7 +6,7 @@ from datetime import date, datetime, timedelta
 import calendar
 import plotly.graph_objects as go
 import dash_bootstrap_components as dbc
-from dash import html, callback, Input, Output, no_update
+from dash import html, callback, Input, Output, no_update, dash_table
 from dateutil.relativedelta import relativedelta
 
 from db.database import get_session, FuturesCurve, Spread
@@ -110,18 +110,22 @@ def populate_contract_dropdowns(_n):
     Output("futures-metrics-row", "children"),
     Output("futures-curve-chart", "figure"),
     Output("futures-curve-footnotes", "children"),
+    Output("futures-term-structure-tables", "children"),
     Output("futures-price-history", "figure"),
     Output("futures-spread-chart", "figure"),
+    Output("futures-spread-contracts", "children"),
     Input("futures-date-range", "start_date"),
     Input("futures-date-range", "end_date"),
     Input("futures-symbol-toggle", "value"),
     Input("futures-contract-cl", "value"),
     Input("futures-contract-coil", "value"),
     Input("futures-spread-toggle", "value"),
-    Input("futures-cal-6m-toggle", "value"),
+    Input("futures-cal-spread-toggle", "value"),
+    Input("futures-term-structure-overlays", "value"),
+    Input("futures-term-structure-symbol", "value"),
     Input("auto-refresh", "n_intervals"),
 )
-def update_futures(start_date, end_date, symbol_filter, cl_contract, coil_contract, show_spread, show_6m, _n):
+def update_futures(start_date, end_date, symbol_filter, cl_contract, coil_contract, show_spread, cal_spread_mode, term_structure_overlays, term_structure_symbol, _n):
     session = get_session()
     today = date.today()
 
@@ -158,52 +162,138 @@ def update_futures(start_date, end_date, symbol_filter, cl_contract, coil_contra
             html.H4(spread_val),
         ])), width=2))
 
-        # ─── Term Structure Chart — always both WTI & Brent ─────────
+        # ─── Term Structure Chart — current + selected historical snapshots ───
         curve_fig = go.Figure()
         curve_fig.update_layout(
             template="oil_dark",
-            title="Current Futures Term Structure",
+            title="Futures Term Structure",
             xaxis_title="Contract Month",
             yaxis_title="Price ($/bbl)",
             height=400,
         )
 
-        colors = {"CL": "#FF6B35", "COIL": "#1E90FF"}
+        colors = {"CL": "#2E86DE", "COIL": "#E74C3C"}
+        line_styles = {
+            "CURRENT": "solid",
+            "INCEPTION": "dash",
+            "1W": "dot",
+            "1M": "dashdot",
+            "3M": "longdash",
+            "6M": "longdashdot",
+            "12M": "dash",
+        }
         has_curve = False
-        curve_details = {}  # {sym: [(month, price), ...]}
+        curve_details = []  # ["WTI 1M: 2026-03-24", ...]
 
-        for sym in ["CL", "COIL"]:
+        inception_date = date(2026, 3, 2)
+
+        if term_structure_overlays is None:
+            term_structure_overlays = []
+
+        # Only show the selected symbol on term structure chart
+        term_structure_symbols = [term_structure_symbol]
+
+        def _curve_on_or_before(sym: str, target_date: date):
+            date_row = session.query(FuturesCurve.date).filter(
+                FuturesCurve.symbol == sym,
+                FuturesCurve.date <= target_date,
+            ).order_by(FuturesCurve.date.desc()).first()
+            if not date_row:
+                return None, []
+            rows = session.query(FuturesCurve).filter(
+                FuturesCurve.symbol == sym,
+                FuturesCurve.date == date_row[0],
+            ).order_by(FuturesCurve.contract_month).all()
+            return date_row[0], rows
+
+        # Track contract data for separate tables
+        term_structure_tables = []
+
+        for sym in term_structure_symbols:
             latest_date_row = session.query(FuturesCurve.date).filter(
                 FuturesCurve.symbol == sym,
             ).order_by(FuturesCurve.date.desc()).first()
 
-            if latest_date_row:
-                curves = session.query(FuturesCurve).filter(
-                    FuturesCurve.symbol == sym,
-                    FuturesCurve.date == latest_date_row[0],
-                ).order_by(FuturesCurve.contract_month).all()
+            if not latest_date_row:
+                continue
 
-                if curves and len(curves) > 1:
-                    has_curve = True
-                    label = "WTI (CL)" if sym == "CL" else "Brent (COIL)"
-                    curve_details[sym] = [
-                        (c.contract_month, c.settlement_price) for c in curves
-                    ]
-                    curve_fig.add_trace(go.Scatter(
-                        x=[c.contract_month for c in curves],
-                        y=[c.settlement_price for c in curves],
-                        mode="lines+markers",
-                        name=label,
-                        line=dict(color=colors[sym]),
-                        marker=dict(color=colors[sym]),
-                    ))
+            base_date = latest_date_row[0]
+            snapshot_specs = [("CURRENT", "Current", base_date)]
+            if "INCEPTION" in term_structure_overlays:
+                snapshot_specs.append(("INCEPTION", "Inception", inception_date))
+            if "1W" in term_structure_overlays:
+                snapshot_specs.append(("1W", "1W Ago", base_date - timedelta(weeks=1)))
+            if "1M" in term_structure_overlays:
+                snapshot_specs.append(("1M", "1M Ago", base_date - relativedelta(months=1)))
+            if "3M" in term_structure_overlays:
+                snapshot_specs.append(("3M", "3M Ago", base_date - relativedelta(months=3)))
+            if "6M" in term_structure_overlays:
+                snapshot_specs.append(("6M", "6M Ago", base_date - relativedelta(months=6)))
+            if "12M" in term_structure_overlays:
+                snapshot_specs.append(("12M", "12M Ago", base_date - relativedelta(months=12)))
+
+            sym_label = "WTI" if sym == "CL" else "Brent"
+            for key, tag, target_date in snapshot_specs:
+                snap_date, curves = _curve_on_or_before(sym, target_date)
+                if not curves or len(curves) < 2:
+                    continue
+                has_curve = True
+                curve_fig.add_trace(go.Scatter(
+                    x=[c.contract_month for c in curves],
+                    y=[c.settlement_price for c in curves],
+                    mode="lines+markers",
+                    name=f"{sym_label} {tag}",
+                    line=dict(color=colors[sym], dash=line_styles[key]),
+                    marker=dict(color=colors[sym], size=5),
+                ))
+                if snap_date:
+                    curve_details.append(f"{sym_label} {tag}: {snap_date.isoformat()}")
+                    # Create a separate table for this curve
+                    table_data = []
+                    for c in curves:
+                        table_data.append({
+                            "contract": _contract_label(sym, c.contract_month),
+                            "price": f"${c.settlement_price:.2f}" if c.settlement_price else "N/A",
+                        })
+                    
+                    term_structure_tables.append(
+                        dbc.Col([
+                            html.H6(f"{sym_label} {tag}", style={"fontSize": "0.85rem", "marginBottom": "4px"}),
+                            html.P(snap_date.isoformat(), style={"fontSize": "0.72rem", "color": "#888", "marginBottom": "8px"}),
+                            dash_table.DataTable(
+                                columns=[
+                                    {"name": "Contract", "id": "contract"},
+                                    {"name": "Price", "id": "price"},
+                                ],
+                                data=table_data,
+                                style_cell={
+                                    "backgroundColor": "#1a1a2e",
+                                    "color": "#e0e0e0",
+                                    "border": "1px solid #333",
+                                    "textAlign": "left",
+                                    "padding": "4px 8px",
+                                    "fontSize": "0.75rem",
+                                    "fontFamily": "monospace",
+                                },
+                                style_header={
+                                    "backgroundColor": "#16213e",
+                                    "color": "#aaa",
+                                    "fontWeight": "600",
+                                    "border": "1px solid #333",
+                                    "textAlign": "left",
+                                    "fontSize": "0.75rem",
+                                },
+                                style_table={"maxHeight": "400px", "overflowY": "auto"},
+                            ),
+                        ], width="auto", style={"minWidth": "200px", "marginRight": "16px"}),
+                    )
 
         if not has_curve:
             curve_fig.update_layout(
                 title="Recent Spot Prices (term structure requires IB data)",
                 xaxis_title="Date",
             )
-            for sym in ["CL", "COIL"]:
+            for sym in term_structure_symbols:
                 rows = session.query(FuturesCurve).filter(
                     FuturesCurve.symbol == sym,
                 ).order_by(FuturesCurve.date.desc()).limit(20).all()
@@ -220,15 +310,19 @@ def update_futures(start_date, end_date, symbol_filter, cl_contract, coil_contra
 
         # ─── Term Structure Footnotes ─────────────────────────────────
         footnote_children = []
-        for sym, pairs in curve_details.items():
-            label = "WTI (CL)" if sym == "CL" else "Brent (COIL)"
-            line = f"{label}: " + ", ".join(
-                f"{m} ${p:.2f}" if p else f"{m} N/A" for m, p in pairs
-            )
+        if curve_details:
             footnote_children.append(
-                html.P(line, style={"fontSize": "0.7rem", "color": "#888",
-                                    "margin": "2px 0", "lineHeight": "1.3"})
+                html.P(
+                    " | ".join(curve_details),
+                    style={"fontSize": "0.72rem", "color": "#888", "margin": "2px 0", "lineHeight": "1.3"},
+                )
             )
+
+        # ─── Arrange term structure tables horizontally ───────────────
+        term_structure_tables_component = dbc.Row(
+            term_structure_tables,
+            style={"display": "flex", "flexWrap": "nowrap", "overflowX": "auto"},
+        ) if term_structure_tables else html.Div("No term structure data available")
 
         # ─── Price History Chart ──────────────────────────────────────
         history_fig = go.Figure()
@@ -239,12 +333,15 @@ def update_futures(start_date, end_date, symbol_filter, cl_contract, coil_contra
         def _fetch_series(sym):
             picked = contract_picks.get(sym)
             if picked:
-                return session.query(FuturesCurve).filter(
+                # Cap at expiry date for specific contracts
+                expiry = _contract_expiry(sym, picked)
+                query = session.query(FuturesCurve).filter(
                     FuturesCurve.symbol == sym,
                     FuturesCurve.contract_month == picked,
-                    FuturesCurve.date >= start_date,
-                    FuturesCurve.date <= end_date,
-                ).order_by(FuturesCurve.date).all()
+                )
+                if expiry:
+                    query = query.filter(FuturesCurve.date <= expiry)
+                return query.order_by(FuturesCurve.date).all()
             subq = session.query(
                 FuturesCurve.date,
                 sa_func.min(FuturesCurve.contract_month).label("front_month"),
@@ -315,10 +412,18 @@ def update_futures(start_date, end_date, symbol_filter, cl_contract, coil_contra
             height=400,
         )
 
-        # Calendar spreads — compute on-the-fly from FuturesCurve data
-        # For each date & symbol, rank contracts by contract_month and compute
-        # M1-M6 and M1-M12 spreads (M1-M2 is often ~0, so skip it)
-        from sqlalchemy import func as sa_f2
+        # Calendar spreads — compute on-the-fly from FuturesCurve data.
+        # Only the selected spread mode (M1-M2, M1-M6, M1-M12) is shown.
+        _offset_map = {"M1-M2": 1, "M1-M6": 5, "M1-M12": 11}
+        selected_offset = _offset_map.get(cal_spread_mode or "M1-M12", 11)
+        _cal_colors = {
+            "CL":   "#EE5A24",
+            "COIL": "#0ABDE3",
+        }
+
+        # Track the actual contract months used on the most-recent date (for the label)
+        spread_contract_info = {}  # {sym: (m1_label, mn_label)}
+
         for sym in ["CL", "COIL"]:
             curve_rows = session.query(FuturesCurve).filter(
                 FuturesCurve.symbol == sym,
@@ -331,63 +436,52 @@ def update_futures(start_date, end_date, symbol_filter, cl_contract, coil_contra
             for r in curve_rows:
                 by_date.setdefault(r.date, []).append(r)
 
-            cal_offsets = [(11, "M1-M12")]
-            if show_6m:
-                cal_offsets.insert(0, (5, "M1-M6"))
-
-            cal_data = {}  # {offset_label: [(date, spread_val), ...]}
+            points = []  # [(date, spread_val)]
+            latest_dt = None
             for dt in sorted(by_date):
                 contracts = by_date[dt]
                 if len(contracts) < 2:
                     continue
-                m1_price = contracts[0].settlement_price
-                if m1_price is None:
+                m1 = contracts[0]
+                if m1.settlement_price is None:
                     continue
-                for offset, lbl in cal_offsets:
-                    if len(contracts) > offset and contracts[offset].settlement_price is not None:
-                        spread_val = m1_price - contracts[offset].settlement_price
-                        cal_data.setdefault(lbl, []).append((dt, spread_val))
+                if len(contracts) > selected_offset and contracts[selected_offset].settlement_price is not None:
+                    mn = contracts[selected_offset]
+                    spread_val = m1.settlement_price - mn.settlement_price
+                    points.append((dt, spread_val))
+                    latest_dt = dt
+                    # Record the contract months for the most recent date
+                    spread_contract_info[sym] = (
+                        _contract_label(sym, m1.contract_month),
+                        _contract_label(sym, mn.contract_month),
+                    )
 
             sym_label = "WTI" if sym == "CL" else "Brent"
-            cal_colors = {"M1-M6": "#FF9F43" if sym == "CL" else "#48DBFB",
-                          "M1-M12": "#EE5A24" if sym == "CL" else "#0ABDE3"}
-            for lbl, points in cal_data.items():
-                if points:
-                    spread_fig.add_trace(go.Scatter(
-                        x=[p[0] for p in points],
-                        y=[p[1] for p in points],
-                        mode="lines+markers",
-                        name=f"{sym_label} {lbl}",
-                        line=dict(color=cal_colors[lbl]),
-                    ))
-
-        # Also add any spread types from Spread table that have meaningful data
-        spread_types = session.query(Spread.spread_type).filter(
-            Spread.date >= start_date,
-            Spread.date <= end_date,
-        ).distinct().all()
-
-        # Only add from Spread table types not already computed above
-        skip_types = {"COIL-CL", "CL_M1-M2", "COIL_M1-M2", "CL_M1-M6", "COIL_M1-M6",
-                      "CL_M1-M12", "COIL_M1-M12",
-                      }
-        for (st,) in spread_types:
-            if st in skip_types:
-                continue
-            spread_rows = session.query(Spread).filter(
-                Spread.spread_type == st,
-                Spread.date >= start_date,
-                Spread.date <= end_date,
-            ).order_by(Spread.date).all()
-            if spread_rows:
+            if points:
                 spread_fig.add_trace(go.Scatter(
-                    x=[r.date for r in spread_rows],
-                    y=[r.spread_value for r in spread_rows],
+                    x=[p[0] for p in points],
+                    y=[p[1] for p in points],
                     mode="lines+markers",
-                    name=st,
+                    name=f"{sym_label} {cal_spread_mode}",
+                    line=dict(color=_cal_colors[sym]),
                 ))
 
-        return metrics, curve_fig, footnote_children, history_fig, spread_fig
+        spread_fig.update_layout(title=f"Calendar Spread: {cal_spread_mode} (M1 − Mn)")
+
+        # Build the contract label row shown below the chart
+        contract_label_parts = []
+        for sym, sym_label in [("CL", "WTI"), ("COIL", "Brent")]:
+            if sym in spread_contract_info:
+                m1_lbl, mn_lbl = spread_contract_info[sym]
+                contract_label_parts.append(
+                    html.Span(
+                        f"{sym_label}: {m1_lbl}  −  {mn_lbl}",
+                        style={"marginRight": "24px"},
+                    )
+                )
+        spread_contracts_children = contract_label_parts or "No data"
+
+        return metrics, curve_fig, footnote_children, term_structure_tables_component, history_fig, spread_fig, spread_contracts_children
 
     finally:
         session.close()
@@ -396,8 +490,10 @@ def update_futures(start_date, end_date, symbol_filter, cl_contract, coil_contra
 # ─── Fill price history tables (shares contract selection with chart dropdowns) ─
 
 @callback(
-    Output("futures-table-cl",   "data"),
-    Output("futures-table-coil", "data"),
+    Output("futures-table-cl",         "data"),
+    Output("futures-table-coil",       "data"),
+    Output("futures-table-cl-label",   "children"),
+    Output("futures-table-coil-label", "children"),
     Input("futures-contract-cl",   "value"),
     Input("futures-contract-coil", "value"),
     Input("futures-date-range", "start_date"),
@@ -414,19 +510,15 @@ def update_history_tables(cl_contract, coil_contract, start_date, end_date):
         def _rows(sym, contract):
             if not contract:
                 return []
+            # Cap at expiry date to exclude delivery-month settlements
             expiry = _contract_expiry(sym, contract)
-            effective_end = min(end_date, expiry) if expiry else end_date
-            rows = (
-                session.query(FuturesCurve)
-                .filter(
-                    FuturesCurve.symbol == sym,
-                    FuturesCurve.contract_month == contract,
-                    FuturesCurve.date >= start_date,
-                    FuturesCurve.date <= effective_end,
-                )
-                .order_by(FuturesCurve.date.desc())
-                .all()
+            query = session.query(FuturesCurve).filter(
+                FuturesCurve.symbol == sym,
+                FuturesCurve.contract_month == contract,
             )
+            if expiry:
+                query = query.filter(FuturesCurve.date <= expiry)
+            rows = query.order_by(FuturesCurve.date.desc()).all()
             return [
                 {
                     "date":   r.date.strftime("%Y-%m-%d"),
@@ -437,6 +529,139 @@ def update_history_tables(cl_contract, coil_contract, start_date, end_date):
                 for r in rows
             ]
 
-        return _rows("CL", cl_contract), _rows("COIL", coil_contract)
+        def _label(sym, contract):
+            if not contract:
+                return ""
+            label = _contract_label(sym, contract)  # e.g. "CLH6 2026-02-20"
+            return f"— {label}"
+
+        return (
+            _rows("CL",   cl_contract),
+            _rows("COIL", coil_contract),
+            _label("CL",   cl_contract),
+            _label("COIL", coil_contract),
+        )
     finally:
         session.close()
+
+
+# ─── Spread inspection tables — auto-loaded on tab open / toggle change ──────
+
+_OFFSET_MAP = {"M1-M2": 1, "M1-M6": 5, "M1-M12": 11}
+
+
+@callback(
+    Output("futures-spread-inspect-cl",         "data"),
+    Output("futures-spread-inspect-coil",       "data"),
+    Output("futures-spread-inspect-cl-label",   "children"),
+    Output("futures-spread-inspect-coil-label", "children"),
+    Output("futures-spread-inspect-hint",       "children"),
+    Input("futures-cal-spread-toggle",          "value"),
+    Input("futures-spread-chart",               "clickData"),
+)
+def update_spread_inspection(cal_spread_mode, click_data):
+    offset = _OFFSET_MAP.get(cal_spread_mode or "M1-M12", 11)
+
+    session = get_session()
+    try:
+        # Determine reference date: clicked point if available, else latest in DB
+        clicked_date = None
+        if click_data:
+            try:
+                clicked_date = datetime.strptime(
+                    click_data["points"][0]["x"][:10], "%Y-%m-%d"
+                ).date()
+            except Exception:
+                pass
+
+        result_data   = {}
+        result_labels = {}
+
+        for sym in ["CL", "COIL"]:
+            # Find the reference date for this symbol
+            ref_date = clicked_date
+            if ref_date is None:
+                latest = (
+                    session.query(FuturesCurve.date)
+                    .filter(FuturesCurve.symbol == sym)
+                    .order_by(FuturesCurve.date.desc())
+                    .first()
+                )
+                if not latest:
+                    result_data[sym]   = []
+                    result_labels[sym] = f"{'WTI' if sym == 'CL' else 'Brent'} — no data"
+                    continue
+                ref_date = latest[0]
+
+            # Find which contracts are M1 and Mn on ref_date
+            contracts_on_date = (
+                session.query(FuturesCurve)
+                .filter(
+                    FuturesCurve.symbol == sym,
+                    FuturesCurve.date   == ref_date,
+                )
+                .order_by(FuturesCurve.contract_month)
+                .all()
+            )
+
+            if len(contracts_on_date) <= offset:
+                result_data[sym]   = []
+                result_labels[sym] = (
+                    f"{'WTI' if sym == 'CL' else 'Brent'} — "
+                    f"not enough contracts on {ref_date}"
+                )
+                continue
+
+            m1_month = contracts_on_date[0].contract_month
+            mn_month = contracts_on_date[offset].contract_month
+            m1_label = _contract_label(sym, m1_month)
+            mn_label = _contract_label(sym, mn_month)
+
+            # Fetch full price history for both contracts
+            m1_rows = {
+                r.date: r.settlement_price
+                for r in session.query(FuturesCurve).filter(
+                    FuturesCurve.symbol         == sym,
+                    FuturesCurve.contract_month == m1_month,
+                ).all()
+            }
+            mn_rows = {
+                r.date: r.settlement_price
+                for r in session.query(FuturesCurve).filter(
+                    FuturesCurve.symbol         == sym,
+                    FuturesCurve.contract_month == mn_month,
+                ).all()
+            }
+
+            all_dates = sorted(m1_rows.keys() | mn_rows.keys(), reverse=True)
+            rows = []
+            for d in all_dates:
+                m1_p = m1_rows.get(d)
+                mn_p = mn_rows.get(d)
+                sprd = (m1_p - mn_p) if (m1_p is not None and mn_p is not None) else None
+                rows.append({
+                    "date":   d.strftime("%Y-%m-%d"),
+                    "m1":     f"{m1_p:.2f}" if m1_p is not None else "—",
+                    "mn":     f"{mn_p:.2f}" if mn_p is not None else "—",
+                    "spread": f"{sprd:.2f}" if sprd is not None else "—",
+                })
+
+            sym_label = "WTI" if sym == "CL" else "Brent"
+            result_data[sym]   = rows
+            result_labels[sym] = f"{sym_label}  M1={m1_label}  Mn={mn_label}"
+
+        if clicked_date:
+            hint = f"Contracts as of clicked date {clicked_date} · {cal_spread_mode}"
+        else:
+            hint = f"Contracts as of latest available date · {cal_spread_mode}  (click a chart point to change reference date)"
+
+        return (
+            result_data.get("CL",   []),
+            result_data.get("COIL", []),
+            result_labels.get("CL",   "WTI"),
+            result_labels.get("COIL", "Brent"),
+            hint,
+        )
+    finally:
+        session.close()
+
