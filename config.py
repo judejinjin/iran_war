@@ -62,6 +62,39 @@ FRED_DUBAI_SERIES = "POILDUBUSDM"   # IMF monthly Dubai crude (1992+)
 EIA_CRUDE_INVENTORY = "PET.WCESTUS1.W"
 EIA_US_PRODUCTION = "PET.WCRFPUS2.W"
 EIA_BRENT_SERIES = "RBRTE"    # Europe Brent Spot FOB (EIA v2 series ID)
+EIA_SPR_SERIES        = "WCSSTUS1"   # US Strategic Petroleum Reserve, weekly (EIA API v2)
+EIA_COMMERCIAL_SERIES = "WCESTUS1"   # US commercial crude stocks, weekly (EIA API v2)
+
+# ─── SPR / JODI ──────────────────────────────────────────────────────────────
+JODI_API_BASE = "https://www.jodidata.org/api/data/"
+# US crude demand used for days-of-cover computation (kbd)
+US_CRUDE_DEMAND_KBD = 19_500.0
+
+SPR_COUNTRIES = {
+    "US":   "United States",
+    "CN":   "China",
+    "JP":   "Japan",
+    "DE":   "Germany",
+    "FR":   "France",
+    "IT":   "Italy",
+    "KR":   "South Korea",
+}
+
+# IEA collective action agreed 11 March 2026 — largest ever emergency release
+# Source: https://www.iea.org/news/iea-confirms-member-country-contributions-to-collective-action-...
+IEA_COLLECTIVE_ACTION = {
+    "agreed_date":   "2026-03-11",   # date the release officially began
+    "release_days":  180,            # assumed release period (IEA convention)
+    # Per-country total committed volumes in million barrels (Mbbl)
+    "commitments_mbbl": {
+        "US": 172.2,
+        "JP":  79.8,
+        "DE":  19.5,
+        "FR":  14.6,
+        "IT":  10.0,
+        "KR":  22.5,
+    },
+}
 
 # ─── News Search Keywords ────────────────────────────────────────────────────
 NEWS_KEYWORDS = [

@@ -240,6 +240,21 @@ class BackfillStatus(Base):
     updated_at = Column(DateTime, default=datetime.utcnow)
 
 
+class SprLevel(Base):
+    __tablename__ = "spr_levels"
+    id              = Column(Integer, primary_key=True, autoincrement=True)
+    date            = Column(Date, nullable=False)
+    country_code    = Column(Text, nullable=False)
+    country_name    = Column(Text, nullable=False)
+    spr_mbbl        = Column(Float)
+    commercial_mbbl = Column(Float)
+    total_mbbl      = Column(Float)
+    days_of_cover   = Column(Float)
+    source          = Column(Text, nullable=False)
+    created_at      = Column(DateTime, default=datetime.utcnow)
+    __table_args__  = (UniqueConstraint("date", "country_code"),)
+
+
 # ─── Infrastructure Production Tracking Models ──────────────────────────────
 
 class Facility(Base):

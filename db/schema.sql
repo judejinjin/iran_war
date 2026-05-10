@@ -268,3 +268,23 @@ CREATE INDEX IF NOT EXISTS idx_futures_curves_date ON futures_curves(date, symbo
 CREATE INDEX IF NOT EXISTS idx_options_chains_date ON options_chains(date, underlying);
 CREATE INDEX IF NOT EXISTS idx_scenario_prob_date ON scenario_probabilities(date);
 CREATE INDEX IF NOT EXISTS idx_positions_open ON positions(is_open);
+CREATE INDEX IF NOT EXISTS idx_spr_levels_date ON spr_levels(date);
+CREATE INDEX IF NOT EXISTS idx_spr_levels_country ON spr_levels(country_code);
+
+-- ═══════════════════════════════════════════════════════════════
+--  STRATEGIC PETROLEUM RESERVES
+-- ═══════════════════════════════════════════════════════════════
+
+CREATE TABLE IF NOT EXISTS spr_levels (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    date            DATE    NOT NULL,
+    country_code    TEXT    NOT NULL,
+    country_name    TEXT    NOT NULL,
+    spr_mbbl        REAL,
+    commercial_mbbl REAL,
+    total_mbbl      REAL,
+    days_of_cover   REAL,
+    source          TEXT    NOT NULL,
+    created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(date, country_code)
+);

@@ -136,6 +136,13 @@ def _run_pnl_projection():
     return f"{positions} positions projected"
 
 
+def _run_spr():
+    """Scheduled: SPR incremental data update."""
+    from collectors.spr_collector import collect_latest
+    count = collect_latest()
+    return f"{count} SPR records upserted"
+
+
 def create_scheduler() -> BackgroundScheduler:
     """Create and configure the APScheduler with all jobs."""
     et = pytz.timezone(SCHEDULE_TIMEZONE)
@@ -216,6 +223,15 @@ def create_scheduler() -> BackgroundScheduler:
         CronTrigger(hour=18, minute=0, day_of_week="mon-fri", timezone=et),
         id="pnl",
         name="P&L Projection",
+        replace_existing=True,
+    )
+
+    # ─── SPR — daily at 18:30 ET (after EIA Wed 10:30 report) ───────────
+    scheduler.add_job(
+        _job_wrapper(_run_spr, "spr"),
+        CronTrigger(hour=18, minute=30, day_of_week="mon-fri", timezone=et),
+        id="spr",
+        name="SPR Data Update",
         replace_existing=True,
     )
 
