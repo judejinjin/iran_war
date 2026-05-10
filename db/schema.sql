@@ -288,3 +288,22 @@ CREATE TABLE IF NOT EXISTS spr_levels (
     created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(date, country_code)
 );
+
+-- ═══════════════════════════════════════════════════════════════
+--  SUPPLY / DEMAND
+-- ═══════════════════════════════════════════════════════════════
+
+CREATE TABLE IF NOT EXISTS supply_demand (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    date        DATE    NOT NULL,
+    country     TEXT    NOT NULL,
+    flow        TEXT    NOT NULL,          -- 'supply' | 'demand'
+    product     TEXT    NOT NULL,          -- 'total' | 'crude' | 'gasoline' | 'diesel' | 'jet_fuel' | 'residual' | 'lpg'
+    value_kbd   REAL    NOT NULL,          -- thousand barrels per day
+    source      TEXT    DEFAULT 'EIA',
+    created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(date, country, flow, product)
+);
+CREATE INDEX IF NOT EXISTS idx_sd_date    ON supply_demand(date);
+CREATE INDEX IF NOT EXISTS idx_sd_country ON supply_demand(country);
+CREATE INDEX IF NOT EXISTS idx_sd_flow    ON supply_demand(flow);

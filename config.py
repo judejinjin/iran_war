@@ -96,6 +96,60 @@ IEA_COLLECTIVE_ACTION = {
     },
 }
 
+# ─── Supply / Demand ─────────────────────────────────────────────────────────
+# Supply (production) — EIA activityId=1, monthly frequency
+SD_SUPPLY_PRODUCTS = {
+    "total":    {"label": "Total Petroleum",   "eia_product_id": "53"},  # incl. NGPL + other liquids
+    "crude":    {"label": "Crude Oil",         "eia_product_id": "57"},  # crude incl. lease condensate
+    "ngpl":     {"label": "NGL",               "eia_product_id": "58"},
+}
+
+# Demand (consumption) — EIA activityId=2, annual frequency, unit=TBPD
+SD_DEMAND_PRODUCTS = {
+    "total":    {"label": "Total Petroleum",   "eia_product_id": "5"},   # petroleum & other liquids
+    "gasoline": {"label": "Gasoline",          "eia_product_id": "62"},
+    "jet_fuel": {"label": "Jet Fuel",          "eia_product_id": "63"},
+    "diesel":   {"label": "Diesel / Distillate","eia_product_id": "65"},
+    "residual": {"label": "Residual Fuel",     "eia_product_id": "66"},
+    "lpg":      {"label": "LPG",               "eia_product_id": "67"},
+}
+
+# Combined UI product list (union; UI selects flow first, then filters products)
+SD_PRODUCTS = {
+    "total":    {"label": "Total Petroleum"},
+    "crude":    {"label": "Crude Oil (supply only)"},
+    "ngpl":     {"label": "NGL (supply only)"},
+    "gasoline": {"label": "Gasoline (demand only)"},
+    "jet_fuel": {"label": "Jet Fuel (demand only)"},
+    "diesel":   {"label": "Diesel / Distillate (demand only)"},
+    "residual": {"label": "Residual Fuel (demand only)"},
+    "lpg":      {"label": "LPG (demand only)"},
+}
+
+SD_COUNTRIES = {
+    # Major producers
+    "SA": "Saudi Arabia", "RU": "Russia",    "US": "United States",
+    "IQ": "Iraq",         "AE": "UAE",       "IR": "Iran",
+    "KW": "Kuwait",       "NG": "Nigeria",   "LY": "Libya",
+    "VE": "Venezuela",    "CN": "China",     "BR": "Brazil",
+    "CA": "Canada",       "MX": "Mexico",    "NO": "Norway",
+    # Additional major consumers
+    "IN": "India",  "JP": "Japan",  "DE": "Germany",
+    "KR": "S. Korea", "FR": "France", "GB": "UK",
+    "IT": "Italy",  "ES": "Spain",  "SG": "Singapore", "AU": "Australia",
+}
+
+SD_DEFAULT_COUNTRIES = ["US", "SA", "RU", "CN", "IN"]
+
+# EIA international country-code map (EIA 3-letter → our ISO-2)
+SD_EIA_COUNTRY_MAP = {
+    "SAU": "SA", "RUS": "RU", "USA": "US", "IRQ": "IQ", "ARE": "AE",
+    "IRN": "IR", "KWT": "KW", "NGA": "NG", "LBY": "LY", "VEN": "VE",
+    "CHN": "CN", "BRA": "BR", "CAN": "CA", "MEX": "MX", "NOR": "NO",
+    "IND": "IN", "JPN": "JP", "DEU": "DE", "KOR": "KR", "FRA": "FR",
+    "GBR": "GB", "ITA": "IT", "ESP": "ES", "SGP": "SG", "AUS": "AU",
+}
+
 # ─── News Search Keywords ────────────────────────────────────────────────────
 NEWS_KEYWORDS = [
     "Iran war", "Iran strike", "Hormuz strait", "oil infrastructure",

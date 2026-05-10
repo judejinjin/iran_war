@@ -143,6 +143,13 @@ def _run_spr():
     return f"{count} SPR records upserted"
 
 
+def _run_supply_demand():
+    """Scheduled: Supply/demand incremental refresh (last 3 months)."""
+    from backfill.supply_demand_backfill import run_incremental
+    count = run_incremental(lookback_months=3)
+    return f"{count} supply/demand rows upserted"
+
+
 def create_scheduler() -> BackgroundScheduler:
     """Create and configure the APScheduler with all jobs."""
     et = pytz.timezone(SCHEDULE_TIMEZONE)
@@ -234,7 +241,14 @@ def create_scheduler() -> BackgroundScheduler:
         name="SPR Data Update",
         replace_existing=True,
     )
-
+    # ─── Supply/Demand — daily at 07:30 ET (EIA international updates monthly) ──
+    scheduler.add_job(
+        _job_wrapper(_run_supply_demand, "supply_demand"),
+        CronTrigger(hour=7, minute=30, day_of_week="mon-fri", timezone=et),
+        id="supply_demand",
+        name="Supply/Demand Data Refresh",
+        replace_existing=True,
+    )
     return scheduler
 
 

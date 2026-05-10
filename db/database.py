@@ -240,6 +240,19 @@ class BackfillStatus(Base):
     updated_at = Column(DateTime, default=datetime.utcnow)
 
 
+class SupplyDemand(Base):
+    __tablename__ = "supply_demand"
+    id         = Column(Integer, primary_key=True, autoincrement=True)
+    date       = Column(Date, nullable=False)
+    country    = Column(Text, nullable=False)
+    flow       = Column(Text, nullable=False)    # 'supply' | 'demand'
+    product    = Column(Text, nullable=False)    # 'total' | 'crude' | 'gasoline' | ...
+    value_kbd  = Column(Float, nullable=False)   # thousand barrels per day
+    source     = Column(Text, default="EIA")
+    created_at = Column(DateTime, default=datetime.utcnow)
+    __table_args__ = (UniqueConstraint("date", "country", "flow", "product"),)
+
+
 class SprLevel(Base):
     __tablename__ = "spr_levels"
     id              = Column(Integer, primary_key=True, autoincrement=True)
