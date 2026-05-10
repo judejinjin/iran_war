@@ -20,10 +20,28 @@ _WAR_START = datetime.strptime(WAR_START_DATE, "%Y-%m-%d").date()
 
 # Colour palette for countries (cycles if > 10 selected)
 _PALETTE = [
-    "#2E86DE", "#E74C3C", "#F39C12", "#27AE60", "#8E44AD",
-    "#16A085", "#D35400", "#2980B9", "#C0392B", "#7F8C8D",
-    "#1ABC9C", "#F1C40F", "#9B59B6", "#E67E22", "#BDC3C7",
+    "#4FC3F7", "#EF5350", "#FFB300", "#66BB6A", "#CE93D8",
+    "#26C6DA", "#FF7043", "#42A5F5", "#F06292", "#A5D6A7",
+    "#80DEEA", "#FFCA28", "#AB47BC", "#FFA726", "#B0BEC5",
 ]
+
+# Shared dark-mode layout kwargs — only universal properties (no xaxis/yaxis/margin)
+_DARK_LAYOUT = dict(
+    paper_bgcolor="#12121f",
+    plot_bgcolor="#12121f",
+    font=dict(color="#D0D0D0", size=12, family="Segoe UI, Helvetica, Arial, sans-serif"),
+)
+
+# Axis styling applied via update_xaxes / update_yaxes
+_DARK_AXIS = dict(
+    gridcolor="#2c2c42",
+    gridwidth=1,
+    zerolinecolor="#3a3a52",
+    tickfont=dict(color="#B0B0C0", size=11),
+    title_font=dict(color="#B0B0C0"),
+    linecolor="#3a3a52",
+    showline=True,
+)
 
 # EIA 3-letter country codes (for choropleth locationmode="ISO-3")
 _ISO2_TO_3 = {
@@ -80,12 +98,14 @@ def update_sd(start_date, end_date, flow, product_key, countries, yoy, _n):
     session = get_session()
     empty_fig = go.Figure()
     empty_fig.update_layout(
-        paper_bgcolor="#1a1a2e", plot_bgcolor="#1a1a2e",
-        font_color="#aaa",
-        annotations=[{"text": "No data", "xref": "paper", "yref": "paper",
-                      "x": 0.5, "y": 0.5, "showarrow": False, "font": {"size": 16}}],
+            **_DARK_LAYOUT,
+            margin=dict(l=55, r=20, t=30, b=45),
+            annotations=[{"text": "No data available", "xref": "paper", "yref": "paper",
+                          "x": 0.5, "y": 0.5, "showarrow": False,
+                          "font": {"size": 16, "color": "#888"}}],
     )
-
+    empty_fig.update_xaxes(**_DARK_AXIS)
+    empty_fig.update_yaxes(**_DARK_AXIS)
     start_dt = _parse_date(start_date) or date(2024, 1, 1)
     end_dt   = _parse_date(end_date)   or date.today()
     product_key = product_key or "total"
@@ -145,10 +165,13 @@ def update_sd(start_date, end_date, flow, product_key, countries, yoy, _n):
         def _yoy_series(pts: list[tuple[date, float]]) -> list[tuple[date, float]]:
             if len(pts) < 13:
                 return []
+            import calendar as _cal
             result = []
             val_map = {d: v for d, v in pts}
             for d, v in pts:
-                prior_date = date(d.year - 1, d.month, d.day)
+                # Clamp day to last valid day of the prior year's month (handles Feb 29)
+                prior_max_day = _cal.monthrange(d.year - 1, d.month)[1]
+                prior_date = date(d.year - 1, d.month, min(d.day, prior_max_day))
                 # find closest match ± 15 days
                 prior = None
                 for delta in range(16):
@@ -233,29 +256,33 @@ def update_sd(start_date, end_date, flow, product_key, countries, yoy, _n):
             dates = [d for d, _ in pts]
             vals  = [v for _, v in pts]
             color = _PALETTE[i % len(_PALETTE)]
+            cname = SD_COUNTRIES.get(country, country)
+            unit_str = "%" if yoy else " kbd"
             trend_fig.add_trace(go.Scatter(
                 x=dates, y=vals,
                 mode="lines",
-                name=SD_COUNTRIES.get(country, country),
-                line=dict(color=color, width=2),
-                hovertemplate="%{x|%b %Y}<br>%{y:,.1f}" + ("%" if yoy else " kbd") + "<extra>" + SD_COUNTRIES.get(country, country) + "</extra>",
+                name=cname,
+                line=dict(color=color, width=2.5),
+                hovertemplate=f"<b>%{{x|%b %Y}}</b><br>{cname}: <b>%{{y:,.1f}}{unit_str}</b><extra></extra>",
             ))
         # War start vertical line
         if _WAR_START >= start_dt:
             trend_fig.add_shape(type="line", x0=_WAR_START, x1=_WAR_START, y0=0, y1=1,
-                                xref="x", yref="paper", line=dict(color="#E74C3C", width=1.5, dash="dot"))
-            trend_fig.add_annotation(x=_WAR_START, y=1, xref="x", yref="paper",
-                                     text="War Start", showarrow=False, font=dict(color="#E74C3C", size=10),
-                                     yanchor="bottom")
+                                xref="x", yref="paper",
+                                line=dict(color="#FF6B6B", width=1.5, dash="dash"))
+            trend_fig.add_annotation(x=_WAR_START, y=0.98, xref="x", yref="paper",
+                                     text="War Start", showarrow=False,
+                                     font=dict(color="#FF6B6B", size=10),
+                                     bgcolor="rgba(18,18,31,0.7)",
+                                     bordercolor="#FF6B6B",
+                                     yanchor="top", xanchor="left", xshift=4)
         trend_fig.update_layout(
-            paper_bgcolor="#1a1a2e", plot_bgcolor="#1a1a2e", font_color="#E0E0E0",
-            xaxis=dict(gridcolor="#2a2a3e", showgrid=True),
-            yaxis=dict(gridcolor="#2a2a3e", showgrid=True,
-                       title="YoY %" if yoy else "kbd"),
-            legend=dict(bgcolor="rgba(0,0,0,0.3)"),
-            margin=dict(l=50, r=20, t=20, b=40),
+            **_DARK_LAYOUT,
+            margin=dict(l=60, r=20, t=30, b=45),
             hovermode="x unified",
         )
+        trend_fig.update_xaxes(**_DARK_AXIS)
+        trend_fig.update_yaxes(**_DARK_AXIS, title_text="YoY %" if yoy else "kbd")
 
         # ── Bar Chart — latest month, all selected countries ──────────────
         bar_data = sorted(
@@ -277,14 +304,18 @@ def update_sd(start_date, end_date, flow, product_key, countries, yoy, _n):
             y=bar_countries,
             orientation="h",
             marker_color=bar_colors,
-            hovertemplate="%{y}: %{x:,.1f} kbd<extra></extra>",
+            marker_line_color="rgba(0,0,0,0)",
+            text=[f"{v:,.0f}" for v in bar_vals],
+            textposition="outside",
+            textfont=dict(color="#D0D0D0", size=11),
+            hovertemplate="<b>%{y}</b><br>%{x:,.1f} kbd<extra></extra>",
         ))
         bar_fig.update_layout(
-            paper_bgcolor="#1a1a2e", plot_bgcolor="#1a1a2e", font_color="#E0E0E0",
-            xaxis=dict(gridcolor="#2a2a3e", title="kbd"),
-            yaxis=dict(gridcolor="#2a2a3e"),
-            margin=dict(l=10, r=20, t=20, b=40),
+            **_DARK_LAYOUT,
+            margin=dict(l=10, r=70, t=20, b=40),
         )
+        bar_fig.update_xaxes(**_DARK_AXIS, title_text="kbd", automargin=True)
+        bar_fig.update_yaxes(**_DARK_AXIS, automargin=True)
 
         # ── Choropleth Map — all countries with data ──────────────────────
         map_data = [
@@ -298,13 +329,20 @@ def update_sd(start_date, end_date, flow, product_key, countries, yoy, _n):
         ]
         if map_data:
             if flow == "balance":
-                color_scale = "RdBu"
+                # Diverging: surplus green, deficit red — readable on dark
+                color_scale = [[0.0, "#C0392B"], [0.4, "#7B241C"],
+                               [0.5, "#2c2c42"],
+                               [0.6, "#1A5276"], [1.0, "#2ECC71"]]
                 color_mid = 0
             elif flow == "supply":
-                color_scale = "Blues"
+                # Cyan → blue: visible on dark navy background
+                color_scale = [[0.0, "#1B2631"], [0.4, "#1A5276"],
+                               [0.7, "#2980B9"], [1.0, "#4FC3F7"]]
                 color_mid = None
             else:
-                color_scale = "Reds"
+                # Orange → red: warm tones pop on dark background
+                color_scale = [[0.0, "#1B1010"], [0.4, "#922B21"],
+                               [0.7, "#E74C3C"], [1.0, "#FF8C69"]]
                 color_mid = None
 
             map_fig = go.Figure(go.Choropleth(
@@ -313,23 +351,36 @@ def update_sd(start_date, end_date, flow, product_key, countries, yoy, _n):
                 text=[d["country"] for d in map_data],
                 colorscale=color_scale,
                 zmid=color_mid,
-                colorbar=dict(title="kbd", thickness=12),
-                marker_line_color="#333",
-                hovertemplate="%{text}: %{z:,.1f} kbd<extra></extra>",
+                colorbar=dict(
+                    title=dict(text="kbd", font=dict(color="#B0B0C0", size=11)),
+                    tickfont=dict(color="#B0B0C0", size=10),
+                    thickness=14,
+                    bgcolor="rgba(18,18,31,0.8)",
+                    bordercolor="#3a3a52",
+                    borderwidth=1,
+                    len=0.85,
+                ),
+                marker_line_color="#3a3a52",
+                marker_line_width=0.5,
+                hovertemplate="<b>%{text}</b><br>%{z:,.1f} kbd<extra></extra>",
             ))
             map_fig.update_layout(
+                **_DARK_LAYOUT,
                 geo=dict(
                     showframe=False,
                     showcoastlines=True,
-                    coastlinecolor="#444",
-                    bgcolor="#1a1a2e",
-                    landcolor="#1e2a3a",
-                    oceancolor="#141a26",
+                    coastlinecolor="#4a4a62",
+                    coastlinewidth=0.8,
+                    bgcolor="#12121f",
+                    landcolor="#1c2333",
+                    oceancolor="#0d1117",
                     showocean=True,
+                    showcountries=True,
+                    countrycolor="#2c2c42",
+                    countrywidth=0.5,
+                    showlakes=False,
                     projection_type="natural earth",
                 ),
-                paper_bgcolor="#1a1a2e",
-                font_color="#E0E0E0",
                 margin=dict(l=0, r=0, t=0, b=0),
             )
         else:

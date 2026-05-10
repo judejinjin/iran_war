@@ -1,0 +1,62 @@
+/* ─── Plotly hover tooltip — force dark styling ───────────────────────────── */
+
+/* Tooltip background rect */
+.hoverlayer .hovertext > rect,
+.hoverlayer .hovertext path {
+    fill: #1a1a2e !important;
+    stroke: #4a4a62 !important;
+    stroke-width: 1px !important;
+    rx: 4px !important;
+}
+
+/* Tooltip text (all lines) */
+.hoverlayer .hovertext text,
+.hoverlayer .hovertext tspan {
+    fill: #f0f0f0 !important;
+}
+
+/* Unified hovermode (x unified) overlay box */
+.hoverlayer .uxtext > rect,
+.hoverlayer .uxtext path {
+    fill: #1a1a2e !important;
+    stroke: #4a4a62 !important;
+    stroke-width: 1px !important;
+}
+.hoverlayer .uxtext text,
+.hoverlayer .uxtext tspan {
+    fill: #f0f0f0 !important;
+}
+
+/* Spike lines */
+.hoverlayer .xspike,
+.hoverlayer .yspike {
+    stroke: #6a6a9a !important;
+}
+
+/* ─── Plotly legend ───────────────────────────────────────────────────────── */
+.legend .bg {
+    fill: rgba(18, 18, 31, 0.92) !important;
+    stroke: #3a3a52 !important;
+    stroke-width: 1px !important;
+}
+.legend text,
+.legend tspan {
+    fill: #d8d8d8 !important;
+}
+
+/* ─── Plotly colorbar ─────────────────────────────────────────────────────── */
+.colorbar .cbbg {
+    fill: rgba(18, 18, 31, 0.85) !important;
+}
+.colorbar .cbfills rect {
+    opacity: 1 !important;
+}
+.colorbar text,
+.colorbar tspan {
+    fill: #b0b0c0 !important;
+}
+
+/* ─── Choropleth map geo background ──────────────────────────────────────── */
+.geo .bg {
+    fill: #0d1117 !important;
+}

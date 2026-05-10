@@ -14,10 +14,16 @@ from config import DASH_HOST, DASH_PORT, DASH_DEBUG
 _dark = pio.templates["plotly_dark"]
 _custom = go.layout.Template(layout=go.Layout(
     font=dict(family="Segoe UI, Helvetica, Arial, sans-serif", size=13, color="#E0E0E0"),
+    hoverlabel=dict(
+        bgcolor="#1a1a2e",
+        bordercolor="#555577",
+        font=dict(color="#F0F0F0", size=12, family="Segoe UI, Helvetica, Arial, sans-serif"),
+        namelength=-1,
+    ),
     legend=dict(
         font=dict(size=13, color="#E0E0E0"),
-        bgcolor="rgba(0,0,0,0.3)",
-        bordercolor="#444",
+        bgcolor="rgba(15,15,30,0.92)",
+        bordercolor="#555577",
         borderwidth=1,
     ),
     title=dict(font=dict(size=16, color="#FFFFFF")),
