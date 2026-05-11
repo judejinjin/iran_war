@@ -3,10 +3,8 @@
 /* Tooltip background rect */
 .hoverlayer .hovertext > rect,
 .hoverlayer .hovertext path {
-    fill: #1a1a2e !important;
-    stroke: #4a4a62 !important;
-    stroke-width: 1px !important;
-    rx: 4px !important;
+    fill: rgba(0, 0, 0, 0) !important;
+    stroke: rgba(0, 0, 0, 0) !important;
 }
 
 /* Tooltip text (all lines) */
@@ -18,9 +16,8 @@
 /* Unified hovermode (x unified) overlay box */
 .hoverlayer .uxtext > rect,
 .hoverlayer .uxtext path {
-    fill: #1a1a2e !important;
-    stroke: #4a4a62 !important;
-    stroke-width: 1px !important;
+    fill: rgba(0, 0, 0, 0) !important;
+    stroke: rgba(0, 0, 0, 0) !important;
 }
 .hoverlayer .uxtext text,
 .hoverlayer .uxtext tspan {
@@ -35,9 +32,9 @@
 
 /* ─── Plotly legend ───────────────────────────────────────────────────────── */
 .legend .bg {
-    fill: rgba(18, 18, 31, 0.92) !important;
-    stroke: #3a3a52 !important;
-    stroke-width: 1px !important;
+    fill: rgba(0, 0, 0, 0) !important;
+    stroke: rgba(0, 0, 0, 0) !important;
+    stroke-width: 0 !important;
 }
 .legend text,
 .legend tspan {
