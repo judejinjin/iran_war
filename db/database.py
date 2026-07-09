@@ -367,6 +367,16 @@ class PhysicalPrice(Base):
     __table_args__ = (UniqueConstraint("date", "symbol", "source"),)
 
 
+class CushingInventory(Base):
+    """Weekly Cushing, OK crude oil ending stocks (excl. SPR) from EIA."""
+    __tablename__ = "cushing_inventory"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    date = Column(Date, nullable=False, unique=True)
+    inventory_kbbl = Column(Float, nullable=False)   # thousand barrels (EIA raw unit)
+    source = Column(Text, nullable=False, default="EIA")
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
 class HormuzStatus(Base):
     __tablename__ = "hormuz_status"
     id = Column(Integer, primary_key=True, autoincrement=True)

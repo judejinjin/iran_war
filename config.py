@@ -62,8 +62,9 @@ FRED_DUBAI_SERIES = "POILDUBUSDM"   # IMF monthly Dubai crude (1992+)
 EIA_CRUDE_INVENTORY = "PET.WCESTUS1.W"
 EIA_US_PRODUCTION = "PET.WCRFPUS2.W"
 EIA_BRENT_SERIES = "RBRTE"    # Europe Brent Spot FOB (EIA v2 series ID)
-EIA_SPR_SERIES        = "WCSSTUS1"   # US Strategic Petroleum Reserve, weekly (EIA API v2)
-EIA_COMMERCIAL_SERIES = "WCESTUS1"   # US commercial crude stocks, weekly (EIA API v2)
+EIA_SPR_SERIES        = "WCSSTUS1"          # US Strategic Petroleum Reserve, weekly (EIA API v2)
+EIA_COMMERCIAL_SERIES = "WCESTUS1"          # US commercial crude stocks, weekly (EIA API v2)
+EIA_CUSHING_SERIES    = "W_EPC0_SAX_YCUOK_MBBL"  # Cushing OK crude stocks excl SPR, weekly (EIA API v2)
 
 # ─── SPR / JODI ──────────────────────────────────────────────────────────────
 JODI_API_BASE = "https://www.jodidata.org/api/data/"

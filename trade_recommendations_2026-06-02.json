@@ -1,0 +1,176 @@
+[
+  {
+    "rank": 1,
+    "underlying": "COIL",
+    "structure": "strangle",
+    "legs": [
+      {
+        "strike": 120,
+        "expiry": "2026-08",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 2.8
+      },
+      {
+        "strike": 70,
+        "expiry": "2026-08",
+        "type": "PUT",
+        "side": "BUY",
+        "price": 2.2
+      }
+    ],
+    "entry_cost": 5.0,
+    "max_loss": 5.0,
+    "max_profit": Infinity,
+    "expected_value": 12.5,
+    "payoff_ratio": 15.0,
+    "ev_risk_ratio": 2.5,
+    "target_scenario": "Any extreme outcome (67% combined probability)",
+    "probability_edge": "+0.0% (neutral edge, vol play)",
+    "reasoning": "ZERO-EDGE ENVIRONMENT: With balanced probabilities, profit from volatility not direction. Long strangle profits if Brent moves >$25 in either direction. 67% probability of extreme outcome (above $100 or below $80). Breakeven at $65/$125. Pure volatility bet on geopolitical uncertainty."
+  },
+  {
+    "rank": 2,
+    "underlying": "COIL",
+    "structure": "ratio_call_spread",
+    "legs": [
+      {
+        "strike": 110,
+        "expiry": "2026-08",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 4.5,
+        "quantity": 2
+      },
+      {
+        "strike": 140,
+        "expiry": "2026-08",
+        "type": "CALL",
+        "side": "SELL",
+        "price": 1.8,
+        "quantity": 3
+      }
+    ],
+    "entry_cost": 3.6,
+    "max_loss": 3.6,
+    "max_profit": 56.4,
+    "expected_value": 15.2,
+    "payoff_ratio": 15.7,
+    "ev_risk_ratio": 4.2,
+    "target_scenario": "Moderate Escalation + Major Disruption",
+    "probability_edge": "+0.0% (structural asymmetry)",
+    "reasoning": "2:3 ratio spread creates asymmetric payoff. Max profit at $140 Brent. Profits from $113.60-$173.33. Covers 50% probability scenarios (Moderate + Major + Super Spike). Zero net edge but strong structural convexity. Limited risk with wide profit zone."
+  },
+  {
+    "rank": 3,
+    "underlying": "COIL",
+    "structure": "calendar_spread",
+    "legs": [
+      {
+        "strike": 100,
+        "expiry": "2026-08",
+        "type": "CALL",
+        "side": "SELL",
+        "price": 6.2
+      },
+      {
+        "strike": 100,
+        "expiry": "2026-11",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 8.8
+      }
+    ],
+    "entry_cost": 2.6,
+    "max_loss": 2.6,
+    "max_profit": 12.0,
+    "expected_value": 4.5,
+    "payoff_ratio": 4.6,
+    "ev_risk_ratio": 1.7,
+    "target_scenario": "Time decay differential + vol term structure",
+    "probability_edge": "N/A (term structure play)",
+    "reasoning": "Exploit time decay: near-term option decays faster. Profits if Brent stays near $100 in 3M but volatility remains elevated for 6M. Benefits from geopolitical uncertainty extending beyond near-term expiry. Lower risk, defined payoff profile."
+  },
+  {
+    "rank": 4,
+    "underlying": "COIL",
+    "structure": "iron_condor",
+    "legs": [
+      {
+        "strike": 65,
+        "expiry": "2026-08",
+        "type": "PUT",
+        "side": "BUY",
+        "price": 1.5
+      },
+      {
+        "strike": 75,
+        "expiry": "2026-08",
+        "type": "PUT",
+        "side": "SELL",
+        "price": 3.0
+      },
+      {
+        "strike": 105,
+        "expiry": "2026-08",
+        "type": "CALL",
+        "side": "SELL",
+        "price": 5.8
+      },
+      {
+        "strike": 120,
+        "expiry": "2026-08",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 2.8
+      }
+    ],
+    "entry_cost": -4.3,
+    "max_loss": 5.7,
+    "max_profit": 4.3,
+    "expected_value": -0.5,
+    "payoff_ratio": 0.75,
+    "ev_risk_ratio": -0.09,
+    "target_scenario": "Current State (range-bound)",
+    "probability_edge": "+0.0% (mean reversion)",
+    "reasoning": "CONTRARIAN PLAY: With zero edge, bet against extremes. Collect $4.30 premium betting Brent stays $75-$105. Only 16.7% probability of Current State, but this hedges against overhyped geopolitical fears. Max loss $5.70 if wrong. Income strategy, not recommended unless bearish on volatility."
+  },
+  {
+    "rank": 5,
+    "underlying": "COIL",
+    "structure": "butterfly_spread",
+    "legs": [
+      {
+        "strike": 100,
+        "expiry": "2026-08",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 6.2
+      },
+      {
+        "strike": 115,
+        "expiry": "2026-08",
+        "type": "CALL",
+        "side": "SELL",
+        "price": 3.5,
+        "quantity": 2
+      },
+      {
+        "strike": 130,
+        "expiry": "2026-08",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 1.8
+      }
+    ],
+    "entry_cost": 1.0,
+    "max_loss": 1.0,
+    "max_profit": 14.0,
+    "expected_value": 2.35,
+    "payoff_ratio": 14.0,
+    "ev_risk_ratio": 2.35,
+    "target_scenario": "Moderate Escalation (precision bet)",
+    "probability_edge": "+0.0% (pinning trade)",
+    "reasoning": "Low-cost precision bet on Brent finishing exactly at $115 (Moderate Escalation midpoint). Max profit at $115. Profits $101-$129. 16.7% single scenario targeting but excellent risk/reward at 14:1. Good lottery ticket with defined risk."
+  }
+]

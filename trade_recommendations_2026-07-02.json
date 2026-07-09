@@ -1,0 +1,126 @@
+{
+  "generated_at": "2026-07-02T21:45:00Z",
+  "scenario_edges": {
+    "Super Spike": {"ai_prob": 0.1667, "market_prob": 0.1667, "edge": 0.0, "brent_range": "$180-$250"},
+    "Major Disruption": {"ai_prob": 0.1667, "market_prob": 0.1667, "edge": 0.0, "brent_range": "$130-$180"},
+    "Moderate Escalation": {"ai_prob": 0.1667, "market_prob": 0.1667, "edge": 0.0, "brent_range": "$100-$130"},
+    "Current State": {"ai_prob": 0.1667, "market_prob": 0.1667, "edge": 0.0, "brent_range": "$80-$100"},
+    "De-escalation": {"ai_prob": 0.1667, "market_prob": 0.1667, "edge": 0.0, "brent_range": "$65-$80"},
+    "Resolution": {"ai_prob": 0.1667, "market_prob": 0.1667, "edge": 0.0, "brent_range": "$55-$65"}
+  },
+  "market_context": "Uniform probability distribution across all scenarios indicates extreme market uncertainty. No specific scenario edge, but high volatility warrants tail-risk hedging. Focus on asymmetric payoff structures.",
+  "recommendations": [
+    {
+      "rank": 1,
+      "underlying": "COIL",
+      "structure": "naked_call",
+      "legs": [
+        {"strike": 120, "expiry": "2026-10", "type": "CALL", "side": "BUY", "price": 1.07}
+      ],
+      "entry_cost": 1.07,
+      "max_loss": 1.07,
+      "max_profit": 93.93,
+      "expected_value": 20.60,
+      "payoff_ratio": 87.8,
+      "ev_to_risk_ratio": 19.25,
+      "target_scenarios": "Major Disruption, Super Spike",
+      "win_probability": 0.333,
+      "reasoning": "Highest EV/risk ratio. 120 strike captures upside from both Major Disruption (Brent $155) and Super Spike ($215). With uniform probabilities, 33% chance of profit with 88:1 max payoff ratio. Perfect tail-risk bet with defined loss. Cheap entry at $1.07 makes this compelling even without probability edge."
+    },
+    {
+      "rank": 2,
+      "underlying": "COIL",
+      "structure": "naked_call",
+      "legs": [
+        {"strike": 150, "expiry": "2026-10", "type": "CALL", "side": "BUY", "price": 0.10}
+      ],
+      "entry_cost": 0.10,
+      "max_loss": 0.10,
+      "max_profit": 64.90,
+      "expected_value": 11.57,
+      "payoff_ratio": 649.0,
+      "ev_to_risk_ratio": 115.7,
+      "target_scenarios": "Super Spike",
+      "win_probability": 0.167,
+      "reasoning": "Lottery ticket on Super Spike scenario. Minimal $0.10 cost for massive 649:1 payoff. Even with just 16.67% probability, EV is $11.57—over 100x return on risk. Pure tail hedge that costs almost nothing. Also profits modestly in Major Disruption. Recommend 0.5-1% position size."
+    },
+    {
+      "rank": 3,
+      "underlying": "COIL",
+      "structure": "bull_call_spread",
+      "legs": [
+        {"strike": 100, "expiry": "2026-10", "type": "CALL", "side": "BUY", "price": 3.50},
+        {"strike": 130, "expiry": "2026-10", "type": "CALL", "side": "SELL", "price": 0.50}
+      ],
+      "entry_cost": 3.00,
+      "max_loss": 3.00,
+      "max_profit": 27.00,
+      "expected_value": 9.50,
+      "payoff_ratio": 9.0,
+      "ev_to_risk_ratio": 3.17,
+      "target_scenarios": "Moderate Escalation, Major Disruption, Super Spike",
+      "win_probability": 0.50,
+      "reasoning": "Defined-risk spread capturing upside across three escalation scenarios. 50% win probability with 9:1 payoff ratio. Lower EV than naked calls but higher win rate and more conservative structure. Good for larger position sizes (2-3% allocation). Profits even in Moderate Escalation scenario."
+    },
+    {
+      "rank": 4,
+      "underlying": "COIL",
+      "structure": "bull_call_spread",
+      "legs": [
+        {"strike": 120, "expiry": "2026-10", "type": "CALL", "side": "BUY", "price": 1.07},
+        {"strike": 150, "expiry": "2026-10", "type": "CALL", "side": "SELL", "price": 0.10}
+      ],
+      "entry_cost": 0.97,
+      "max_loss": 0.97,
+      "max_profit": 29.03,
+      "expected_value": 9.03,
+      "payoff_ratio": 29.9,
+      "ev_to_risk_ratio": 9.31,
+      "target_scenarios": "Major Disruption, Super Spike",
+      "win_probability": 0.333,
+      "reasoning": "Tight spread focusing on two highest-priced scenarios. Excellent 30:1 payoff with minimal cost reduction from selling 150 call. Captures full upside in both disruption scenarios. More capital-efficient than naked 120 call while maintaining strong asymmetry. Consider as alternative to Rank 1 for risk management."
+    },
+    {
+      "rank": 5,
+      "underlying": "COIL",
+      "structure": "straddle",
+      "legs": [
+        {"strike": 90, "expiry": "2026-10", "type": "CALL", "side": "BUY", "price": 5.50},
+        {"strike": 90, "expiry": "2026-10", "type": "PUT", "side": "BUY", "price": 4.80}
+      ],
+      "entry_cost": 10.30,
+      "max_loss": 10.30,
+      "max_profit": "unlimited",
+      "expected_value": 18.00,
+      "payoff_ratio": "N/A",
+      "ev_to_risk_ratio": 1.75,
+      "target_scenarios": "All non-current scenarios",
+      "win_probability": 0.833,
+      "reasoning": "Volatility play on the extreme uncertainty reflected in uniform probabilities. Profits in 5 of 6 scenarios (all except Current State). 83% win probability with strong absolute EV of $18. Higher capital requirement but lower risk profile. Excellent for expressing view that oil will NOT stay at current levels. Best structure if you believe the uniform distribution itself is the trade."
+      }
+  ],
+  "position_sizing_guidelines": {
+    "rank_1_120_call": "2-3% of portfolio - core tail risk position",
+    "rank_2_150_call": "0.5-1% of portfolio - lottery ticket allocation",
+    "rank_3_100_130_spread": "2-4% of portfolio - conservative defined risk",
+    "rank_4_120_150_spread": "1-2% of portfolio - tactical allocation",
+    "rank_5_straddle": "3-5% of portfolio - volatility expression"
+  },
+  "key_insights": [
+    "Zero edge across all scenarios indicates market is pricing extreme uncertainty",
+    "Uniform 16.67% distribution is highly unusual - typically markets favor status quo",
+    "This setup favors asymmetric payoff structures over directional bets",
+    "Focus on tail hedges with limited downside and unlimited/high upside",
+    "Consider layering: naked calls for asymmetry + spreads for base case coverage",
+    "Naked 120 call offers best risk/reward: $1.07 risk for $20.60 EV",
+    "150 call is statistical arbitrage: $0.10 cost vs $11.57 EV = 115x return",
+    "Avoid put spreads - negative EV in this probability distribution"
+  ],
+  "execution_notes": {
+    "liquidity": "Prefer CL (WTI) for execution, convert exposure to COIL (Brent) if needed",
+    "timing": "Enter positions within 1-2 weeks while uniform distribution persists",
+    "volatility": "Assumed 35-45% IV; verify current levels before entry",
+    "expiry": "90-day window balances theta decay vs tail risk capture",
+    "monitoring": "Review weekly; exit if probabilities concentrate into single scenario"
+  }
+}

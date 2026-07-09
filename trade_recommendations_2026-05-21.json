@@ -1,0 +1,95 @@
+[
+  {
+    "rank": 1,
+    "underlying": "COIL",
+    "structure": "call_spread",
+    "legs": [
+      {"strike": 130, "expiry": "2026-06", "type": "CALL", "side": "BUY", "price": 2.50},
+      {"strike": 180, "expiry": "2026-06", "type": "CALL", "side": "SELL", "price": 0.80}
+    ],
+    "entry_cost": 1.70,
+    "max_loss": 1.70,
+    "max_profit": 48.30,
+    "expected_value": 27.80,
+    "payoff_ratio": 28.41,
+    "ev_risk_ratio": 16.35,
+    "target_scenario": "Major Disruption + Super Spike",
+    "reasoning": "Highest EV/risk ratio at 16.35. Bull call spread captures the massive 31.3% edge on Major Disruption (AI=48% vs Market=16.7%) which targets $130-180, plus significant exposure to Super Spike (+18.3% edge, $180-250). Strike 130 is at the floor of Major Disruption scenario, providing ~97% probability of profit given AI probabilities. Limited risk at $1.70 vs max profit of $48.30. This is the most efficient risk-adjusted trade.",
+    "probability_of_profit": 0.91,
+    "position_sizing": "3-5% of portfolio - core geopolitical tail hedge"
+  },
+  {
+    "rank": 2,
+    "underlying": "COIL",
+    "structure": "naked_call",
+    "legs": [
+      {"strike": 140, "expiry": "2026-06", "type": "CALL", "side": "BUY", "price": 4.20}
+    ],
+    "entry_cost": 4.20,
+    "max_loss": 4.20,
+    "max_profit": "unlimited",
+    "expected_value": 29.25,
+    "payoff_ratio": 16.86,
+    "ev_risk_ratio": 6.96,
+    "target_scenario": "Major Disruption + Super Spike",
+    "reasoning": "Highest absolute EV at $29.25. Naked call at 140 strike is in-the-money for both Major Disruption (mid $155) and Super Spike (mid $215), exploiting the combined +49.6% probability edge. At-the-money volatility is underpriced relative to tail risk. Major Disruption alone generates $15 intrinsic value, Super Spike adds $75. Trade-off: higher cost ($4.20) but unlimited upside and simple execution.",
+    "probability_of_profit": 0.83,
+    "position_sizing": "2-4% of portfolio - aggressive directional bet"
+  },
+  {
+    "rank": 3,
+    "underlying": "COIL",
+    "structure": "call_spread",
+    "legs": [
+      {"strike": 120, "expiry": "2026-06", "type": "CALL", "side": "BUY", "price": 3.50},
+      {"strike": 150, "expiry": "2026-06", "type": "CALL", "side": "SELL", "price": 1.20}
+    ],
+    "entry_cost": 2.30,
+    "max_loss": 2.30,
+    "max_profit": 27.70,
+    "expected_value": 22.60,
+    "payoff_ratio": 12.04,
+    "ev_risk_ratio": 9.83,
+    "target_scenario": "Major Disruption + Super Spike",
+    "reasoning": "Wide bull call spread with 120/150 strikes captures full Major Disruption scenario ($130-180 range) and partial Super Spike. Deep ITM 120 strike provides high delta exposure with lower gamma risk. Max profit capped at $27.70 when Brent reaches 150, but still profitable through $215. Lower EV than naked 140 call but better risk profile with defined max loss of $2.30.",
+    "probability_of_profit": 0.91,
+    "position_sizing": "3-5% of portfolio - conservative defined-risk structure"
+  },
+  {
+    "rank": 4,
+    "underlying": "COIL",
+    "structure": "call_spread",
+    "legs": [
+      {"strike": 150, "expiry": "2026-06", "type": "CALL", "side": "BUY", "price": 2.80},
+      {"strike": 200, "expiry": "2026-06", "type": "CALL", "side": "SELL", "price": 0.50}
+    ],
+    "entry_cost": 2.30,
+    "max_loss": 2.30,
+    "max_profit": 47.70,
+    "expected_value": 17.60,
+    "ev_risk_ratio": 7.65,
+    "target_scenario": "Super Spike",
+    "reasoning": "Pure Super Spike play (AI=35% vs Market=16.7%, +18.3% edge) with 150/200 strikes. Narrow focus on extreme tail scenario targeting $180-250 Brent. Lower probability (35% vs 83% combined for Major Disruption + Super Spike) but massive payoff ratio of 20.7x. In Major Disruption scenario ($155 mid), generates only $2.70 profit vs $47.70 max in Super Spike. Best suited for true tail risk allocation, not core position.",
+    "probability_of_profit": 0.83,
+    "position_sizing": "1-2% of portfolio - pure tail hedge"
+  },
+  {
+    "rank": 5,
+    "underlying": "COIL",
+    "structure": "long_straddle",
+    "legs": [
+      {"strike": 100, "expiry": "2026-09", "type": "CALL", "side": "BUY", "price": 8.50},
+      {"strike": 100, "expiry": "2026-09", "type": "PUT", "side": "BUY", "price": 3.20}
+    ],
+    "entry_cost": 11.70,
+    "max_loss": 11.70,
+    "max_profit": "unlimited",
+    "expected_value": 18.40,
+    "payoff_ratio": 4.88,
+    "ev_risk_ratio": 1.57,
+    "target_scenario": "High Volatility - Any Direction",
+    "reasoning": "Volatility play betting on large move in either direction. With 83% AI probability of Major Disruption or Super Spike (upside) vs 9% for downside scenarios, this is skewed long. ATM straddle at $100 (near current levels) profits from realized vol exceeding implied. Longer dated (September) captures extended timeline for geopolitical events to unfold. Lower EV/risk than directional calls but hedges against uncertainty in timing and magnitude. Breakevens: $111.70 upside, $88.30 downside.",
+    "probability_of_profit": 0.92,
+    "position_sizing": "2-3% of portfolio - volatility hedge with directional bias"
+  }
+]

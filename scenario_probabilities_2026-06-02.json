@@ -1,0 +1,36 @@
+{
+    "scenarios": {
+        "Super Spike": {
+            "probability": 0.10,
+            "reasoning": "Reduced from 15% to 10%. While Hormuz faces 'potentially permanent impairment', diplomatic signals emerged (Tehran weighing US peace deal) and NO new production shut-ins occurred today (0 mbd vs 2.5 mbd yesterday). Brent at 102.75 suggests market pricing major disruption, not super spike. The 37 mbd shipment figure likely overstates actual flow reduction given price levels. Escalation score stable at 7/10 rather than accelerating."
+        },
+        "Major Disruption": {
+            "probability": 0.45,
+            "reasoning": "Increased from 38% to 45% - now STRONG BASE CASE. Current conditions precisely match: Brent at 102.75 squarely in 130-180 scenario range when adjusted for positioning, significant Iranian production offline from prior days, partial Hormuz restriction (impairment but not closure), military severity 7/10, and extremely elevated volatility (73-77% ATM). Steep backwardation (M1-M12 spread +19.73) confirms acute supply tightness. This scenario best fits observed prices."
+        },
+        "Moderate Escalation": {
+            "probability": 0.25,
+            "reasoning": "Reduced from 30% to 25%. Today's diplomatic signals (peace deal consideration, Lebanon talks) and zero new production losses suggest risk is stabilizing rather than escalating. However, still-active strikes, 7/10 military scores, and Hormuz 'impairment' language keep this scenario viable. The 102.75 Brent price is at the high end of the 100-130 range, arguing for shift toward Major Disruption."
+        },
+        "Current State": {
+            "probability": 0.08,
+            "reasoning": "Reduced from 12% to 8%. Brent at 102.75, ATM vol at 73-77%, and Hormuz 'potentially permanent impairment' language are incompatible with 'contained conflict, minimal supply impact'. The backwardation structure and elevated geopolitical risk premium show market firmly pricing substantial disruption. Diplomatic signals prevent complete collapse of this scenario, but price action argues against it."
+        },
+        "De-escalation": {
+            "probability": 0.11,
+            "reasoning": "TRIPLED from 4% to 11% - largest single-day increase. Key drivers: (1) Iran 'weighing US peace deal' - first constructive diplomatic language in weeks, (2) Lebanon-Israel talks 'progressing', (3) Zero new production shut-ins today, (4) Regional producers planning 2027 output increases suggests optimism about conflict trajectory. However, 102.75 Brent and active military strikes (7/10 scores) show market skeptical of imminent ceasefire."
+        },
+        "Resolution": {
+            "probability": 0.01,
+            "reasoning": "Unchanged at 1%. While diplomatic signals improved, we remain far from war ending or Iranian supply returning. Active strikes continue, Hormuz impaired, and volatility extreme. Full resolution requires sustained ceasefire, sanctions relief, and infrastructure repair - none imminent. Market pricing (102.75, 75% vol) shows zero expectation of near-term resolution."
+        }
+    },
+    "overall_assessment": "Mixed signals today: diplomatic breakthrough potential (Iran weighing peace deal) contrasts with Hormuz 'permanent impairment' warnings. Brent at 102.75 and extreme volatility (73-77%) confirm Major Disruption as base case, but probability shifting from escalation toward stabilization/de-escalation as new production losses halt and talks emerge.",
+    "key_drivers": [
+        "Iran weighing US peace deal - first diplomatic progress signal",
+        "Hormuz 'potentially permanent impairment' vs no new production losses (0 mbd)",
+        "Brent at .75 with steep backwardation confirms major supply tightness",
+        "Military escalation stable at 7/10 rather than accelerating",
+        "Extreme volatility (73-77% ATM) shows market pricing extended crisis"
+    ]
+}

@@ -15,7 +15,7 @@ import plotly.graph_objects as go
 import dash_bootstrap_components as dbc
 from dash import html, callback, Input, Output
 
-from db.database import get_session, FuturesCurve, PhysicalPrice
+from db.database import get_session, FuturesCurve, PhysicalPrice, CushingInventory
 from sqlalchemy import func as sa_func
 
 # â”€â”€â”€ Colour / label palettes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -142,6 +142,8 @@ def _latest_futures(session, symbol: str):
     Output("physical-basis-chart",  "figure"),
     Output("physical-dubai-chart",  "figure"),
     Output("physical-diff-chart",   "figure"),
+    Output("physical-cushing-chart", "figure"),
+    Output("physical-cushing-table", "children"),
     Input("physical-date-range",       "start_date"),
     Input("physical-date-range",       "end_date"),
     Input("physical-benchmark-toggle", "value"),
@@ -322,6 +324,90 @@ def update_physical(start_date, end_date, benchmarks, brent_source, _n):
         if not dub_map:
             diff_fig = _empty("Dubai Differentials â€” no Dubai data")
 
+        # ── Cushing inventory chart (full history, ignores date range) ──────────
+        cushing_rows = (
+            session.query(CushingInventory)
+            .order_by(CushingInventory.date)
+            .all()
+        )
+
+        cushing_fig = go.Figure()
+        cushing_fig.update_layout(
+            template="oil_dark",
+            title="Cushing, OK Crude Inventory (Excl. SPR) — Full History",
+            xaxis_title="Date",
+            yaxis_title="Inventory (Mbbl)",
+            height=340,
+            hovermode="x unified",
+        )
+
+        if cushing_rows:
+            dates = [r.date for r in cushing_rows]
+            mbbl  = [r.inventory_kbbl / 1000.0 for r in cushing_rows]
+            cushing_fig.add_trace(go.Scatter(
+                x=dates,
+                y=mbbl,
+                mode="lines",
+                name="Cushing Stocks",
+                line=dict(color="#F0A500", width=2),
+                fill="tozeroy",
+                fillcolor="rgba(240,165,0,0.08)",
+                hovertemplate="%{x|%Y-%m-%d}<br>%{y:.2f} Mbbl<extra></extra>",
+            ))
+            # 5-year average reference band
+            if len(mbbl) >= 52:
+                import statistics
+                avg = statistics.mean(mbbl)
+                cushing_fig.add_hline(
+                    y=avg,
+                    line_dash="dot",
+                    line_color="#888",
+                    line_width=1,
+                    annotation_text=f"Period avg {avg:.1f} Mbbl",
+                    annotation_position="bottom right",
+                )
+        else:
+            cushing_fig = _empty("Cushing Inventory — no data (run backfill to populate)")
+
+        # ── Cushing table (most recent 20 weeks) ─────────────────────────────
+        recent = list(reversed(cushing_rows[-20:]))  # newest first
+        if recent:
+            header = html.Thead(html.Tr([
+                html.Th("Week Ending"),
+                html.Th("Inventory (Mbbl)"),
+                html.Th("W/W Change (Mbbl)"),
+                html.Th("W/W Change (%)"),
+            ]))
+            rows_html = []
+            for i, r in enumerate(recent):
+                mbbl_val = r.inventory_kbbl / 1000.0
+                # previous row in reversed list = next older week
+                if i + 1 < len(recent):
+                    prev_mbbl = recent[i + 1].inventory_kbbl / 1000.0
+                    chg = mbbl_val - prev_mbbl
+                    chg_pct = (chg / prev_mbbl * 100) if prev_mbbl else 0.0
+                    chg_color = "#00D26A" if chg > 0 else ("#FF4757" if chg < 0 else "#888")
+                    chg_str = f"{'+' if chg > 0 else ''}{chg:.3f}"
+                    chg_pct_str = f"{'+' if chg_pct > 0 else ''}{chg_pct:.1f}%"
+                else:
+                    chg_color = "#888"
+                    chg_str = "—"
+                    chg_pct_str = "—"
+                rows_html.append(html.Tr([
+                    html.Td(r.date.strftime("%Y-%m-%d")),
+                    html.Td(f"{mbbl_val:.3f}"),
+                    html.Td(chg_str, style={"color": chg_color}),
+                    html.Td(chg_pct_str, style={"color": chg_color}),
+                ]))
+            cushing_table = dbc.Table(
+                [header, html.Tbody(rows_html)],
+                striped=True, hover=True, size="sm",
+                style={"fontSize": "0.85rem"},
+            )
+        else:
+            cushing_table = html.P("No Cushing data available — run backfill to populate.",
+                                   className="text-muted")
+
         return (
             metrics,
             _SOURCE_LABELS[brent_source],
@@ -329,6 +415,8 @@ def update_physical(start_date, end_date, benchmarks, brent_source, _n):
             basis_fig,
             dubai_fig,
             diff_fig,
+            cushing_fig,
+            cushing_table,
         )
 
     finally:

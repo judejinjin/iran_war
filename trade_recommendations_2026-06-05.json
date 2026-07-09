@@ -1,0 +1,86 @@
+[
+  {
+    "rank": 1,
+    "underlying": "COIL",
+    "structure": "naked_call",
+    "legs": [
+      {"strike": 130, "expiry": "2026-12", "type": "CALL", "side": "BUY", "price": 15.20}
+    ],
+    "entry_cost": 15.20,
+    "max_loss": 15.20,
+    "max_profit": "unlimited",
+    "expected_value": 16.55,
+    "payoff_ratio": 4.59,
+    "ev_to_risk_ratio": 1.09,
+    "target_scenario": "Major Disruption (+25.3% edge) & Super Spike (+8.3% edge)",
+    "reasoning": "Highest EV/risk ratio. Simple, liquid structure capturing massive +25.3% edge on Major Disruption (42% AI prob vs 16.7% market). At-the-money for $155 target gives max gamma exposure. Profits in both Major Disruption (+$9.80) and Super Spike (+$69.80). 67% total probability of upside scenarios justify premium."
+  },
+  {
+    "rank": 2,
+    "underlying": "COIL",
+    "structure": "call_spread",
+    "legs": [
+      {"strike": 120, "expiry": "2026-12", "type": "CALL", "side": "BUY", "price": 18.50},
+      {"strike": 150, "expiry": "2026-12", "type": "CALL", "side": "SELL", "price": 9.20}
+    ],
+    "entry_cost": 9.30,
+    "max_loss": 9.30,
+    "max_profit": 20.70,
+    "expected_value": 10.80,
+    "payoff_ratio": 2.23,
+    "ev_to_risk_ratio": 1.16,
+    "target_scenario": "Major Disruption & Super Spike",
+    "reasoning": "Best risk-defined structure. Lower entry cost ($9.30 vs $15.20) with strong EV. Max profit achieved at $150, capturing full value in both Major Disruption (155 mid) and Super Spike scenarios. 67% combined probability of these scenarios makes spread width optimal. Defined risk attractive for position sizing."
+  },
+  {
+    "rank": 3,
+    "underlying": "COIL",
+    "structure": "long_straddle",
+    "legs": [
+      {"strike": 140, "expiry": "2026-12", "type": "CALL", "side": "BUY", "price": 10.80},
+      {"strike": 140, "expiry": "2026-12", "type": "PUT", "side": "BUY", "price": 19.50}
+    ],
+    "entry_cost": 30.30,
+    "max_loss": 30.30,
+    "max_profit": "unlimited",
+    "expected_value": 8.10,
+    "payoff_ratio": 1.64,
+    "ev_to_risk_ratio": 0.27,
+    "target_scenario": "Any large move (Super Spike or Resolution)",
+    "reasoning": "Volatility play that profits from extreme outcomes in either direction. While AI sees upside as much more likely (67% vs 7% for downside), this hedges against model error. Positive EV despite high cost. Best for traders wanting non-directional exposure or concerned about black swan downside despite probabilities."
+  },
+  {
+    "rank": 4,
+    "underlying": "COIL",
+    "structure": "call_spread",
+    "legs": [
+      {"strike": 180, "expiry": "2026-12", "type": "CALL", "side": "BUY", "price": 5.80},
+      {"strike": 210, "expiry": "2026-12", "type": "CALL", "side": "SELL", "price": 2.10}
+    ],
+    "entry_cost": 3.70,
+    "max_loss": 3.70,
+    "max_profit": 26.30,
+    "expected_value": 3.80,
+    "payoff_ratio": 7.11,
+    "ev_to_risk_ratio": 1.03,
+    "target_scenario": "Super Spike",
+    "reasoning": "Pure tail-risk bet on Super Spike scenario ($180-$250). Extremely cheap entry ($3.70) with 7:1 payoff. 25% AI probability vs 16.7% market = +8.3% edge. Only profits if Brent reaches $180+, making this a high-conviction, low-cost lottery ticket on Hormuz closure. Allocate 1-2% of portfolio for asymmetric upside."
+  },
+  {
+    "rank": 5,
+    "underlying": "COIL",
+    "structure": "call_spread",
+    "legs": [
+      {"strike": 150, "expiry": "2026-12", "type": "CALL", "side": "BUY", "price": 12.50},
+      {"strike": 180, "expiry": "2026-12", "type": "CALL", "side": "SELL", "price": 5.80}
+    ],
+    "entry_cost": 6.70,
+    "max_loss": 6.70,
+    "max_profit": 23.30,
+    "expected_value": 2.90,
+    "payoff_ratio": 3.48,
+    "ev_to_risk_ratio": 0.43,
+    "target_scenario": "Super Spike only",
+    "reasoning": "Focused bet on Super Spike with less slippage than rank #4. Requires $150+ to profit, missing most Major Disruption value (mid=$155 only gives small profit). Lower EV than wider spreads because it doesn't fully capture the highest-edge scenario (Major Disruption). Better to use rank #1, #2, or #4 instead."
+  }
+]

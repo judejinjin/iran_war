@@ -1,0 +1,140 @@
+[
+  {
+    "rank": 1,
+    "underlying": "COIL",
+    "structure": "call_spread",
+    "legs": [
+      {
+        "strike": 160,
+        "expiry": "2026-06",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 1.12
+      },
+      {
+        "strike": 210,
+        "expiry": "2026-06",
+        "type": "CALL",
+        "side": "SELL",
+        "price": 0.39
+      }
+    ],
+    "entry_cost": 0.73,
+    "max_loss": 0.73,
+    "max_profit": 49.27,
+    "expected_value": 16.77,
+    "payoff_ratio": 67.49,
+    "ev_risk_ratio": 22.97,
+    "target_scenario": "Super Spike",
+    "reasoning": "Massive 23x EV/risk ratio. 35% AI probability of Super Spike () vs 16.7% market. Pays max at +. Pure tail risk asymmetry - loses only .73 in 4 downside scenarios (9% combined prob) but captures + in Super Spike (35% prob) and partial gains in Major Disruption (46% prob). Excellent liquidity on June COIL."
+  },
+  {
+    "rank": 2,
+    "underlying": "COIL",
+    "structure": "naked_call",
+    "legs": [
+      {
+        "strike": 140,
+        "expiry": "2026-06",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 2.03
+      }
+    ],
+    "entry_cost": 2.03,
+    "max_loss": 2.03,
+    "max_profit": "unlimited",
+    "expected_value": 31.12,
+    "payoff_ratio": "N/A",
+    "ev_risk_ratio": 15.33,
+    "target_scenario": "Major Disruption + Super Spike",
+    "reasoning": "15x EV/risk. Strike at  sits between Moderate ( mid) and Major Disruption ( mid). 81% AI probability of going ITM (Major Disruption 46% + Super Spike 35%). Unlimited upside captures full Super Spike move to , worth  intrinsic. Higher absolute premium but excellent convexity vs market misprice."
+  },
+  {
+    "rank": 3,
+    "underlying": "COIL",
+    "structure": "call_spread",
+    "legs": [
+      {
+        "strike": 130,
+        "expiry": "2026-06",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 2.88
+      },
+      {
+        "strike": 180,
+        "expiry": "2026-06",
+        "type": "CALL",
+        "side": "SELL",
+        "price": 0.69
+      }
+    ],
+    "entry_cost": 2.19,
+    "max_loss": 2.19,
+    "max_profit": 47.81,
+    "expected_value": 26.81,
+    "payoff_ratio": 21.83,
+    "ev_risk_ratio": 12.24,
+    "target_scenario": "Major Disruption + Super Spike",
+    "reasoning": "12x EV/risk ratio with 22x payoff. Strike at  is at lower bound of Major Disruption range. 81% probability of at least some ITM value. Captures  in Major Disruption (), max .81 in Super Spike. Balanced risk/reward with moderate premium outlay of .19."
+  },
+  {
+    "rank": 4,
+    "underlying": "COIL",
+    "structure": "call_spread",
+    "legs": [
+      {
+        "strike": 120,
+        "expiry": "2026-06",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 4.22
+      },
+      {
+        "strike": 150,
+        "expiry": "2026-06",
+        "type": "CALL",
+        "side": "SELL",
+        "price": 1.49
+      }
+    ],
+    "entry_cost": 2.73,
+    "max_loss": 2.73,
+    "max_profit": 27.27,
+    "expected_value": 21.57,
+    "payoff_ratio": 9.99,
+    "ev_risk_ratio": 7.9,
+    "target_scenario": "Major Disruption",
+    "reasoning": "8x EV/risk, 10x payoff. Lower strikes (-150) target the high-conviction Major Disruption scenario (46% prob, -180 range). Nearly max payout at  midpoint. More conservative - 91% AI probability of going ITM (all scenarios except Resolution). Good for risk-averse allocation."
+  },
+  {
+    "rank": 5,
+    "underlying": "CL",
+    "structure": "call_spread",
+    "legs": [
+      {
+        "strike": 110,
+        "expiry": "2026-06",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 3.53
+      },
+      {
+        "strike": 140,
+        "expiry": "2026-06",
+        "type": "CALL",
+        "side": "SELL",
+        "price": 0.87
+      }
+    ],
+    "entry_cost": 2.66,
+    "max_loss": 2.66,
+    "max_profit": 27.34,
+    "expected_value": 21.64,
+    "payoff_ratio": 10.28,
+    "ev_risk_ratio": 8.14,
+    "target_scenario": "Major Disruption",
+    "reasoning": "CL (WTI) alternative with better execution liquidity. Adjusted for typical  Brent/WTI spread. Strong EV/risk ~6-7x. Use for larger position sizes where COIL bid/ask slippage becomes material. Strikes -140 align with Major Disruption in WTI terms ( Brent = ~ WTI)."
+  }
+]

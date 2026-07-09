@@ -1,0 +1,80 @@
+[
+  {
+    "rank": 1,
+    "underlying": "COIL",
+    "structure": "naked_call",
+    "legs": [
+      {"strike": 120, "expiry": "2026-06-25", "type": "CALL", "side": "BUY", "price": 0.71}
+    ],
+    "entry_cost": 0.71,
+    "max_loss": 0.71,
+    "max_profit": "unlimited",
+    "expected_value": 14.59,
+    "payoff_ratio": 20.5,
+    "target_scenario": "Major Disruption + Super Spike",
+    "reasoning": "Highest EV/risk ratio at 20.5x. Brent currently at $92, this call profits above $120. Captures both Major Disruption (22% AI prob, edge +5.3%) and Super Spike (8% prob) scenarios with Brent mid-points at $155 and $215. At 120 strike, breaks even at $120.71. In Mod Escalation ($115 mid), loses small premium. But Major Disruption alone yields $34.29 profit. Cheap lottery ticket with massive upside - only costs 0.71% of notional."
+  },
+  {
+    "rank": 2,
+    "underlying": "COIL",
+    "structure": "bull_call_spread",
+    "legs": [
+      {"strike": 100, "expiry": "2026-06-25", "type": "CALL", "side": "BUY", "price": 3.00},
+      {"strike": 130, "expiry": "2026-06-25", "type": "CALL", "side": "SELL", "price": 0.41}
+    ],
+    "entry_cost": 2.59,
+    "max_loss": 2.59,
+    "max_profit": 27.41,
+    "expected_value": 11.66,
+    "payoff_ratio": 10.6,
+    "target_scenario": "Moderate Escalation",
+    "reasoning": "Targets Moderate Escalation (AI 35%, market 16.7%, edge +18.3%) - the largest probability edge. Brent mid at $115. Spread profits from $100-$130, capturing the full Mod Escalation range. Max profit of $27.41 on $2.59 risk = 10.6x payoff. EV of $11.66 means 4.5x expected return on capital. More conservative than naked call but still excellent risk/reward. High probability of reaching profit zone."
+  },
+  {
+    "rank": 3,
+    "underlying": "COIL",
+    "structure": "bull_call_spread",
+    "legs": [
+      {"strike": 110, "expiry": "2026-06-25", "type": "CALL", "side": "BUY", "price": 1.41},
+      {"strike": 140, "expiry": "2026-06-25", "type": "CALL", "side": "SELL", "price": 0.25}
+    ],
+    "entry_cost": 1.16,
+    "max_loss": 1.16,
+    "max_profit": 28.84,
+    "expected_value": 9.59,
+    "payoff_ratio": 24.9,
+    "target_scenario": "Moderate Escalation + Major Disruption",
+    "reasoning": "Higher strike spread (110-140) with exceptional 24.9x payoff ratio. Requires more upside movement but captures both Mod Escalation and Major Disruption scenarios. At $115 Brent (Mod Escalation mid), profits $3.84. At $155 (Major Disruption), hits max profit $28.84. Lower entry cost of $1.16 makes this attractive for smaller position sizing while maintaining huge upside exposure."
+  },
+  {
+    "rank": 4,
+    "underlying": "COIL",
+    "structure": "bull_call_spread",
+    "legs": [
+      {"strike": 130, "expiry": "2026-06-25", "type": "CALL", "side": "BUY", "price": 0.41},
+      {"strike": 170, "expiry": "2026-06-25", "type": "CALL", "side": "SELL", "price": 0.10}
+    ],
+    "entry_cost": 0.31,
+    "max_loss": 0.31,
+    "max_profit": 39.69,
+    "expected_value": 8.39,
+    "payoff_ratio": 128.1,
+    "target_scenario": "Major Disruption + Super Spike",
+    "reasoning": "Extreme tail risk play targeting Major Disruption ($155) and Super Spike ($215). Incredible 128x payoff ratio with only $0.31 risk. In Major Disruption, profits $24.69 (80x return). In Super Spike, max profit $39.69 (128x). This is pure geopolitical tail risk insurance - loses small premium unless serious escalation occurs. AI sees 30% combined probability of scenarios >= $130, vs market's implied 16.7%. Asymmetric bet on war escalation."
+  },
+  {
+    "rank": 5,
+    "underlying": "CL",
+    "structure": "bull_call_spread",
+    "legs": [
+      {"strike": 100, "expiry": "2026-06-16", "type": "CALL", "side": "BUY", "price": 1.52},
+      {"strike": 120, "expiry": "2026-06-16", "type": "CALL", "side": "SELL", "price": 0.31}
+    ],
+    "entry_cost": 1.21,
+    "max_loss": 1.21,
+    "max_profit": 18.79,
+    "expected_value": 7.80,
+    "target_scenario": "Moderate Escalation",
+    "reasoning": "WTI (CL) version targeting Moderate Escalation. Earlier expiry (Jun 16 vs Jun 25) for near-term catalyst plays. WTI typically trades $3-5 below Brent, so $100-120 range captures equivalent escalation. Better liquidity than COIL for easier execution and exit. Lower payoff than COIL trades but higher probability due to WTI's lower strike levels. Good diversification from Brent exposure."
+  }
+]

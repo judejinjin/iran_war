@@ -143,6 +143,15 @@ def _run_spr():
     return f"{count} SPR records upserted"
 
 
+def _run_cushing():
+    """Scheduled: Cushing inventory incremental update (last 8 weeks)."""
+    from datetime import date, timedelta
+    from backfill.cushing_backfill import run_backfill
+    start_from = date.today() - timedelta(weeks=8)
+    count = run_backfill(start_from=start_from)
+    return f"{count} Cushing records upserted"
+
+
 def _run_supply_demand():
     """Scheduled: Supply/demand incremental refresh (last 3 months)."""
     from backfill.supply_demand_backfill import run_incremental
@@ -233,12 +242,19 @@ def create_scheduler() -> BackgroundScheduler:
         replace_existing=True,
     )
 
-    # ─── SPR — daily at 18:30 ET (after EIA Wed 10:30 report) ───────────
+    # ─── SPR + Cushing — daily at 18:30 ET (after EIA Wed 10:30 report) ─
     scheduler.add_job(
         _job_wrapper(_run_spr, "spr"),
         CronTrigger(hour=18, minute=30, day_of_week="mon-fri", timezone=et),
         id="spr",
         name="SPR Data Update",
+        replace_existing=True,
+    )
+    scheduler.add_job(
+        _job_wrapper(_run_cushing, "cushing"),
+        CronTrigger(hour=18, minute=35, day_of_week="mon-fri", timezone=et),
+        id="cushing",
+        name="Cushing Inventory Update",
         replace_existing=True,
     )
     # ─── Supply/Demand — daily at 07:30 ET (EIA international updates monthly) ──

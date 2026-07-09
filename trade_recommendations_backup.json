@@ -1,0 +1,125 @@
+[
+  {
+    "rank": 1,
+    "underlying": "COIL",
+    "structure": "naked_call",
+    "legs": [
+      {"strike": 130, "expiry": "2027-06", "type": "CALL", "side": "BUY", "price": 8.50}
+    ],
+    "entry_cost": 8.50,
+    "max_loss": 8.50,
+    "max_profit": "Unlimited",
+    "expected_value": 41.05,
+    "payoff_ratio": 4.83,
+    "ev_to_risk_ratio": 4.83,
+    "target_scenario": "Super Spike (48%) + Major Disruption (35%)",
+    "pnl_by_scenario": {
+      "Super Spike": 76.50,
+      "Major Disruption": 16.50,
+      "Moderate Escalation": -8.50,
+      "Current State": -8.50,
+      "De-escalation": -8.50,
+      "Resolution": -8.50
+    },
+    "reasoning": "Pure directional bet on underpriced tail risk. 83% combined probability of scenarios above $130 (Super Spike 48% + Major Disruption 35%). At-the-money strike provides participation in both major upside scenarios. Delta ~0.70 provides good leverage. Risk $8.50 to make $76.50 in Super Spike (9x return). Market is mispricing geopolitical risk by 31.3% for Super Spike alone."
+  },
+  {
+    "rank": 2,
+    "underlying": "COIL",
+    "structure": "naked_call",
+    "legs": [
+      {"strike": 150, "expiry": "2027-06", "type": "CALL", "side": "BUY", "price": 3.53}
+    ],
+    "entry_cost": 3.53,
+    "max_loss": 3.53,
+    "max_profit": "Unlimited",
+    "expected_value": 29.42,
+    "payoff_ratio": 8.33,
+    "ev_to_risk_ratio": 8.33,
+    "target_scenario": "Super Spike (48%)",
+    "pnl_by_scenario": {
+      "Super Spike": 61.47,
+      "Major Disruption": 1.47,
+      "Moderate Escalation": -3.53,
+      "Current State": -3.53,
+      "De-escalation": -3.53,
+      "Resolution": -3.53
+    },
+    "reasoning": "Highest risk-adjusted return. Pure tail risk bet on Super Spike scenario (Hormuz closure). 48% AI probability vs 16.7% market implies massive mispricing. OTM strike at $150 provides asymmetric payoff: risk $3.53 to make $61.47 in Super Spike (17x return). Small position size appropriate given binary nature. Delta ~0.18 limits losses in non-spike scenarios while preserving massive upside."
+  },
+  {
+    "rank": 3,
+    "underlying": "COIL",
+    "structure": "bull_call_spread",
+    "legs": [
+      {"strike": 120, "expiry": "2027-06", "type": "CALL", "side": "BUY", "price": 5.87},
+      {"strike": 150, "expiry": "2027-06", "type": "CALL", "side": "SELL", "price": 3.53}
+    ],
+    "entry_cost": 2.34,
+    "max_loss": 2.34,
+    "max_profit": 27.66,
+    "expected_value": 22.56,
+    "payoff_ratio": 11.82,
+    "ev_to_risk_ratio": 9.64,
+    "target_scenario": "Super Spike (48%) + Major Disruption (35%)",
+    "pnl_by_scenario": {
+      "Super Spike": 27.66,
+      "Major Disruption": 27.66,
+      "Moderate Escalation": -2.34,
+      "Current State": -2.34,
+      "De-escalation": -2.34,
+      "Resolution": -2.34
+    },
+    "reasoning": "Best risk-defined structure. Captures full upside in both Super Spike AND Major Disruption scenarios (83% combined probability). Maximum profit of $27.66 achieved at any price above $150. Risk only $2.34 to make $27.66 (11.8x payoff ratio). Lower entry cost than naked calls enables larger position sizing. Ideal for portfolio allocation: 2-5% position risk yields substantial convexity."
+  },
+  {
+    "rank": 4,
+    "underlying": "COIL",
+    "structure": "bull_call_spread",
+    "legs": [
+      {"strike": 140, "expiry": "2027-06", "type": "CALL", "side": "BUY", "price": 5.20},
+      {"strike": 180, "expiry": "2027-06", "type": "CALL", "side": "SELL", "price": 2.10}
+    ],
+    "entry_cost": 3.10,
+    "max_loss": 3.10,
+    "max_profit": 36.90,
+    "expected_value": 21.35,
+    "payoff_ratio": 11.90,
+    "ev_to_risk_ratio": 6.89,
+    "target_scenario": "Super Spike (48%) + Major Disruption (35%)",
+    "pnl_by_scenario": {
+      "Super Spike": 36.90,
+      "Major Disruption": 11.90,
+      "Moderate Escalation": -3.10,
+      "Current State": -3.10,
+      "De-escalation": -3.10,
+      "Resolution": -3.10
+    },
+    "reasoning": "Wider spread targeting higher volatility. $40 spread width provides greater absolute profit potential ($36.90 max) than tighter spreads. Full profit in Super Spike, partial profit ($11.90) in Major Disruption. Higher strike selection filters for true tail events. Risk $3.10 for up to 11.9x return. Good complement to tighter spreads for diversified exposure across strike ranges."
+  },
+  {
+    "rank": 5,
+    "underlying": "COIL",
+    "structure": "bull_call_spread",
+    "legs": [
+      {"strike": 110, "expiry": "2027-06", "type": "CALL", "side": "BUY", "price": 7.50},
+      {"strike": 130, "expiry": "2027-06", "type": "CALL", "side": "SELL", "price": 4.20}
+    ],
+    "entry_cost": 3.30,
+    "max_loss": 3.30,
+    "max_profit": 16.70,
+    "expected_value": 13.70,
+    "payoff_ratio": 5.06,
+    "ev_to_risk_ratio": 4.15,
+    "target_scenario": "Multiple scenarios above $130",
+    "pnl_by_scenario": {
+      "Super Spike": 16.70,
+      "Major Disruption": 16.70,
+      "Moderate Escalation": 1.70,
+      "Current State": -3.30,
+      "De-escalation": -3.30,
+      "Resolution": -3.30
+    },
+    "reasoning": "Conservative defined-risk play with highest win rate. Profits in 3 of 6 scenarios (91% combined probability). Full profit above $130 captures both major upside scenarios. Partial profit (+$1.70) in Moderate Escalation reduces downside tail risk. Lower absolute return but higher probability of profit makes this suitable for core position with larger size allocation. 5x payoff ratio with 91% win probability = excellent Sharpe."
+  }
+]

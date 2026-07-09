@@ -1,0 +1,142 @@
+[
+  {
+    "rank": 1,
+    "underlying": "COIL",
+    "structure": "2x1 ratio_call_spread",
+    "legs": [
+      {
+        "strike": 140,
+        "expiry": "2026-11",
+        "type": "CALL",
+        "side": "BUY",
+        "quantity": 2,
+        "price": 1.8
+      },
+      {
+        "strike": 200,
+        "expiry": "2026-11",
+        "type": "CALL",
+        "side": "SELL",
+        "quantity": 1,
+        "price": 0.8
+      }
+    ],
+    "entry_cost": 1.6,
+    "max_loss": 1.6,
+    "max_profit": 133.4,
+    "expected_value": 66.5,
+    "payoff_ratio": 83.4,
+    "ev_risk_ratio": 41.6,
+    "target_scenario": "Super Spike + Major Disruption",
+    "reasoning": "HIGHEST EV/RISK at 41.6x. Leveraged 2:1 ratio spread exploits massive AI edge in tail scenarios. Pays $28.40 in Major Disruption (38% AI prob) but explodes to $133.40 in Super Spike (42% prob). Combined 80% probability of upside scenarios vs 33% market-implied. Only risks $1.60 premium. Short 200 call caps max profit but reduces entry cost. Ideal for concentrated tail risk allocation. 6-month expiry gives time for geopolitical catalyst."
+  },
+  {
+    "rank": 2,
+    "underlying": "COIL",
+    "structure": "naked_call",
+    "legs": [
+      {
+        "strike": 140,
+        "expiry": "2026-11",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 1.8
+      }
+    ],
+    "entry_cost": 1.8,
+    "max_loss": 1.8,
+    "max_profit": "unlimited",
+    "expected_value": 35.4,
+    "payoff_ratio": "N/A",
+    "ev_risk_ratio": 19.7,
+    "target_scenario": "Major Disruption + Super Spike",
+    "reasoning": "Clean directional bet with 19.7x EV/risk. $140 strike sits between Moderate Escalation ($115 mid) and Major Disruption ($155 mid). 80% AI probability of going ITM vs ~50% market-implied. Pays $15 intrinsic in Major Disruption, $75 in Super Spike. Unlimited upside captures full parabolic move if Hormuz closes. Higher conviction than spreads for those willing to pay premium. Best pure convexity play."
+  },
+  {
+    "rank": 3,
+    "underlying": "COIL",
+    "structure": "call_spread",
+    "legs": [
+      {
+        "strike": 120,
+        "expiry": "2026-11",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 3.2
+      },
+      {
+        "strike": 180,
+        "expiry": "2026-11",
+        "type": "CALL",
+        "side": "SELL",
+        "price": 0.5
+      }
+    ],
+    "entry_cost": 2.7,
+    "max_loss": 2.7,
+    "max_profit": 57.3,
+    "expected_value": 35.8,
+    "payoff_ratio": 21.2,
+    "ev_risk_ratio": 13.3,
+    "target_scenario": "Major Disruption + Super Spike",
+    "reasoning": "13.3x EV/risk with 21x payoff ratio. Wide $120-180 spread captures both scenarios: $35 profit in Major Disruption ($155 mid), max $57.30 in Super Spike. 80% AI probability of profit vs market's 50%. Lower strike $120 means higher ITM probability but higher $2.70 cost. Good balance for risk-adjusted returns. Defined max loss appeals to institutional mandates."
+  },
+  {
+    "rank": 4,
+    "underlying": "COIL",
+    "structure": "call_spread",
+    "legs": [
+      {
+        "strike": 125,
+        "expiry": "2026-11",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 2.5
+      },
+      {
+        "strike": 155,
+        "expiry": "2026-11",
+        "type": "CALL",
+        "side": "SELL",
+        "price": 1.0
+      }
+    ],
+    "entry_cost": 1.5,
+    "max_loss": 1.5,
+    "max_profit": 28.5,
+    "expected_value": 22.5,
+    "payoff_ratio": 19.0,
+    "ev_risk_ratio": 15.0,
+    "target_scenario": "Major Disruption",
+    "reasoning": "Tight spread perfectly bracketing Major Disruption ($130-180 range, $155 mid). 15x EV/risk with max payout exactly at scenario midpoint. Conservative play - 80% AI probability of upside vs market's 50%. Caps at $28.50 but only costs $1.50. Best for high-conviction bet on Major Disruption without Super Spike exposure. Lower vol sensitivity due to tight strikes. Excellent Sharpe ratio."
+  },
+  {
+    "rank": 5,
+    "underlying": "CL",
+    "structure": "call_spread",
+    "legs": [
+      {
+        "strike": 100,
+        "expiry": "2026-11",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 6.5
+      },
+      {
+        "strike": 135,
+        "expiry": "2026-11",
+        "type": "CALL",
+        "side": "SELL",
+        "price": 2.8
+      }
+    ],
+    "entry_cost": 3.7,
+    "max_loss": 3.7,
+    "max_profit": 31.3,
+    "expected_value": 25.5,
+    "payoff_ratio": 8.5,
+    "ev_risk_ratio": 6.9,
+    "target_scenario": "Major Disruption",
+    "reasoning": "WTI (CL) alternative for better liquidity and tighter bid/ask spreads on larger size. Adjusted for typical $5-8 Brent/WTI spread. Lower strike $100 means higher probability of profit - even Moderate Escalation ($115 WTI equivalent) pays $11.30. 88% AI probability of profit. Higher $3.70 cost but max profit in both Major Disruption and Super Spike. Use for positions >100 contracts where COIL liquidity thins out."
+  }
+]

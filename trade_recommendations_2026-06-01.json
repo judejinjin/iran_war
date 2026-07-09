@@ -1,0 +1,83 @@
+[
+  {
+    "rank": 1,
+    "underlying": "COIL",
+    "structure": "naked_call",
+    "legs": [
+      {"strike": 110, "expiry": "2026-09", "type": "CALL", "side": "BUY", "price": 5.50}
+    ],
+    "entry_cost": 5.50,
+    "max_loss": 5.50,
+    "max_profit": "unlimited",
+    "expected_value": 28.85,
+    "payoff_ratio": 18.1,
+    "ev_to_risk": 5.25,
+    "target_scenario": "Major Disruption + Super Spike",
+    "reasoning": "Highest expected value trade. Long 110 call captures massive upside in Major Disruption (38% prob, edge +21.3%) and Super Spike (15% prob) scenarios. At-the-money positioning provides leverage to both tail scenarios. Brent mid-points: Major Disruption $155, Super Spike $215. Risk limited to premium paid. 3-month expiry balances theta decay with time for geopolitical events to unfold."
+  },
+  {
+    "rank": 2,
+    "underlying": "COIL", 
+    "structure": "call_spread",
+    "legs": [
+      {"strike": 100, "expiry": "2026-09", "type": "CALL", "side": "BUY", "price": 6.80},
+      {"strike": 130, "expiry": "2026-09", "type": "CALL", "side": "SELL", "price": 2.10}
+    ],
+    "entry_cost": 4.70,
+    "max_loss": 4.70,
+    "max_profit": 25.30,
+    "expected_value": 15.70,
+    "payoff_ratio": 5.38,
+    "ev_to_risk": 3.34,
+    "target_scenario": "Major Disruption + Moderate Escalation",
+    "reasoning": "Bull call spread 100/130 perfectly targets the two highest-edge scenarios. Profits in both Major Disruption ($155 mid, 38% prob) and Moderate Escalation ($115 mid, 30% prob). Combined 68% AI probability vs 33% market probability represents massive mispricing. Defined risk of $4.70 with max profit $25.30 (5.4x return). Lower cost than naked call, still captures core upside thesis."
+  },
+  {
+    "rank": 3,
+    "underlying": "COIL",
+    "structure": "call_spread", 
+    "legs": [
+      {"strike": 130, "expiry": "2026-12", "type": "CALL", "side": "BUY", "price": 4.20},
+      {"strike": 180, "expiry": "2026-12", "type": "CALL", "side": "SELL", "price": 1.50}
+    ],
+    "entry_cost": 2.70,
+    "max_loss": 2.70,
+    "max_profit": 47.30,
+    "expected_value": 14.30,
+    "ev_to_risk": 5.30,
+    "target_scenario": "Major Disruption + Super Spike",
+    "reasoning": "Longer-dated (6-month) tail risk spread. 130/180 call spread captures both Major Disruption ($130-$180 range) and Super Spike ($180-$250). Low cost ($2.70) relative to max profit ($47.30) = 17.5x payoff. Combined 53% AI probability (Major Disruption 38% + Super Spike 15%) vs 33% market = significant edge. Longer expiry allows more time for Hormuz closure or Iran production disruption to materialize."
+  },
+  {
+    "rank": 4,
+    "underlying": "COIL",
+    "structure": "call_spread",
+    "legs": [
+      {"strike": 120, "expiry": "2026-09", "type": "CALL", "side": "BUY", "price": 8.50},
+      {"strike": 150, "expiry": "2026-09", "type": "CALL", "side": "SELL", "price": 3.20}
+    ],
+    "entry_cost": 5.30,
+    "max_loss": 5.30,
+    "max_profit": 24.70,
+    "expected_value": 10.60,
+    "ev_to_risk": 2.00,
+    "target_scenario": "Major Disruption",
+    "reasoning": "Tighter spread focused on Major Disruption scenario ($130-$180 range, mid $155). 120/150 spread profits maximally in the single highest-edge scenario (AI 38% vs market 17%, edge +21.3%). Max profit $24.70 on $5.30 risk (4.7x return). Higher entry cost than other spreads but centered on most likely upside outcome. Appropriate for 30-40% of capital allocation given high conviction in Iran escalation path."
+  },
+  {
+    "rank": 5,
+    "underlying": "CL",
+    "structure": "put_spread",
+    "legs": [
+      {"strike": 85, "expiry": "2026-09", "type": "PUT", "side": "BUY", "price": 3.80},
+      {"strike": 70, "expiry": "2026-09", "type": "PUT", "side": "SELL", "price": 1.20}
+    ],
+    "entry_cost": 2.60,
+    "max_loss": 2.60,
+    "max_profit": 12.40,
+    "expected_value": -0.50,
+    "ev_to_risk": -0.19,
+    "target_scenario": "Portfolio hedge against De-escalation",
+    "reasoning": "HEDGE ONLY - not a positive EV trade. Bear put spread 85/70 provides downside protection if market is correct about de-escalation risk (AI 4% vs market 17%). While AI assigns low probability to De-escalation/Resolution scenarios, portfolio management suggests sizing 5-10% into downside protection. Use CL (WTI) for better liquidity. This caps losses if wrong on geopolitical thesis while allowing upside participation via other trades."
+  }
+]

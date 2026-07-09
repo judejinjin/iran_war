@@ -49,7 +49,7 @@ def main():
         from backfill.backfill_manager import BackfillManager
         bm = BackfillManager()
         # Market data sources (fast, always safe to re-run)
-        bm.run_incremental(sources=["fred", "yahoo", "eia"])
+        bm.run_incremental(sources=["fred", "yahoo", "eia", "cushing"])
         # News + geopolitical data (GDELT day-by-day)
         bm.run_incremental(sources=["gdelt"])
 

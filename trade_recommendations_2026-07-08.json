@@ -1,0 +1,173 @@
+{
+  "generated_date": "2026-07-08",
+  "market_context": {
+    "current_brent": 87,
+    "current_wti": 84,
+    "key_developments": [
+      "Multiple tanker attacks forcing vessel turnback from Hormuz (severity 8.0)",
+      "2.1 mbd confirmed supply disruption from shipping avoidance",
+      "US-Iran ceasefire formally collapsed, strikes resumed"
+    ],
+    "top_edges": [
+      {"scenario": "Major Disruption", "edge": "+21.3%", "ai_prob": "38%", "market_prob": "~16.7%"},
+      {"scenario": "Moderate Escalation", "edge": "+7.3%", "ai_prob": "24%", "market_prob": "~16.7%"},
+      {"scenario": "Super Spike", "edge": "+5.3%", "ai_prob": "22%", "market_prob": "~16.7%"}
+    ],
+    "scenario_probabilities": {
+      "Super Spike": 0.22,
+      "Major Disruption": 0.38,
+      "Moderate Escalation": 0.24,
+      "Current State": 0.08,
+      "De-escalation": 0.05,
+      "Resolution": 0.03
+    }
+  },
+  "trade_recommendations": [
+    {
+      "rank": 1,
+      "underlying": "COIL",
+      "structure": "call_spread",
+      "description": "Buy COIL Dec-26 120C, Sell COIL Dec-26 160C",
+      "legs": [
+        {"strike": 120, "expiry": "2026-12", "type": "CALL", "side": "BUY"},
+        {"strike": 160, "expiry": "2026-12", "type": "CALL", "side": "SELL"}
+      ],
+      "entry_cost": 2.10,
+      "max_loss": 2.10,
+      "max_profit": 37.90,
+      "expected_value": 19.24,
+      "payoff_ratio": 18.05,
+      "ev_risk_ratio": 9.16,
+      "target_scenario": "Major Disruption ($130-$180)",
+      "reasoning": "HIGHEST PRIORITY. Massive +21.3% edge on Major Disruption (38% AI vs ~17% market). Spread captures $155 scenario midpoint perfectly. 5-month expiry gives time for Hormuz situation to materialize. With tankers already avoiding strait and 2.1 mbd disrupted, market significantly underpricing this path.",
+      "risk_notes": "Defined risk $2.10/bbl. Max profit at $160+ Brent. Consider rolling up if Brent exceeds $140.",
+      "position_sizing": "Core position: 30-40% of options allocation"
+    },
+    {
+      "rank": 2,
+      "underlying": "CL",
+      "structure": "call_spread",
+      "description": "Buy CL Sep-26 100C, Sell CL Sep-26 130C",
+      "legs": [
+        {"strike": 100, "expiry": "2026-09", "type": "CALL", "side": "BUY"},
+        {"strike": 130, "expiry": "2026-09", "type": "CALL", "side": "SELL"}
+      ],
+      "entry_cost": 1.75,
+      "max_loss": 1.75,
+      "max_profit": 28.25,
+      "expected_value": 16.55,
+      "payoff_ratio": 16.14,
+      "ev_risk_ratio": 9.46,
+      "target_scenario": "Moderate + Major Disruption (62% combined)",
+      "reasoning": "WTI for liquidity. 2-month expiry captures imminent escalation risk from collapsed ceasefire and resumed strikes. Combined 62% probability of scenarios pushing WTI above $100 vs market pricing ~33%. Strikes align with WTI equivalent of Brent $115-$155.",
+      "risk_notes": "Defined risk $1.75/bbl. Theta decay accelerates after 30 days. Close or roll if no escalation by mid-August.",
+      "position_sizing": "Core position: 30-35% of options allocation"
+    },
+    {
+      "rank": 3,
+      "underlying": "COIL",
+      "structure": "ratio_call_spread",
+      "description": "Buy 1x COIL Dec-26 140C, Sell 2x COIL Dec-26 200C",
+      "legs": [
+        {"strike": 140, "expiry": "2026-12", "type": "CALL", "side": "BUY", "quantity": 1},
+        {"strike": 200, "expiry": "2026-12", "type": "CALL", "side": "SELL", "quantity": 2}
+      ],
+      "entry_cost": 0.45,
+      "max_profit": 59.55,
+      "expected_value": 13.89,
+      "ev_risk_ratio": 30.87,
+      "target_scenario": "Major Disruption sweet spot ($155)",
+      "reasoning": "HIGHEST EV/RISK. Leveraged bet on 38% Major Disruption scenario while selling expensive Super Spike tail (22%). Max profit at $200 Brent. Incredibly cheap entry given high Major Disruption probability. Market not pricing 60% combined probability of Brent $130+.",
+      "risk_notes": "UNLIMITED RISK above $200. Use strict stop-loss: close shorts if Brent >$175 or Super Spike probability >35%. Monitor daily for position management.",
+      "position_sizing": "Smaller allocation due to unlimited risk: 15-20% of options allocation"
+    },
+    {
+      "rank": 4,
+      "underlying": "COIL",
+      "structure": "call_spread",
+      "description": "Buy COIL Dec-26 110C, Sell COIL Dec-26 135C",
+      "legs": [
+        {"strike": 110, "expiry": "2026-12", "type": "CALL", "side": "BUY"},
+        {"strike": 135, "expiry": "2026-12", "type": "CALL", "side": "SELL"}
+      ],
+      "entry_cost": 3.15,
+      "max_loss": 3.15,
+      "max_profit": 21.85,
+      "expected_value": 12.48,
+      "payoff_ratio": 6.94,
+      "ev_risk_ratio": 3.96,
+      "target_scenario": "Moderate + Major Disruption (62% combined)",
+      "reasoning": "Higher delta play for earlier breakeven. Lower strikes give profitability at $115+ Brent (62% combined probability vs ~33% market). More capital intensive but higher probability of profit. Good for portfolios needing higher success rate.",
+      "risk_notes": "Defined risk $3.15/bbl. Higher entry cost reduces payoff ratio but increases win probability.",
+      "position_sizing": "Secondary position: 10-15% of options allocation"
+    },
+    {
+      "rank": 5,
+      "underlying": "CL",
+      "structure": "put_spread",
+      "description": "CREDIT SPREAD: Buy CL Sep-26 68P, Sell CL Sep-26 78P",
+      "legs": [
+        {"strike": 68, "expiry": "2026-09", "type": "PUT", "side": "BUY"},
+        {"strike": 78, "expiry": "2026-09", "type": "PUT", "side": "SELL"}
+      ],
+      "entry_credit": 2.95,
+      "max_loss": 7.05,
+      "max_profit": 2.95,
+      "expected_value": 3.87,
+      "target_scenario": "Fade de-escalation overpricing",
+      "reasoning": "Market overprices downside. Only 8% AI probability of sub-$80 scenarios vs ~33% market pricing. With tankers fleeing Hormuz and 2.1 mbd disrupted, downside scenarios extremely unlikely. Enter for credit, keep if WTI stays above $78.",
+      "risk_notes": "Use as volatility fade or portfolio hedge. Max loss if WTI crashes below $68 (only 3% AI probability). Monitor if de-escalation probability increases above 15%.",
+      "position_sizing": "Portfolio hedge: 5-10% of options allocation"
+    }
+  ],
+  "portfolio_construction": {
+    "recommended_allocation": [
+      {"trade_rank": 1, "allocation_pct": 35, "rationale": "Largest edge (+21.3%) on highest probability scenario (38%)"},
+      {"trade_rank": 2, "allocation_pct": 30, "rationale": "Best liquidity, near-term expiry captures imminent risk"},
+      {"trade_rank": 3, "allocation_pct": 20, "rationale": "Highest EV/risk but unlimited risk requires smaller size"},
+      {"trade_rank": 4, "allocation_pct": 10, "rationale": "Higher delta backup position"},
+      {"trade_rank": 5, "allocation_pct": 5, "rationale": "Volatility fade/hedge"}
+    ],
+    "total_risk_guideline": "Limit total options portfolio to 3-5% of total capital",
+    "active_monitoring_triggers": [
+      "Hormuz Strait closure or transit below 12 tankers/day → increase Super Spike allocation",
+      "Iranian production drops below 2.5 mbd → roll strikes higher",
+      "Ceasefire announced → immediately close all positions",
+      "Brent exceeds $140 → take profits on Rank 1-2, manage Rank 3 unlimited risk",
+      "De-escalation probability rises above 20% → close put spreads (Rank 5)"
+    ],
+    "key_catalysts_next_30_days": [
+      "Hormuz shipping lane attacks continuation",
+      "Iranian oil infrastructure strikes",
+      "OPEC+ emergency meeting response",
+      "SPR release announcements (bullish - indicates supply emergency)",
+      "U.S.-Iran diplomatic restart (bearish)",
+      "Israeli direct action against Iranian oil facilities"
+    ]
+  },
+  "risk_management": {
+    "stop_loss_rules": [
+      "Rank 3 (ratio spread): Close short calls if Brent >$175 or Super Spike prob >35%",
+      "All spreads: Close if scenario probabilities shift >15% away from target",
+      "Time decay: Roll or close Sep-26 expiries if no movement by Aug 15"
+    ],
+    "profit_taking": [
+      "Take 50% off at 2x entry cost",
+      "Take 75% off at 5x entry cost",
+      "Trail stops at 10x+ entry cost"
+    ]
+  },
+  "market_assumptions": {
+    "current_iv_estimate": "35-45% for ATM options",
+    "liquidity_note": "CL (WTI) preferred for execution, COIL (Brent) for expressing view",
+    "correlation": "Brent typically trades $3-5 premium to WTI in normal conditions",
+    "scenario_price_targets": {
+      "Super Spike": "$215 Brent / $210 WTI",
+      "Major Disruption": "$155 Brent / $150 WTI",
+      "Moderate Escalation": "$115 Brent / $110 WTI",
+      "Current State": "$90 Brent / $85 WTI",
+      "De-escalation": "$72.5 Brent / $68 WTI",
+      "Resolution": "$60 Brent / $55 WTI"
+    }
+  }
+}

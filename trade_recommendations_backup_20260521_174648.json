@@ -1,0 +1,147 @@
+[
+  {
+    "rank": 1,
+    "underlying": "COIL",
+    "structure": "naked_call",
+    "legs": [
+      {
+        "strike": 130,
+        "expiry": "2026-06",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 10.0
+      }
+    ],
+    "entry_cost": 10.0,
+    "max_loss": 10.0,
+    "max_profit": "unlimited",
+    "expected_value": 31.75,
+    "payoff_ratio": 3.18,
+    "ev_to_risk": 3.18,
+    "target_scenario": "Major Disruption (48%) + Super Spike (35%)",
+    "reasoning": "Highest EV trade. Simple directional bet captures both Major Disruption (+31% edge) and Super Spike (+18% edge). With 83% combined AI probability of Brent >$130, this ATM-to-slightly-OTM call offers asymmetric payoff. Strike at $130 threshold between moderate and major disruption scenarios. Returns $15 profit in Major Disruption scenario (Brent $155), $75 in Super Spike ($215). Limited downside to premium paid."
+  },
+  {
+    "rank": 2,
+    "underlying": "COIL",
+    "structure": "bull_call_spread",
+    "legs": [
+      {
+        "strike": 110,
+        "expiry": "2026-06",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 6.0
+      },
+      {
+        "strike": 140,
+        "expiry": "2026-06",
+        "type": "CALL",
+        "side": "SELL",
+        "price": 2.0
+      }
+    ],
+    "entry_cost": 4.0,
+    "max_loss": 4.0,
+    "max_profit": 26.0,
+    "expected_value": 21.3,
+    "payoff_ratio": 6.5,
+    "ev_to_risk": 5.33,
+    "target_scenario": "Major Disruption + Super Spike",
+    "reasoning": "Best risk-adjusted trade (5.33x EV/risk). Lower entry cost ($4) than naked call with excellent upside. Profits $26 in both Major Disruption and Super Spike scenarios. Even modest escalation (Brent $115) returns small profit. Defined risk makes position sizing easier. Recommend 2x size vs naked call due to better risk profile."
+  },
+  {
+    "rank": 3,
+    "underlying": "COIL",
+    "structure": "bull_call_spread",
+    "legs": [
+      {
+        "strike": 120,
+        "expiry": "2026-06",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 8.5
+      },
+      {
+        "strike": 150,
+        "expiry": "2026-06",
+        "type": "CALL",
+        "side": "SELL",
+        "price": 2.5
+      }
+    ],
+    "entry_cost": 6.0,
+    "max_loss": 6.0,
+    "max_profit": 24.0,
+    "expected_value": 18.9,
+    "payoff_ratio": 4.0,
+    "ev_to_risk": 3.15,
+    "target_scenario": "Major Disruption + Super Spike",
+    "reasoning": "Conservative defined-risk play. Profits $24 (4x return) in both major scenarios. Strikes bracket Major Disruption range ($130-$180). Caps gains at $150 but reduces cost by $4 vs naked $120 call. Good for risk-averse traders wanting exposure to geopolitical tail without unlimited downside. Breaks even at Brent $126."
+  },
+  {
+    "rank": 4,
+    "underlying": "COIL",
+    "structure": "bull_call_spread",
+    "legs": [
+      {
+        "strike": 150,
+        "expiry": "2026-06",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 12.0
+      },
+      {
+        "strike": 200,
+        "expiry": "2026-06",
+        "type": "CALL",
+        "side": "SELL",
+        "price": 3.0
+      }
+    ],
+    "entry_cost": 9.0,
+    "max_loss": 9.0,
+    "max_profit": 41.0,
+    "expected_value": 10.9,
+    "payoff_ratio": 4.56,
+    "ev_to_risk": 1.21,
+    "target_scenario": "Super Spike",
+    "reasoning": "Pure Super Spike play (35% AI prob vs 17% market). OTM strikes ($150-$200) target Brent $180-$250 scenario. Lower probability but massive payoff (4.56x). Loses money in Major Disruption scenario unless Brent >$159. For aggressive traders with conviction in Hormuz closure/multi-country production loss. Consider small allocation (1-2% portfolio) as true tail hedge."
+  },
+  {
+    "rank": 5,
+    "underlying": "COIL",
+    "structure": "ratio_call_spread",
+    "legs": [
+      {
+        "strike": 140,
+        "expiry": "2026-06",
+        "type": "CALL",
+        "side": "BUY",
+        "price": 15.0
+      },
+      {
+        "strike": 180,
+        "expiry": "2026-06",
+        "type": "CALL",
+        "side": "SELL",
+        "price": 4.0
+      },
+      {
+        "strike": 180,
+        "expiry": "2026-06",
+        "type": "CALL",
+        "side": "SELL",
+        "price": 4.0
+      }
+    ],
+    "entry_cost": 7.0,
+    "max_loss": 7.0,
+    "max_profit": 8.0,
+    "expected_value": 1.95,
+    "payoff_ratio": 1.14,
+    "ev_to_risk": 0.28,
+    "target_scenario": "Major Disruption",
+    "reasoning": "NOT RECOMMENDED. Lower EV despite creative structure. 1x2 ratio spread profits in Major Disruption ($155 target) but loses in Super Spike due to short gamma above $180. Worse risk/reward than simpler spreads. Only use if convinced Major Disruption will occur WITHOUT escalating to Super Spike—contradicts geopolitical tail risk thesis. Better alternatives exist."
+  }
+]

@@ -2,6 +2,10 @@
 Dash Application — main app instance with dark theme and 7-tab navigation.
 """
 
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import dash
 import dash_bootstrap_components as dbc
 from dash import html, dcc
@@ -151,7 +155,7 @@ def start_app():
     import ui.callbacks.portfolio_cb
     import ui.callbacks.config_cb
 
-    app.run(host=DASH_HOST, port=DASH_PORT, debug=DASH_DEBUG)
+    app.run(host=DASH_HOST, port=DASH_PORT, debug=DASH_DEBUG, use_reloader=False)
 
 
 if __name__ == "__main__":

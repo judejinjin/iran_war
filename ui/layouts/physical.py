@@ -98,6 +98,26 @@ layout = dbc.Container([
                                        style={"height": "280px"})),
             ]),
         ], width=12),
+    ], className="mb-3"),
+
+    # ─── Cushing Inventory ────────────────────────────────────────────────
+    dbc.Row([
+        dbc.Col([
+            dbc.Card([
+                dbc.CardHeader("Cushing, OK Crude Inventory (Excl. SPR) — Full History (EIA Weekly, Apr 2004–Present)"),
+                dbc.CardBody(dcc.Graph(id="physical-cushing-chart",
+                                       style={"height": "340px"})),
+            ]),
+        ], width=12),
+    ], className="mb-3"),
+
+    dbc.Row([
+        dbc.Col([
+            dbc.Card([
+                dbc.CardHeader("Cushing Inventory — Recent Weekly Data"),
+                dbc.CardBody(id="physical-cushing-table"),
+            ]),
+        ], width=12),
     ]),
 ], fluid=True)
 
