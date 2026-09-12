@@ -4,122 +4,122 @@
     "underlying": "COIL",
     "structure": "naked_call",
     "legs": [
-      {"strike": 100, "expiry": "2027-05", "type": "CALL", "side": "BUY", "price": 5.50}
+      {"strike": 120, "expiry": "2027-02", "type": "CALL", "side": "BUY", "price": 1.48}
     ],
-    "entry_cost": 5.50,
-    "max_loss": 5.50,
+    "entry_cost": 1.48,
+    "max_loss": 1.48,
     "max_profit": "unlimited",
-    "expected_value": 64.90,
-    "payoff_ratio": 11.8,
-    "ev_to_risk_ratio": 11.8,
+    "expected_value": 51.72,
+    "payoff_ratio": 63.2,
+    "ev_to_risk_ratio": 34.9,
     "target_scenario": "Super Spike (42%) + Major Disruption (38%)",
     "pnl_by_scenario": {
-      "Super Spike": 109.50,
-      "Major Disruption": 49.50,
-      "Moderate Escalation": 9.50,
-      "Current State": -5.50,
-      "De-escalation": -5.50,
-      "Resolution": -5.50
+      "Super Spike": 93.52,
+      "Major Disruption": 33.52,
+      "Moderate Escalation": -1.48,
+      "Current State": -1.48,
+      "De-escalation": -1.48,
+      "Resolution": -1.48
     },
-    "reasoning": "Highest EV/risk ratio at 11.8x. ATM-ish call captures both Super Spike (42% AI prob, edge +25.3%) and Major Disruption (38% AI prob, edge +21.3%). Market severely underpricing tail risk. Expected profit $64.90 on $5.50 cost. Wins big in 80% of probability-weighted scenarios. Even profits in Moderate Escalation. Delta ~0.65 provides excellent leverage with manageable risk."
+    "reasoning": "EXTRAORDINARY 35x EV/risk ratio. Slightly OTM call ($120 strike) is severely mispriced at only $1.48, yet captures massive upside in both Super Spike ($95 profit, 42% prob) and Major Disruption ($34 profit, 38% prob). Combined 80% AI probability of hitting these scenarios vs 33% market implies. Market pricing for ~14% delta, AI model sees 80% combined probability of profit. This is the single best risk-adjusted trade available."
   },
   {
     "rank": 2,
     "underlying": "COIL",
     "structure": "naked_call",
     "legs": [
-      {"strike": 130, "expiry": "2027-05", "type": "CALL", "side": "BUY", "price": 2.70}
+      {"strike": 150, "expiry": "2027-02", "type": "CALL", "side": "BUY", "price": 0.32}
     ],
-    "entry_cost": 2.70,
-    "max_loss": 2.70,
+    "entry_cost": 0.32,
+    "max_loss": 0.32,
     "max_profit": "unlimited",
-    "expected_value": 42.50,
-    "payoff_ratio": 15.7,
-    "ev_to_risk_ratio": 15.7,
+    "expected_value": 28.88,
+    "payoff_ratio": 202.1,
+    "ev_to_risk_ratio": 90.3,
     "target_scenario": "Super Spike (42%)",
     "pnl_by_scenario": {
-      "Super Spike": 82.30,
-      "Major Disruption": 22.30,
-      "Moderate Escalation": -2.70,
-      "Current State": -2.70,
-      "De-escalation": -2.70,
-      "Resolution": -2.70
+      "Super Spike": 64.68,
+      "Major Disruption": 4.68,
+      "Moderate Escalation": -0.32,
+      "Current State": -0.32,
+      "De-escalation": -0.32,
+      "Resolution": -0.32
     },
-    "reasoning": "Extreme EV/risk at 15.7x despite higher strike. Pure play on Super Spike scenario ($180-$250 Brent) where AI sees 42% probability vs market's 17%. Pays $82 in Super Spike, $22 in Major Disruption. Lower cost ($2.70) than ATM means superior risk-adjusted returns. Ideal for tail-risk sizing - risk 1-2% of portfolio for 15x+ expected return."
+    "reasoning": "EXTREME lottery ticket with 90x EV/risk and 202x max payoff. Dirt cheap at $0.32 for $150 strike call. Super Spike alone (42% AI prob vs 17% market) delivers $65 profit. Even Major Disruption pays 15x. Minimal capital at risk allows 5-10 contract position sizing. Market pricing this at ~4% probability; AI sees 42% Super Spike + 38% Major Disruption. Pure misprice exploitation."
   },
   {
     "rank": 3,
     "underlying": "COIL",
     "structure": "call_spread",
     "legs": [
-      {"strike": 130, "expiry": "2027-05", "type": "CALL", "side": "BUY", "price": 2.70},
-      {"strike": 180, "expiry": "2027-05", "type": "CALL", "side": "SELL", "price": 0.37}
+      {"strike": 130, "expiry": "2027-02", "type": "CALL", "side": "BUY", "price": 0.80},
+      {"strike": 180, "expiry": "2027-02", "type": "CALL", "side": "SELL", "price": 0.15}
     ],
-    "entry_cost": 2.33,
-    "max_loss": 2.33,
-    "max_profit": 47.67,
-    "expected_value": 28.17,
-    "payoff_ratio": 20.5,
-    "ev_to_risk_ratio": 12.1,
+    "entry_cost": 0.65,
+    "max_loss": 0.65,
+    "max_profit": 49.35,
+    "expected_value": 29.85,
+    "payoff_ratio": 75.9,
+    "ev_to_risk_ratio": 45.9,
     "target_scenario": "Super Spike (42%) + Major Disruption (38%)",
     "pnl_by_scenario": {
-      "Super Spike": 47.67,
-      "Major Disruption": 22.67,
-      "Moderate Escalation": -2.33,
-      "Current State": -2.33,
-      "De-escalation": -2.33,
-      "Resolution": -2.33
+      "Super Spike": 49.35,
+      "Major Disruption": 24.35,
+      "Moderate Escalation": -0.65,
+      "Current State": -0.65,
+      "De-escalation": -0.65,
+      "Resolution": -0.65
     },
-    "reasoning": "Defined-risk structure with 20.5x max payoff ratio. Selling the $180 call reduces cost by 14% while capping upside at very profitable level. Still captures full value in Major Disruption ($130-$180) and most of Super Spike. Lower capital requirement improves position sizing flexibility. EV $28.17 on $2.33 cost = 12.1x. Best risk-defined trade for conservative accounts."
+    "reasoning": "Perfect risk-defined structure with 46x EV/risk and 76x max payoff. $130-$180 spread captures full width of Major Disruption range ($130-$180) and most of Super Spike. Selling $180 call reduces cost by 19% while still allowing $49 max profit on $0.65 risk. Highest EV ($29.85) of any spread. Best choice for accounts requiring defined risk. Position size 10-20 spreads for material exposure."
   },
   {
     "rank": 4,
     "underlying": "COIL",
     "structure": "call_spread",
     "legs": [
-      {"strike": 150, "expiry": "2027-05", "type": "CALL", "side": "BUY", "price": 1.23},
-      {"strike": 200, "expiry": "2027-05", "type": "CALL", "side": "SELL", "price": 0.15}
+      {"strike": 100, "expiry": "2027-02", "type": "CALL", "side": "BUY", "price": 3.20},
+      {"strike": 140, "expiry": "2027-02", "type": "CALL", "side": "SELL", "price": 0.50}
     ],
-    "entry_cost": 1.08,
-    "max_loss": 1.08,
-    "max_profit": 48.92,
-    "expected_value": 21.82,
-    "payoff_ratio": 45.3,
-    "ev_to_risk_ratio": 20.2,
-    "target_scenario": "Super Spike (42%)",
+    "entry_cost": 2.70,
+    "max_loss": 2.70,
+    "max_profit": 37.30,
+    "expected_value": 31.10,
+    "payoff_ratio": 13.8,
+    "ev_to_risk_ratio": 11.5,
+    "target_scenario": "All upside scenarios (Super Spike 42% + Major Disruption 38% + Moderate Escalation 12%)",
     "pnl_by_scenario": {
-      "Super Spike": 48.92,
-      "Major Disruption": 3.92,
-      "Moderate Escalation": -1.08,
-      "Current State": -1.08,
-      "De-escalation": -1.08,
-      "Resolution": -1.08
+      "Super Spike": 37.30,
+      "Major Disruption": 37.30,
+      "Moderate Escalation": 12.30,
+      "Current State": -2.70,
+      "De-escalation": -2.70,
+      "Resolution": -2.70
     },
-    "reasoning": "Ultra-high payoff ratio (45x) for extreme tail-risk expression. Very low entry cost ($1.08) allows aggressive sizing without excessive capital at risk. Best EV/risk at 20.2x. Pure Super Spike play - minimal value in Major Disruption. Ideal for lottery-ticket overlay: risk 1-2% of portfolio for asymmetric upside in Hormuz closure scenario. 42% probability of 45x payoff."
+    "reasoning": "Highest absolute EV ($31.10) and widest probability capture. Profits in 92% of AI-weighted scenarios (Super Spike 42% + Major Disruption 38% + Moderate Escalation 12%). ATM $100 strike provides delta exposure from current levels, max profit at both major disruption levels. Even Moderate Escalation pays 4.5x. More expensive ($2.70) but highest win rate and EV. Core position for conviction trades."
   },
   {
     "rank": 5,
     "underlying": "COIL",
     "structure": "call_spread",
     "legs": [
-      {"strike": 120, "expiry": "2027-05", "type": "CALL", "side": "BUY", "price": 3.80},
-      {"strike": 150, "expiry": "2027-05", "type": "CALL", "side": "SELL", "price": 1.23}
+      {"strike": 120, "expiry": "2027-02", "type": "CALL", "side": "BUY", "price": 1.48},
+      {"strike": 150, "expiry": "2027-02", "type": "CALL", "side": "SELL", "price": 0.32}
     ],
-    "entry_cost": 2.57,
-    "max_loss": 2.57,
-    "max_profit": 27.43,
-    "expected_value": 21.43,
-    "payoff_ratio": 10.7,
-    "ev_to_risk_ratio": 8.3,
-    "target_scenario": "Major Disruption (38%) sweet spot",
+    "entry_cost": 1.16,
+    "max_loss": 1.16,
+    "max_profit": 28.84,
+    "expected_value": 22.84,
+    "payoff_ratio": 24.9,
+    "ev_to_risk_ratio": 19.7,
+    "target_scenario": "Super Spike (42%) + Major Disruption (38%)",
     "pnl_by_scenario": {
-      "Super Spike": 27.43,
-      "Major Disruption": 27.43,
-      "Moderate Escalation": -2.57,
-      "Current State": -2.57,
-      "De-escalation": -2.57,
-      "Resolution": -2.57
+      "Super Spike": 28.84,
+      "Major Disruption": 28.84,
+      "Moderate Escalation": -1.16,
+      "Current State": -1.16,
+      "De-escalation": -1.16,
+      "Resolution": -1.16
     },
-    "reasoning": "Tight spread ($120-$150) perfectly targets Major Disruption scenario ($130-$180). Maximum profit achieved in BOTH Major Disruption AND Super Spike. Lower EV/risk (8.3x) but highest win probability. More conservative defined-risk play for traders wanting exposure to 80% probability-weighted upside scenarios (42% + 38%) while limiting downside to $2.57. Ideal core position."
+    "reasoning": "Sweet spot spread with 20x EV/risk and 25x max payoff. $120-$150 range perfectly brackets Major Disruption midpoint ($155) and captures both key scenarios at max value. Maximum profit achieved in BOTH Super Spike AND Major Disruption (80% combined AI probability). Low cost ($1.16) enables larger position sizing. Ideal for traders wanting concentrated exposure to the two highest-edge scenarios with tight risk control."
   }
 ]
