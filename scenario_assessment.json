@@ -1,0 +1,36 @@
+{
+  "scenarios": {
+    "Super Spike": {
+      "probability": 0.32,
+      "reasoning": "Escalation score now 4.5/10 from 3/10 + proven naval strike capability + 5.8 mbd supply disruption materialized (not projected). Houthi advance near Bab el-Mandeb adds new chokepoint vulnerability. Path requires Iranian production offline 2-3 mbd + Hormuz functional restriction sustained + infrastructure strikes continue. Negative vol skew suggests market pricing 20%+ tail risk. Military momentum toward 7-day escalation window. Up +0.02 from 0.30."
+    },
+    "Major Disruption": {
+      "probability": 0.55,
+      "reasoning": "Primary scenario - Brent $112 already within $130-180 band floor. Confirmed 5.8 mbd total supply impact (Hormuz + Bab el-Mandeb + production shutin). Active tanker targeting + Iranian naval losses maintain operational tempo. Hormuz functionally restricted but not fully closed. 3 simultaneous chokepoint disruptions compress probability mass toward sustained disruption. Zero diplomatic off-ramp signals. Up +0.01 from 0.54."
+    },
+    "Moderate Escalation": {
+      "probability": 0.08,
+      "reasoning": "Highly compressed. Requires immediate ceasefire + full Hormuz reopening + production stabilization. Band ($100-130) equilibrium contradicted by current $112 spot and 5.8 mbd threat. Market already priced beyond containment level. Zero diplomatic signals. Escalation trajectory incompatible with plateau at skirmishing level. Down -0.02 from 0.10 as spot breaches scenario floor."
+    },
+    "Current State": {
+      "probability": 0.01,
+      "reasoning": "Tail risk. Band ($80-100) requires minimal supply impact + infrastructure security - both contradicted by 5.8 mbd disruption + naval engagement. Would require immediate bilateral ceasefire within 48 hours + sanctions hold. Escalation trajectory points away entirely. Military escalation score 4.5/10 inconsistent with containment. Down -0.01 from 0.02."
+    },
+    "De-escalation": {
+      "probability": 0.02,
+      "reasoning": "Down from 0.03. Requires active ceasefire + sanctions relief discussions + Iranian withdrawal. Zero back-channel signals present. Houthi territorial advance raises political costs for mutual de-escalation. Military escalation momentum contradicts negotiation pathway. Infrastructure targeting vows suggest retaliation commitment. Market volatility hedging indicates low confidence in peace scenario."
+    },
+    "Resolution": {
+      "probability": 0.02,
+      "reasoning": "Up +0.01 from 0.01 due to rounding/probability distribution mechanics. Requires full ceasefire + leadership engagement + 6-month resolution timeline + OPEC+ production unwinding. Escalation score 4.5/10 + proven strike capability + sustained infrastructure targeting contradict this pathway entirely. Would require dramatic geopolitical shock (major power intervention, leadership change). Lowest baseline scenario but slightly elevated."
+    }
+  },
+  "overall_assessment": "Oil markets face sustained major disruption probability (55%), driven by 5.8 mbd supply threat spanning 3 chokepoints (Hormuz, Bab el-Mandeb, Saudi bypass) and operational military escalation (4.5/10). Brent $112 prices Major Disruption scenario; tail risk (Super Spike 32%) elevated by negative volatility skew indicating market hedging. Zero diplomatic off-ramps visible; ceasefire probability compressed to ~2-3%. Next 7-14 days critical for escalation trajectory.",
+  "key_drivers": [
+    "5.8 mbd simultaneous supply disruption across 3 chokepoints (materialized, not projected)",
+    "Military escalation score 4.5/10 with confirmed naval strikes near Qeshm Island",
+    "Brent $112 spot pricing Major Disruption band; volatility skew (-0.025 COIL) hedging downside",
+    "Zero ceasefire signals; infrastructure targeting + Houthi advance raise political costs for de-escalation",
+    "Iranian naval losses + Opposing force operational tempo maintain 7-day escalation window"
+  ]
+}

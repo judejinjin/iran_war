@@ -2,124 +2,131 @@
   {
     "rank": 1,
     "underlying": "COIL",
-    "structure": "naked_call",
+    "structure": "call_spread",
     "legs": [
-      {"strike": 120, "expiry": "2027-02", "type": "CALL", "side": "BUY", "price": 1.48}
+      {"strike": 115, "expiry": "2026-11-02", "type": "CALL", "side": "BUY"},
+      {"strike": 155, "expiry": "2026-11-02", "type": "CALL", "side": "SELL"}
     ],
-    "entry_cost": 1.48,
-    "max_loss": 1.48,
-    "max_profit": "unlimited",
-    "expected_value": 51.72,
-    "payoff_ratio": 63.2,
-    "ev_to_risk_ratio": 34.9,
-    "target_scenario": "Super Spike (42%) + Major Disruption (38%)",
+    "entry_cost": 0.41,
+    "max_loss": 0.41,
+    "max_profit": 39.59,
+    "expected_value": 15.19,
+    "payoff_ratio": 96.6,
+    "ev_to_risk_ratio": 37.0,
+    "target_scenario": "Major Disruption",
+    "ai_edge": "+11.3% (28% AI vs 16.7% Market)",
     "pnl_by_scenario": {
-      "Super Spike": 93.52,
-      "Major Disruption": 33.52,
-      "Moderate Escalation": -1.48,
-      "Current State": -1.48,
-      "De-escalation": -1.48,
-      "Resolution": -1.48
+      "Moderate Escalation": -0.41,
+      "Major Disruption": 39.59,
+      "Current State": -0.41,
+      "Super Spike": 39.59,
+      "De-escalation": -0.41,
+      "Resolution": -0.41
     },
-    "reasoning": "EXTRAORDINARY 35x EV/risk ratio. Slightly OTM call ($120 strike) is severely mispriced at only $1.48, yet captures massive upside in both Super Spike ($95 profit, 42% prob) and Major Disruption ($34 profit, 38% prob). Combined 80% AI probability of hitting these scenarios vs 33% market implies. Market pricing for ~14% delta, AI model sees 80% combined probability of profit. This is the single best risk-adjusted trade available."
+    "reasoning": "HIGHEST EV-to-RISK ratio (37x) and payoff ratio (96.6:1). Ultra-tight cost at $41/contract with $3,959 max profit. Captures Major Disruption scenario (28% AI vs 16.7% market = +11.3% edge) where Hormuz sees restrictions + Iranian production offline. Position pays full profit if Brent $130-$180. Brent (COIL) preferred for tail risk expression due to superior liquidity. Enables 5-10x position sizing."
   },
   {
     "rank": 2,
     "underlying": "COIL",
-    "structure": "naked_call",
+    "structure": "call_spread",
     "legs": [
-      {"strike": 150, "expiry": "2027-02", "type": "CALL", "side": "BUY", "price": 0.32}
+      {"strike": 100, "expiry": "2026-11-02", "type": "CALL", "side": "BUY"},
+      {"strike": 130, "expiry": "2026-11-02", "type": "CALL", "side": "SELL"}
     ],
-    "entry_cost": 0.32,
-    "max_loss": 0.32,
-    "max_profit": "unlimited",
-    "expected_value": 28.88,
-    "payoff_ratio": 202.1,
-    "ev_to_risk_ratio": 90.3,
-    "target_scenario": "Super Spike (42%)",
+    "entry_cost": 2.19,
+    "max_loss": 2.19,
+    "max_profit": 27.81,
+    "expected_value": 14.31,
+    "payoff_ratio": 12.7,
+    "ev_to_risk_ratio": 6.5,
+    "target_scenario": "Major Disruption + Moderate Escalation",
+    "ai_edge": "+15.3% (Moderate) + +11.3% (Major) = Combined 43% AI vs 33.4% Market",
     "pnl_by_scenario": {
-      "Super Spike": 64.68,
-      "Major Disruption": 4.68,
-      "Moderate Escalation": -0.32,
-      "Current State": -0.32,
-      "De-escalation": -0.32,
-      "Resolution": -0.32
+      "Moderate Escalation": 12.81,
+      "Major Disruption": 27.81,
+      "Current State": -2.19,
+      "Super Spike": 27.81,
+      "De-escalation": -2.19,
+      "Resolution": -2.19
     },
-    "reasoning": "EXTREME lottery ticket with 90x EV/risk and 202x max payoff. Dirt cheap at $0.32 for $150 strike call. Super Spike alone (42% AI prob vs 17% market) delivers $65 profit. Even Major Disruption pays 15x. Minimal capital at risk allows 5-10 contract position sizing. Market pricing this at ~4% probability; AI sees 42% Super Spike + 38% Major Disruption. Pure misprice exploitation."
+    "reasoning": "Balanced exposure to BOTH highest-edge scenarios. Wide $100-130 spread profits across 43% combined AI probability (Moderate Escalation 32% + Major Disruption 28%). EV of $1,431 on $219 cost = 6.5x return. Achieves max profit across entire $100-180 price range. More robust to probability distribution shifts than tight spreads."
   },
   {
     "rank": 3,
-    "underlying": "COIL",
+    "underlying": "CL",
     "structure": "call_spread",
     "legs": [
-      {"strike": 130, "expiry": "2027-02", "type": "CALL", "side": "BUY", "price": 0.80},
-      {"strike": 180, "expiry": "2027-02", "type": "CALL", "side": "SELL", "price": 0.15}
+      {"strike": 100, "expiry": "2026-12-17", "type": "CALL", "side": "BUY"},
+      {"strike": 130, "expiry": "2026-12-17", "type": "CALL", "side": "SELL"}
     ],
-    "entry_cost": 0.65,
-    "max_loss": 0.65,
-    "max_profit": 49.35,
-    "expected_value": 29.85,
-    "payoff_ratio": 75.9,
-    "ev_to_risk_ratio": 45.9,
-    "target_scenario": "Super Spike (42%) + Major Disruption (38%)",
+    "entry_cost": 3.82,
+    "max_loss": 3.82,
+    "max_profit": 26.18,
+    "expected_value": 12.68,
+    "payoff_ratio": 6.84,
+    "ev_to_risk_ratio": 3.3,
+    "target_scenario": "Major Disruption",
+    "ai_edge": "+11.3% (28% AI vs 16.7% Market)",
     "pnl_by_scenario": {
-      "Super Spike": 49.35,
-      "Major Disruption": 24.35,
-      "Moderate Escalation": -0.65,
-      "Current State": -0.65,
-      "De-escalation": -0.65,
-      "Resolution": -0.65
+      "Moderate Escalation": 11.18,
+      "Major Disruption": 26.18,
+      "Current State": -3.82,
+      "Super Spike": 26.18,
+      "De-escalation": -3.82,
+      "Resolution": -3.82
     },
-    "reasoning": "Perfect risk-defined structure with 46x EV/risk and 76x max payoff. $130-$180 spread captures full width of Major Disruption range ($130-$180) and most of Super Spike. Selling $180 call reduces cost by 19% while still allowing $49 max profit on $0.65 risk. Highest EV ($29.85) of any spread. Best choice for accounts requiring defined risk. Position size 10-20 spreads for material exposure."
+    "reasoning": "90-day term structure: captures gamma expansion and volatility repricing through October-November crisis window. WTI (CL) superior liquidity vs Brent for larger position sizes (20+ contracts). EV of $1,268 on $382 cost. Higher upfront capital but benefits from additional time value and better execution certainty for sized positions."
   },
   {
     "rank": 4,
     "underlying": "COIL",
-    "structure": "call_spread",
+    "structure": "call_spread_tight",
     "legs": [
-      {"strike": 100, "expiry": "2027-02", "type": "CALL", "side": "BUY", "price": 3.20},
-      {"strike": 140, "expiry": "2027-02", "type": "CALL", "side": "SELL", "price": 0.50}
+      {"strike": 130, "expiry": "2026-11-02", "type": "CALL", "side": "BUY"},
+      {"strike": 170, "expiry": "2026-11-02", "type": "CALL", "side": "SELL"}
     ],
-    "entry_cost": 2.70,
-    "max_loss": 2.70,
-    "max_profit": 37.30,
-    "expected_value": 31.10,
-    "payoff_ratio": 13.8,
-    "ev_to_risk_ratio": 11.5,
-    "target_scenario": "All upside scenarios (Super Spike 42% + Major Disruption 38% + Moderate Escalation 12%)",
+    "entry_cost": 0.06,
+    "max_loss": 0.06,
+    "max_profit": 39.94,
+    "expected_value": 11.34,
+    "payoff_ratio": 665,
+    "ev_to_risk_ratio": 189,
+    "target_scenario": "Major Disruption + Super Spike",
+    "ai_edge": "+11.3% (Major) and includes Super Spike tail",
     "pnl_by_scenario": {
-      "Super Spike": 37.30,
-      "Major Disruption": 37.30,
-      "Moderate Escalation": 12.30,
-      "Current State": -2.70,
-      "De-escalation": -2.70,
-      "Resolution": -2.70
+      "Moderate Escalation": -0.06,
+      "Major Disruption": 24.94,
+      "Current State": -0.06,
+      "Super Spike": 39.94,
+      "De-escalation": -0.06,
+      "Resolution": -0.06
     },
-    "reasoning": "Highest absolute EV ($31.10) and widest probability capture. Profits in 92% of AI-weighted scenarios (Super Spike 42% + Major Disruption 38% + Moderate Escalation 12%). ATM $100 strike provides delta exposure from current levels, max profit at both major disruption levels. Even Moderate Escalation pays 4.5x. More expensive ($2.70) but highest win rate and EV. Core position for conviction trades."
+    "reasoning": "EXTREME capital efficiency: 189x EV-to-risk, 665x max payoff on just $6 risk. Micro-spread ($130-170) captures full Major Disruption range and profitable into Super Spike. Negligible capital allows 10-30 contract positions. Perfect for high-conviction, tight-risk-budget trading. Max loss is immaterial relative to position sizing flexibility."
   },
   {
     "rank": 5,
     "underlying": "COIL",
     "structure": "call_spread",
     "legs": [
-      {"strike": 120, "expiry": "2027-02", "type": "CALL", "side": "BUY", "price": 1.48},
-      {"strike": 150, "expiry": "2027-02", "type": "CALL", "side": "SELL", "price": 0.32}
+      {"strike": 100, "expiry": "2026-11-02", "type": "CALL", "side": "BUY"},
+      {"strike": 115, "expiry": "2026-11-02", "type": "CALL", "side": "SELL"}
     ],
-    "entry_cost": 1.16,
-    "max_loss": 1.16,
-    "max_profit": 28.84,
-    "expected_value": 22.84,
-    "payoff_ratio": 24.9,
-    "ev_to_risk_ratio": 19.7,
-    "target_scenario": "Super Spike (42%) + Major Disruption (38%)",
+    "entry_cost": 1.83,
+    "max_loss": 1.83,
+    "max_profit": 13.17,
+    "expected_value": 8.82,
+    "payoff_ratio": 7.2,
+    "ev_to_risk_ratio": 4.8,
+    "target_scenario": "Moderate Escalation",
+    "ai_edge": "+15.3% (32% AI vs 16.7% Market) - HIGHEST individual scenario edge",
     "pnl_by_scenario": {
-      "Super Spike": 28.84,
-      "Major Disruption": 28.84,
-      "Moderate Escalation": -1.16,
-      "Current State": -1.16,
-      "De-escalation": -1.16,
-      "Resolution": -1.16
+      "Moderate Escalation": 13.17,
+      "Major Disruption": 13.17,
+      "Current State": -1.83,
+      "Super Spike": 13.17,
+      "De-escalation": -1.83,
+      "Resolution": -1.83
     },
-    "reasoning": "Sweet spot spread with 20x EV/risk and 25x max payoff. $120-$150 range perfectly brackets Major Disruption midpoint ($155) and captures both key scenarios at max value. Maximum profit achieved in BOTH Super Spike AND Major Disruption (80% combined AI probability). Low cost ($1.16) enables larger position sizing. Ideal for traders wanting concentrated exposure to the two highest-edge scenarios with tight risk control."
+    "reasoning": "Targets HIGHEST-EDGE scenario (Moderate Escalation +15.3%) with tightest cost ($183). Narrow $100-115 range captures base case escalation + profits into major scenarios. Highest win probability on portfolio basis. Ideal hedge/diversifier for larger tail risk positions (spreads #1-3). Large position sizing feasible ($0.02 risk per contract on typical account)."
   }
 ]

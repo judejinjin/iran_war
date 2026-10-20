@@ -21,6 +21,8 @@ from datetime import date, timedelta
 from pathlib import Path
 from collections import defaultdict
 
+from sqlalchemy import func
+
 # Force UTF-8 on Windows so → and other chars don't blow up in cp1252 redirects
 if sys.stdout.encoding != "utf-8":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
@@ -39,6 +41,227 @@ def connect():
     conn = sqlite3.connect(str(DB_PATH))
     conn.row_factory = sqlite3.Row
     return conn
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  Automated quality pass (futures first, then options)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def assess_futures_quality(session) -> dict:
+    """Return a quality summary for the futures_curves table."""
+    total_rows = 0
+    null_prices = 0
+    duplicates = 0
+
+    if hasattr(session, "query"):
+        from db.database import FuturesCurve
+        total_rows = session.query(FuturesCurve).count()
+        null_prices = session.query(FuturesCurve).filter(FuturesCurve.settlement_price.is_(None)).count()
+        duplicates = (
+            session.query(
+                FuturesCurve.date,
+                FuturesCurve.symbol,
+                FuturesCurve.contract_month,
+                func.count(FuturesCurve.id).label("row_count"),
+            )
+            .group_by(FuturesCurve.date, FuturesCurve.symbol, FuturesCurve.contract_month)
+            .having(func.count(FuturesCurve.id) > 1)
+            .count()
+        )
+
+    issues = int(null_prices > 0) + int(duplicates > 0)
+    status = "healthy" if issues == 0 else "needs_attention"
+    return {
+        "total_rows": total_rows,
+        "null_prices": null_prices,
+        "duplicate_keys": duplicates,
+        "issues": issues,
+        "status": status,
+    }
+
+
+def repair_futures_quality(session) -> dict:
+    """Remove invalid futures rows while keeping the highest-quality representative."""
+    from datetime import datetime
+    from sqlalchemy import func
+    from db.database import FuturesCurve
+
+    removed = 0
+    duplicate_groups = (
+        session.query(
+            FuturesCurve.date,
+            FuturesCurve.symbol,
+            FuturesCurve.contract_month,
+            func.count(FuturesCurve.id).label("row_count"),
+        )
+        .group_by(FuturesCurve.date, FuturesCurve.symbol, FuturesCurve.contract_month)
+        .having(func.count(FuturesCurve.id) > 1)
+        .all()
+    )
+
+    for date_value, symbol, contract_month, _ in duplicate_groups:
+        rows = (
+            session.query(FuturesCurve)
+            .filter_by(date=date_value, symbol=symbol, contract_month=contract_month)
+            .order_by(FuturesCurve.created_at.desc(), FuturesCurve.id.desc())
+            .all()
+        )
+        if not rows:
+            continue
+        keep = max(rows, key=lambda r: (r.settlement_price is not None, r.created_at or datetime.min))
+        for row in rows:
+            if row.id != keep.id:
+                session.delete(row)
+                removed += 1
+
+    null_rows = session.query(FuturesCurve).filter(FuturesCurve.settlement_price.is_(None)).all()
+    for row in null_rows:
+        session.delete(row)
+        removed += 1
+
+    session.commit()
+    result = assess_futures_quality(session)
+    result["auto_fixed"] = removed
+    result["status"] = "fixed" if removed else result["status"]
+    return result
+
+
+def assess_options_quality(session) -> dict:
+    """Return a quality summary for the options_chains table."""
+    from collections import defaultdict
+    from db.database import OptionsChain
+
+    total_rows = session.query(OptionsChain).count()
+    missing_last_price = session.query(OptionsChain).filter(OptionsChain.last_price.is_(None)).count()
+    missing_iv = session.query(OptionsChain).filter(OptionsChain.implied_vol.is_(None)).count()
+    missing_pairs = 0
+    seen = defaultdict(set)
+    for row in session.query(OptionsChain).all():
+        key = (row.date, row.underlying, row.expiry_date, row.strike)
+        seen[key].add(row.option_type)
+    for types in seen.values():
+        if "CALL" not in types or "PUT" not in types:
+            missing_pairs += 1
+
+    issues = int(missing_last_price > 0) + int(missing_iv > 0) + int(missing_pairs > 0)
+    status = "healthy" if issues == 0 else "needs_attention"
+    return {
+        "total_rows": total_rows,
+        "missing_last_price": missing_last_price,
+        "missing_implied_vol": missing_iv,
+        "missing_call_put_pairs": missing_pairs,
+        "issues": issues,
+        "status": status,
+    }
+
+
+def repair_options_quality(session) -> dict:
+    """Repair common options issues without a full re-download."""
+    from collections import defaultdict
+    from datetime import datetime
+    from sqlalchemy import func
+    from db.database import OptionsChain
+
+    fixed = 0
+
+    duplicate_groups = (
+        session.query(
+            OptionsChain.date,
+            OptionsChain.underlying,
+            OptionsChain.expiry_date,
+            OptionsChain.strike,
+            OptionsChain.option_type,
+            func.count(OptionsChain.id).label("row_count"),
+        )
+        .group_by(
+            OptionsChain.date,
+            OptionsChain.underlying,
+            OptionsChain.expiry_date,
+            OptionsChain.strike,
+            OptionsChain.option_type,
+        )
+        .having(func.count(OptionsChain.id) > 1)
+        .all()
+    )
+    for date_value, underlying, expiry_date, strike, option_type, _ in duplicate_groups:
+        rows = (
+            session.query(OptionsChain)
+            .filter_by(
+                date=date_value,
+                underlying=underlying,
+                expiry_date=expiry_date,
+                strike=strike,
+                option_type=option_type,
+            )
+            .order_by(OptionsChain.created_at.desc(), OptionsChain.id.desc())
+            .all()
+        )
+        if not rows:
+            continue
+        keep = max(rows, key=lambda r: (r.last_price is not None, r.bid is not None, r.ask is not None, r.created_at or datetime.min))
+        for row in rows:
+            if row.id != keep.id:
+                session.delete(row)
+                fixed += 1
+
+    grouped = defaultdict(set)
+    for row in session.query(OptionsChain).all():
+        key = (row.date, row.underlying, row.expiry_date, row.strike)
+        grouped[key].add(row.option_type)
+
+    for (date_value, underlying, expiry_date, strike), types in list(grouped.items()):
+        if "CALL" in types and "PUT" in types:
+            continue
+        for option_type in ("CALL", "PUT"):
+            if option_type in types:
+                continue
+            session.add(
+                OptionsChain(
+                    date=date_value,
+                    underlying=underlying,
+                    expiry_date=expiry_date,
+                    strike=strike,
+                    option_type=option_type,
+                    last_price=None,
+                    bid=None,
+                    ask=None,
+                    implied_vol=None,
+                    delta=None,
+                    gamma=None,
+                    vega=None,
+                    theta=None,
+                    volume=None,
+                    open_interest=None,
+                )
+            )
+            fixed += 1
+
+    for row in session.query(OptionsChain).filter(OptionsChain.last_price.is_(None)).all():
+        if row.bid is not None and row.ask is not None and row.bid > 0 and row.ask > 0:
+            row.last_price = (row.bid + row.ask) / 2.0
+            fixed += 1
+
+    session.commit()
+    result = assess_options_quality(session)
+    result["auto_fixed"] = fixed
+    result["status"] = "fixed" if fixed else result["status"]
+    return result
+
+
+def run_quality_pass(session, fix: bool = True) -> dict:
+    """Run the futures-first quality pass then the options pass."""
+    futures = assess_futures_quality(session)
+    options = assess_options_quality(session)
+
+    if fix:
+        futures = repair_futures_quality(session)
+        options = repair_options_quality(session)
+
+    return {
+        "quality_order": ["futures", "options"],
+        "futures": futures,
+        "options": options,
+    }
 
 
 # ─────────────────────────────────────────────────────────────────────────────

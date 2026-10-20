@@ -39,11 +39,34 @@ def main():
 
     # 1. Initialize database
     logger.info("Initializing database...")
-    from db.database import init_db
+    from db.database import init_db, get_session
     init_db()
     logger.info("Database ready.")
 
-    # 2. Historical backfill — always run incremental for all sources
+    # 2. Automated data quality gate: futures first, then options
+    try:
+        quality_session = get_session()
+        from data_quality_report import run_quality_pass
+        q = run_quality_pass(quality_session, fix=True)
+        logger.info(
+            "Automated quality pass: futures status={f_status}, null_prices={f_null}, duplicates={f_dups}; "
+            "options status={o_status}, missing_last_price={o_missing}, missing_pairs={o_pairs}",
+            f_status=q["futures"]["status"],
+            f_null=q["futures"]["null_prices"],
+            f_dups=q["futures"]["duplicate_keys"],
+            o_status=q["options"]["status"],
+            o_missing=q["options"]["missing_last_price"],
+            o_pairs=q["options"]["missing_call_put_pairs"],
+        )
+    except Exception as e:
+        logger.warning(f"Automated quality pass failed: {e}")
+    finally:
+        try:
+            quality_session.close()
+        except Exception:
+            pass
+
+    # 3. Historical backfill — always run incremental for all sources
     if not args.skip_backfill:
         logger.info("Running backfill (incremental — fetches any new data since last run)...")
         from backfill.backfill_manager import BackfillManager
