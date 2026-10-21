@@ -198,6 +198,22 @@ class AgentAnalysis(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
+class CrackSpreadPrice(Base):
+    """
+    Raw refined-product spot prices (ULSD, RBOB) fetched from FRED.
+    price_per_bbl is computed on insert as price_per_gal * 42.
+    """
+    __tablename__ = "crack_spread_prices"
+    id            = Column(Integer, primary_key=True, autoincrement=True)
+    date          = Column(Date, nullable=False)
+    symbol        = Column(Text, nullable=False)   # "ULSD" | "RBOB"
+    source        = Column(Text, nullable=False)   # "FRED"
+    price_per_gal = Column(Float)
+    price_per_bbl = Column(Float)                  # price_per_gal * 42
+    created_at    = Column(DateTime, default=datetime.utcnow)
+    __table_args__ = (UniqueConstraint("date", "symbol", "source"),)
+
+
 class Position(Base):
     __tablename__ = "positions"
     id = Column(Integer, primary_key=True, autoincrement=True)

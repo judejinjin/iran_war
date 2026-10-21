@@ -104,6 +104,21 @@ def _run_eia_fred():
         logger.error(f"Dated Brent update failed: {e}")
         results["dated_brent"] = str(e)
 
+    try:
+        from datetime import date, timedelta
+        from db.database import get_session
+        from backfill.crack_spread_backfill import run_backfill as crack_backfill
+        _cs_session = get_session()
+        _cs_count = crack_backfill(
+            start_from=date.today() - timedelta(days=7),
+            session=_cs_session,
+        )
+        _cs_session.close()
+        results["crack_spread"] = f"{_cs_count} records"
+    except Exception as e:
+        logger.error(f"Crack spread update failed: {e}")
+        results["crack_spread"] = str(e)
+
     return results
 
 

@@ -12,7 +12,7 @@ from config import WAR_START_DATE
 from db.database import get_session, BackfillStatus
 
 
-BACKFILL_SOURCES = ["fred", "yahoo", "ib_futures", "ib_options", "eia", "gdelt", "dated_brent", "scenarios", "spr", "cushing"]
+BACKFILL_SOURCES = ["fred", "yahoo", "ib_futures", "ib_options", "eia", "gdelt", "dated_brent", "scenarios", "spr", "cushing", "crack_spread"]
 
 
 class BackfillManager:
@@ -164,6 +164,9 @@ class BackfillManager:
                 return run_backfill
             elif source == "cushing":
                 from backfill.cushing_backfill import run_backfill
+                return run_backfill
+            elif source == "crack_spread":
+                from backfill.crack_spread_backfill import run_backfill
                 return run_backfill
         except ImportError as e:
             logger.warning(f"Could not import backfill runner for [{source}]: {e}")

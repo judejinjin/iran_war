@@ -74,6 +74,7 @@ tabs = dbc.Tabs(
         dbc.Tab(label="Physical", tab_id="tab-physical", tab_style=TAB_STYLE),
         dbc.Tab(label="SPR", tab_id="tab-spr", tab_style=TAB_STYLE),
         dbc.Tab(label="Supply/Demand", tab_id="tab-supply-demand", tab_style=TAB_STYLE),
+        dbc.Tab(label="Crack Spread", tab_id="tab-crack-spread", tab_style=TAB_STYLE),
         dbc.Tab(label="Options", tab_id="tab-options", tab_style=TAB_STYLE),
         dbc.Tab(label="Scenarios", tab_id="tab-scenarios", tab_style=TAB_STYLE),
         dbc.Tab(label="Analysis", tab_id="tab-analysis", tab_style=TAB_STYLE),
@@ -121,6 +122,9 @@ def render_tab(active_tab):
     elif active_tab == "tab-supply-demand":
         from ui.layouts.supply_demand import layout
         return layout
+    elif active_tab == "tab-crack-spread":
+        from ui.layouts.crack_spread import layout
+        return layout
     elif active_tab == "tab-options":
         from ui.layouts.options import layout
         return layout
@@ -146,6 +150,7 @@ def start_app():
     import ui.callbacks.physical_cb
     import ui.callbacks.spr_cb
     import ui.callbacks.supply_demand_cb
+    import ui.callbacks.crack_spread_cb
     import ui.callbacks.geopolitical_cb
     import ui.callbacks.infrastructure_cb
     import ui.callbacks.military_cb

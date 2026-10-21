@@ -58,6 +58,10 @@ FRED_WTI_SERIES = "DCOILWTICO"
 FRED_BRENT_SERIES = "DCOILBRENTEU"
 FRED_DUBAI_SERIES = "POILDUBUSDM"   # IMF monthly Dubai crude (1992+)
 
+# Crack spread product series (FRED)
+FRED_ULSD_SERIES = os.getenv("FRED_ULSD_SERIES", "DHOILNYH")        # NY Harbor No.2 Heating Oil (ULSD proxy), daily 1986+
+FRED_RBOB_SERIES = os.getenv("FRED_RBOB_SERIES", "WRBWHOLESALE")    # EIA weekly wholesale/rack RBOB gasoline
+
 # ─── EIA Series ──────────────────────────────────────────────────────────────
 EIA_CRUDE_INVENTORY = "PET.WCESTUS1.W"
 EIA_US_PRODUCTION = "PET.WCRFPUS2.W"
