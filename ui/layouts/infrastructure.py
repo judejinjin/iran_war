@@ -89,6 +89,7 @@ layout = dbc.Container([
                 dbc.CardHeader([
                     html.I(className="fas fa-industry me-2"),
                     "Country Oil Production — Baseline vs Current",
+                    html.Small(" (◆ = EIA actual)", className="text-muted ms-2"),
                 ]),
                 dbc.CardBody(dcc.Graph(id="infra-country-production-chart")),
             ]),
@@ -102,6 +103,19 @@ layout = dbc.Container([
                 dbc.CardBody(dcc.Graph(id="infra-waterfall-chart")),
             ]),
         ], width=6),
+    ], className="mb-3"),
+
+    # ─── Data Quality Panel ───────────────────────────────────────────────
+    dbc.Row([
+        dbc.Col([
+            dbc.Accordion([
+                dbc.AccordionItem(
+                    html.Div(id="infra-data-quality-panel"),
+                    title="📊 Data Quality — EIA Actuals vs Model Estimates",
+                    item_id="dq",
+                ),
+            ], start_collapsed=True, flush=True),
+        ], width=12),
     ], className="mb-3"),
 
     # ─── Infrastructure Map ──────────────────────────────────────────────

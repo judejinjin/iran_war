@@ -84,6 +84,7 @@ _STATUS_FG = {
     Output("infra-facility-table", "children"),
     Output("infra-events-list", "children"),
     Output("infra-daily-summary", "children"),
+    Output("infra-data-quality-panel", "children"),
     Input("infra-date-range", "start_date"),
     Input("infra-date-range", "end_date"),
     Input("infra-facility-filter", "value"),
@@ -122,6 +123,16 @@ def update_infrastructure(start_date, end_date, facility_filter, min_severity, _
 
         offline_mbd = rss.total_offline_oil_mbd if rss else total_impact
         pct_global = rss.pct_global_supply_offline * 100 if rss else 0
+        data_confidence = (rss.data_confidence or "model_only") if rss else "model_only"
+
+        _CONFIDENCE_BADGE = {
+            "eia_current":    ("success", "🟢 EIA Actuals"),
+            "eia_calibrated": ("warning", "🟡 EIA Calibrated"),
+            "model_only":     ("danger",  "🔴 Model Estimate"),
+        }
+        badge_color, badge_label = _CONFIDENCE_BADGE.get(
+            data_confidence, ("secondary", "Unknown")
+        )
 
         metrics = dbc.Row([
             dbc.Col(dbc.Card(dbc.CardBody([
@@ -139,6 +150,8 @@ def update_infrastructure(start_date, end_date, facility_filter, min_severity, _
             dbc.Col(dbc.Card(dbc.CardBody([
                 html.H6("Oil Offline (mbd)", className="text-muted"),
                 html.H4(f"{offline_mbd:.2f}", className="text-warning"),
+                dbc.Badge(badge_label, color=badge_color,
+                          className="mt-1", style={"fontSize": "0.7rem"}),
             ]), color="dark"), width=2),
             dbc.Col(dbc.Card(dbc.CardBody([
                 html.H6("% Global Supply", className="text-muted"),
@@ -283,8 +296,13 @@ def update_infrastructure(start_date, end_date, facility_filter, min_severity, _
                 marker_color="#4FC3F7", opacity=0.5,
             ))
             country_fig.add_trace(go.Bar(
-                x=names, y=currents, name="Current",
-                marker_color="#66BB6A",
+                x=names, y=currents, name="Model Current",
+                marker_color=[
+                    "#FF8800" if abs((latest_cp[c].blended_oil_mbd or 0) - (latest_cp[c].current_oil_mbd or 0)) /
+                    max(latest_cp[c].current_oil_mbd or 1, 0.001) > 0.15
+                    else "#66BB6A"
+                    for c in countries
+                ],
             ))
             country_fig.add_trace(go.Bar(
                 x=names, y=shut_ins, name="Shut-in",
@@ -294,6 +312,28 @@ def update_infrastructure(start_date, end_date, facility_filter, min_severity, _
                 x=names, y=damaged, name="Damaged",
                 marker_color="#FF5252",
             ))
+
+            # EIA actual overlay — diamond markers where data exists
+            eia_names, eia_vals, eia_dates = [], [], []
+            for c in countries:
+                cp_r = latest_cp[c]
+                if cp_r.eia_actual_oil_mbd is not None:
+                    eia_names.append(_COUNTRY_NAMES.get(c, c))
+                    eia_vals.append(cp_r.eia_actual_oil_mbd)
+                    lag = f"{cp_r.eia_lag_days}d ago" if cp_r.eia_lag_days is not None else ""
+                    eia_dates.append(
+                        f"EIA {cp_r.eia_source_date} ({lag})" if cp_r.eia_source_date else "EIA"
+                    )
+            if eia_vals:
+                country_fig.add_trace(go.Scatter(
+                    x=eia_names, y=eia_vals,
+                    mode="markers",
+                    name="EIA Actual",
+                    marker=dict(symbol="diamond", size=12, color="#FFFFFF",
+                                line=dict(color="#1E90FF", width=2)),
+                    text=eia_dates,
+                    hovertemplate="%{x}: %{y:.2f} mbd<br>%{text}<extra>EIA Actual</extra>",
+                ))
 
         # ─── Supply Waterfall Chart ──────────────────────────────────
         waterfall_fig = go.Figure()
@@ -469,10 +509,97 @@ def update_infrastructure(start_date, end_date, facility_filter, min_severity, _
             country_fig, waterfall_fig,
             infra_map, timeline_fig, impact_fig, facility_table,
             event_items, daily,
+            _build_data_quality_panel(latest_cp),
         )
 
     finally:
         session.close()
+
+
+def _build_data_quality_panel(latest_cp: dict) -> html.Div:
+    """Build the per-country EIA vs model data quality table."""
+    _CONF_ICONS = {
+        "eia_actual":    ("🟢", "success"),
+        "eia_calibrated": ("🟡", "warning"),
+        "model_only":    ("🔴", "danger"),
+    }
+    _COUNTRY_NAMES_DQ = {
+        "IR": "Iran", "SA": "Saudi Arabia", "IQ": "Iraq", "AE": "UAE",
+        "KW": "Kuwait", "QA": "Qatar", "OM": "Oman", "BH": "Bahrain",
+    }
+
+    if not latest_cp:
+        return html.P("No country production data available.", className="text-muted")
+
+    rows = []
+    for country in ["IR", "SA", "IQ", "AE", "KW", "QA", "OM", "BH"]:
+        cp_r = latest_cp.get(country)
+        if cp_r is None:
+            continue
+
+        conf = cp_r.blended_confidence or "model_only"
+        icon, color = _CONF_ICONS.get(conf, ("⚪", "secondary"))
+
+        eia_str = f"{cp_r.eia_actual_oil_mbd:.2f} mbd" if cp_r.eia_actual_oil_mbd else "—"
+        model_str = f"{cp_r.current_oil_mbd:.2f} mbd" if cp_r.current_oil_mbd else "—"
+        blended_str = f"{cp_r.blended_oil_mbd:.2f} mbd" if cp_r.blended_oil_mbd else "—"
+
+        # Divergence %
+        if cp_r.eia_actual_oil_mbd and cp_r.current_oil_mbd and cp_r.current_oil_mbd > 0:
+            delta = cp_r.eia_actual_oil_mbd - cp_r.current_oil_mbd
+            delta_pct = delta / cp_r.current_oil_mbd * 100
+            delta_str = f"{'+' if delta > 0 else ''}{delta:.2f} ({delta_pct:+.0f}%)"
+            delta_color = "#FF8800" if abs(delta_pct) > 15 else "#888"
+        else:
+            delta_str, delta_color = "—", "#888"
+
+        eia_date_str = str(cp_r.eia_source_date) if cp_r.eia_source_date else "—"
+        lag_str = f"{cp_r.eia_lag_days}d" if cp_r.eia_lag_days is not None else "—"
+
+        baseline_src = "EIA 6-mo avg" if cp_r.calibration_ratio else "Hardcoded"
+
+        rows.append(html.Tr([
+            html.Td(_COUNTRY_NAMES_DQ.get(country, country)),
+            html.Td(baseline_src),
+            html.Td(eia_str),
+            html.Td(model_str),
+            html.Td(delta_str, style={"color": delta_color}),
+            html.Td(blended_str),
+            html.Td(lag_str),
+            html.Td([
+                html.Span(icon + " "),
+                dbc.Badge(conf.replace("_", " ").title(), color=color,
+                          style={"fontSize": "0.7rem"}),
+            ]),
+        ]))
+
+    if not rows:
+        return html.P("No calibration data yet — run production tracker.", className="text-muted")
+
+    table = dbc.Table(
+        [
+            html.Thead(html.Tr([
+                html.Th("Country"), html.Th("Baseline Source"),
+                html.Th("EIA Actual"), html.Th("Model Est."),
+                html.Th("Δ (EIA − Model)"), html.Th("Blended"),
+                html.Th("EIA Lag"), html.Th("Confidence"),
+            ])),
+            html.Tbody(rows),
+        ],
+        bordered=True, hover=True, responsive=True, size="sm",
+        className="table-dark",
+        style={"fontSize": "0.83rem"},
+    )
+    return html.Div([
+        html.P(
+            "Baseline oil production is derived from the 6-month EIA monthly average where "
+            "available. Blended estimate combines EIA actuals (when lag ≤90 days) with a "
+            "model calibration ratio beyond that window. Orange bars on the chart indicate "
+            ">15% divergence between EIA actual and model estimate.",
+            className="text-muted small mb-2",
+        ),
+        table,
+    ])
 
 
 def _build_facility_table(session, as_of_date, facility_filter):

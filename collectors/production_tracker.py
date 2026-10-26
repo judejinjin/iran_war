@@ -7,6 +7,7 @@ previous-day status.
 """
 
 from datetime import date, timedelta
+from collections import defaultdict
 from loguru import logger
 from sqlalchemy import func
 
@@ -14,11 +15,11 @@ from config import WAR_START_DATE, CHOKEPOINT_BASELINES, CHOKEPOINT_BOUNDS
 from db.database import (
     get_session, Facility, FacilityStatus, CountryProduction,
     DisruptionEvent, HormuzStatus, ChokepointStatus,
-    RegionSupplySummary, GeopoliticalEvent,
+    RegionSupplySummary, GeopoliticalEvent, SupplyDemand,
 )
 
-# Country baselines
-_BASELINES = {
+# Hardcoded fallback baselines — used only when EIA data is unavailable
+_HARDCODED_FALLBACK = {
     "IR": {"oil": 3.2, "gas": 8.5},
     "SA": {"oil": 10.5, "gas": 10.0},
     "IQ": {"oil": 4.5, "gas": 3.0},
@@ -30,6 +31,39 @@ _BASELINES = {
 }
 
 GLOBAL_OIL_DEMAND_MBD = 103.0  # approximate 2026 global oil demand
+
+
+def _get_eia_baselines(session) -> dict:
+    """
+    Return {country: {"oil": mbd, "gas": bcfd, "source": "eia"|"fallback"}}
+    using the 6-month average of EIA monthly crude supply from the supply_demand table.
+    Falls back to _HARDCODED_FALLBACK per-country when EIA data is unavailable.
+    """
+    cutoff = date.today() - timedelta(days=180)
+    rows = (
+        session.query(SupplyDemand)
+        .filter(
+            SupplyDemand.flow == "supply",
+            SupplyDemand.product == "crude",
+            SupplyDemand.date >= cutoff,
+        )
+        .all()
+    )
+    by_country = defaultdict(list)
+    for r in rows:
+        if r.country in _HARDCODED_FALLBACK and r.value_kbd and r.value_kbd > 0:
+            by_country[r.country].append(r.value_kbd)
+
+    result = {}
+    for country, fallback in _HARDCODED_FALLBACK.items():
+        vals = by_country[country]
+        if vals:
+            avg_mbd = round(sum(vals) / len(vals) / 1000.0, 3)
+            result[country] = {"oil": avg_mbd, "gas": fallback["gas"], "source": "eia"}
+        else:
+            result[country] = {**fallback, "source": "fallback"}
+
+    return result
 
 
 def compute_daily_status(target_date: date) -> dict:
@@ -49,6 +83,9 @@ def compute_daily_status(target_date: date) -> dict:
     try:
         facilities = session.query(Facility).all()
         facility_map = {f.id: f for f in facilities}
+
+        # Load dynamic baselines (EIA actuals if available, else hardcoded fallback)
+        baselines = _get_eia_baselines(session)
 
         # ── Step 1-2: Compute per-facility status ────────────────────
         for facility in facilities:
@@ -153,7 +190,7 @@ def compute_daily_status(target_date: date) -> dict:
 
         # ── Step 3: Aggregate by country ─────────────────────────────
         country_stats = {}
-        for country, baseline in _BASELINES.items():
+        for country, baseline in baselines.items():
             country_facilities = [f for f in facilities if f.country == country]
             fids = [f.id for f in country_facilities]
 
@@ -230,14 +267,19 @@ def compute_daily_status(target_date: date) -> dict:
 
         session.flush()
 
+        # ── Step 3b: EIA calibration — blend model with EIA actuals ──
+        _apply_eia_calibration(session, target_date, baselines)
+
+        session.flush()
+
         # ── Step 4: All chokepoint statuses ─────────────────────────
         update_chokepoint_statuses(session, target_date)
         # Also update legacy HormuzStatus for backward compat
         _sync_legacy_hormuz(session, target_date)
 
         # ── Step 5: Region supply summary ────────────────────────────
-        total_baseline_oil = sum(b["oil"] for b in _BASELINES.values())
-        total_baseline_gas = sum(b["gas"] for b in _BASELINES.values())
+        total_baseline_oil = sum(b["oil"] for b in baselines.values())
+        total_baseline_gas = sum(b["gas"] for b in baselines.values())
         total_shut_in = sum(cs["shut_in_oil"] for cs in country_stats.values())
         total_damaged = sum(cs["damaged_oil"] for cs in country_stats.values())
         total_current_oil = sum(cs["current_oil"] for cs in country_stats.values())
@@ -267,6 +309,19 @@ def compute_daily_status(target_date: date) -> dict:
         total_off_gas = total_baseline_gas - total_current_gas
         pct_global = total_off_oil / GLOBAL_OIL_DEMAND_MBD
 
+        # Determine overall data_confidence from per-country calibration results
+        cp_rows_cal = session.query(CountryProduction).filter_by(date=target_date).all()
+        confidences = [r.blended_confidence for r in cp_rows_cal if r.blended_confidence]
+        if confidences:
+            if all(c == "eia_actual" for c in confidences):
+                rss_confidence = "eia_current"
+            elif any(c in ("eia_actual", "eia_calibrated") for c in confidences):
+                rss_confidence = "eia_calibrated"
+            else:
+                rss_confidence = "model_only"
+        else:
+            rss_confidence = "model_only"
+
         rss = session.query(RegionSupplySummary).filter_by(date=target_date).first()
         if rss:
             rss.total_baseline_oil_mbd = total_baseline_oil
@@ -280,6 +335,7 @@ def compute_daily_status(target_date: date) -> dict:
             rss.total_current_gas_bcfd = total_current_gas
             rss.total_offline_gas_bcfd = total_off_gas
             rss.pct_global_supply_offline = pct_global
+            rss.data_confidence = rss_confidence
         else:
             session.add(RegionSupplySummary(
                 date=target_date,
@@ -295,6 +351,7 @@ def compute_daily_status(target_date: date) -> dict:
                 total_current_gas_bcfd=total_current_gas,
                 total_offline_gas_bcfd=total_off_gas,
                 pct_global_supply_offline=pct_global,
+                data_confidence=rss_confidence,
             ))
 
         session.commit()
@@ -320,6 +377,77 @@ def compute_daily_status(target_date: date) -> dict:
         raise
     finally:
         session.close()
+
+
+def _apply_eia_calibration(session, target_date: date, baselines: dict):
+    """
+    Step 3b: For each CountryProduction row on target_date, look up the most
+    recent EIA monthly actual and compute blended_oil_mbd + blended_confidence.
+
+    Logic:
+      eia_lag_days <= 90  → confidence "eia_actual"  (trust EIA; model anchored to it)
+      eia_lag_days <= 180 → confidence "eia_calibrated" (model × calibration_ratio)
+      else                → confidence "model_only"
+    """
+    for country in baselines:
+        cp = session.query(CountryProduction).filter_by(
+            date=target_date, country=country
+        ).first()
+        if cp is None:
+            continue
+
+        # Find most recent EIA monthly crude supply row for this country
+        eia_row = (
+            session.query(SupplyDemand)
+            .filter(
+                SupplyDemand.country == country,
+                SupplyDemand.flow == "supply",
+                SupplyDemand.product == "crude",
+                SupplyDemand.source == "EIA",
+            )
+            .order_by(SupplyDemand.date.desc())
+            .first()
+        )
+
+        if eia_row and eia_row.value_kbd and eia_row.value_kbd > 0:
+            eia_mbd = eia_row.value_kbd / 1000.0
+            lag_days = (target_date - eia_row.date).days
+
+            # Calibration ratio capped to [0.5, 2.0] to prevent runaway corrections
+            model_mbd = cp.current_oil_mbd or cp.baseline_oil_mbd
+            if model_mbd and model_mbd > 0:
+                raw_ratio = eia_mbd / model_mbd
+                cal_ratio = max(0.5, min(2.0, raw_ratio))
+            else:
+                cal_ratio = 1.0
+
+            cp.eia_actual_oil_mbd = round(eia_mbd, 3)
+            cp.eia_source_date = eia_row.date
+            cp.eia_lag_days = lag_days
+            cp.calibration_ratio = round(cal_ratio, 4)
+
+            if lag_days <= 90:
+                # Within EIA reporting window: treat EIA figure as authoritative
+                # Offline is baseline − EIA_actual, then subtract model disruption delta
+                model_disruption = (cp.baseline_oil_mbd or 0) - (cp.current_oil_mbd or 0)
+                blended = max(0.0, eia_mbd - model_disruption)
+                cp.blended_oil_mbd = round(blended, 3)
+                cp.blended_confidence = "eia_actual"
+            elif lag_days <= 180:
+                # Beyond window but recent enough: project model forward via ratio
+                cp.blended_oil_mbd = round((cp.current_oil_mbd or 0) * cal_ratio, 3)
+                cp.blended_confidence = "eia_calibrated"
+            else:
+                cp.blended_oil_mbd = cp.current_oil_mbd
+                cp.blended_confidence = "model_only"
+        else:
+            # No EIA data available for this country
+            cp.eia_actual_oil_mbd = None
+            cp.eia_source_date = None
+            cp.eia_lag_days = None
+            cp.calibration_ratio = None
+            cp.blended_oil_mbd = cp.current_oil_mbd
+            cp.blended_confidence = "model_only"
 
 
 def _route_event_to_chokepoint(event) -> str:

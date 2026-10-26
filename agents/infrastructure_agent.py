@@ -16,18 +16,10 @@ from db.database import (
     RegionSupplySummary,
 )
 from agents.llm_client import get_llm_client, extract_json
+from collectors.production_tracker import _get_eia_baselines, _HARDCODED_FALLBACK as _BASELINES_FALLBACK
 
-# Country baselines for rollup
-_BASELINES = {
-    "IR": {"oil": 3.2, "gas": 8.5},
-    "SA": {"oil": 10.5, "gas": 10.0},
-    "IQ": {"oil": 4.5, "gas": 3.0},
-    "AE": {"oil": 3.2, "gas": 6.0},
-    "KW": {"oil": 2.7, "gas": 1.8},
-    "QA": {"oil": 1.8, "gas": 16.0},
-    "OM": {"oil": 1.0, "gas": 4.0},
-    "BH": {"oil": 0.2, "gas": 1.5},
-}
+# _BASELINES removed — use _get_eia_baselines(session) for dynamic EIA-backed values,
+# or _BASELINES_FALLBACK for static fallback constants.
 
 EXTRACTION_SYSTEM = """You are an expert oil and gas infrastructure analyst specializing in Middle East conflict damage assessment.
 

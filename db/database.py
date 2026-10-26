@@ -344,6 +344,13 @@ class CountryProduction(Base):
     total_offline_gas_bcfd = Column(Float, default=0.0)
     pct_oil_offline = Column(Float, default=0.0)
     pct_gas_offline = Column(Float, default=0.0)
+    # ── EIA calibration fields ────────────────────────────────────────────
+    eia_actual_oil_mbd = Column(Float)      # most recent EIA monthly actual (mbd)
+    eia_source_date = Column(Date)          # period of that EIA row
+    eia_lag_days = Column(Integer)          # days between eia_source_date and target_date
+    calibration_ratio = Column(Float)       # eia_actual / model_estimate (capped 0.5–2.0)
+    blended_oil_mbd = Column(Float)         # final displayed value
+    blended_confidence = Column(Text)       # "eia_actual" | "eia_calibrated" | "model_only"
     summary_text = Column(Text)
     created_at = Column(DateTime, default=datetime.utcnow)
     __table_args__ = (UniqueConstraint("date", "country"),)
@@ -447,6 +454,7 @@ class RegionSupplySummary(Base):
     total_current_gas_bcfd = Column(Float, nullable=False)
     total_offline_gas_bcfd = Column(Float, nullable=False)
     pct_global_supply_offline = Column(Float, default=0.0)
+    data_confidence = Column(Text, default="model_only")  # "eia_current"|"eia_calibrated"|"model_only"
     brent_price = Column(Float)
     wti_price = Column(Float)
     ai_narrative = Column(Text)
