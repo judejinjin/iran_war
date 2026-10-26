@@ -95,21 +95,36 @@ def collect_military_from_events(target_date: date = None) -> int:
                     ))
                     created += 1
 
-                # Create deployments
+                # Upsert deployments — match on the unique key (date, side, unit_name)
                 for dep_data in result.get("deployments", []):
-                    session.merge(MilitaryDeployment(
-                        date=target_date,
-                        side=dep_data.get("side", "Unknown"),
-                        deployment_status=dep_data.get("status", "active"),
-                        force_type=dep_data.get("force_type", "unknown"),
-                        unit_name=dep_data.get("unit_name", "Unknown Unit"),
-                        personnel_count=dep_data.get("personnel_count"),
-                        equipment_summary=dep_data.get("equipment"),
-                        region=dep_data.get("region"),
-                        latitude=dep_data.get("latitude"),
-                        longitude=dep_data.get("longitude"),
-                        location_name=dep_data.get("location_name"),
-                    ))
+                    unit = dep_data.get("unit_name", "Unknown Unit")
+                    side = dep_data.get("side", "Unknown")
+                    existing_dep = session.query(MilitaryDeployment).filter_by(
+                        date=target_date, side=side, unit_name=unit
+                    ).first()
+                    if existing_dep:
+                        existing_dep.deployment_status = dep_data.get("status", "active")
+                        existing_dep.force_type = dep_data.get("force_type", "unknown")
+                        existing_dep.personnel_count = dep_data.get("personnel_count")
+                        existing_dep.equipment_summary = dep_data.get("equipment")
+                        existing_dep.region = dep_data.get("region")
+                        existing_dep.latitude = dep_data.get("latitude")
+                        existing_dep.longitude = dep_data.get("longitude")
+                        existing_dep.location_name = dep_data.get("location_name")
+                    else:
+                        session.add(MilitaryDeployment(
+                            date=target_date,
+                            side=side,
+                            deployment_status=dep_data.get("status", "active"),
+                            force_type=dep_data.get("force_type", "unknown"),
+                            unit_name=unit,
+                            personnel_count=dep_data.get("personnel_count"),
+                            equipment_summary=dep_data.get("equipment"),
+                            region=dep_data.get("region"),
+                            latitude=dep_data.get("latitude"),
+                            longitude=dep_data.get("longitude"),
+                            location_name=dep_data.get("location_name"),
+                        ))
 
         session.commit()
         logger.info(f"Created {created} military events for {target_date}")
