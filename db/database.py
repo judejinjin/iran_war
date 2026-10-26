@@ -494,9 +494,48 @@ def get_session():
 
 
 def init_db():
-    """Create all tables if they don't exist."""
+    """Create all tables if they don't exist, then apply any pending column migrations."""
     engine = get_engine()
     Base.metadata.create_all(engine)
+    _migrate_schema(engine)
+
+
+def _migrate_schema(engine):
+    """
+    Apply incremental ALTER TABLE column additions for SQLite, which does not
+    support adding columns via create_all() on existing tables.
+    Each entry is idempotent: skipped if the column already exists.
+    """
+    migrations = [
+        # Phase 1 — EIA calibration columns (2026-10-26)
+        ("region_supply_summary", "data_confidence",   "TEXT DEFAULT 'model_only'"),
+        ("country_production",    "eia_actual_oil_mbd", "REAL"),
+        ("country_production",    "eia_source_date",    "DATE"),
+        ("country_production",    "eia_lag_days",       "INTEGER"),
+        ("country_production",    "calibration_ratio",  "REAL"),
+        ("country_production",    "blended_oil_mbd",    "REAL"),
+        ("country_production",    "blended_confidence", "TEXT"),
+        # crack_spread_prices created fresh — no migration needed
+    ]
+
+    with engine.connect() as conn:
+        for table, column, col_def in migrations:
+            # Check if column already exists
+            result = conn.execute(
+                __import__("sqlalchemy").text(f"PRAGMA table_info({table})")
+            )
+            existing = {row[1] for row in result}
+            if column not in existing:
+                conn.execute(
+                    __import__("sqlalchemy").text(
+                        f"ALTER TABLE {table} ADD COLUMN {column} {col_def}"
+                    )
+                )
+                conn.commit()
+                import logging
+                logging.getLogger(__name__).info(
+                    f"Schema migration: added {table}.{column}"
+                )
 
 
 # ─── Position CRUD helpers ───────────────────────────────────────────────────
