@@ -1,147 +1,162 @@
 """
-Historical Contracts Backfill — fetch individual expired/live futures contracts
-from Yahoo Finance using standard CME/ICE ticker codes.
+Historical Contracts Backfill — fetch expired/live individual futures contracts
+from Interactive Brokers using reqHistoricalData with includeExpired=True.
 
-This populates FuturesCurve with multiple contract_month rows per date so that
-the calendar spread algorithm (which sorts contracts by month and picks M1, M6, M12)
-has data for historical dates — not just the dates captured by the IB live feed.
+This populates FuturesCurve with multiple contract_month rows per date so the
+calendar spread algorithm (M1-M2 / M1-M6 / M1-M12) has data going back N years,
+not just from when the live IB feed started.
 
-WTI  tickers: CL{month_code}{2-digit-year}=F  (e.g. CLK26=F for May-2026)
-Brent tickers: BZ{month_code}{2-digit-year}=F  (e.g. BZK26=F for May-2026)
+IB pacing rules apply: ~60 requests per 10 min.
+BATCH_SIZE=6 with 65s pause between batches keeps us well under the limit.
 
-Coverage: 3 years back + 12 months ahead by default (≈ 144 contracts × 2 symbols).
+Estimated runtime for 3yr × 2 symbols = 72 contracts:
+  12 batches × ~65s = ~14 minutes (one-time; subsequent runs are incremental).
+
+Requires TWS to be running on startup.
 """
 
 import time
-from datetime import date
+from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from loguru import logger
-import yfinance as yf
+from ib_insync import Future
 
+from config import FUTURES_SYMBOLS, FUTURES_EXCHANGE
+from collectors.ib_connection import IBConnection
 from db.database import FuturesCurve
 
 
-# CME month codes (NYMEX / ICE standard)
-_MONTH_CODES = {
-    1: "F", 2: "G", 3: "H", 4: "J",  5: "K",  6: "M",
-    7: "N", 8: "Q", 9: "U", 10: "V", 11: "X", 12: "Z",
-}
+# IB pacing: stay well under 60 requests/10 min
+BATCH_SIZE = 6
+BATCH_PAUSE_SECONDS = 65
 
-# Map ORM symbol → Yahoo ticker prefix
-_SYMBOL_PREFIX = {
-    "CL":   "CL",
-    "COIL": "BZ",
-}
-
-
-def _yahoo_ticker(prefix: str, year: int, month: int) -> str:
-    """Build the Yahoo Finance futures ticker (e.g. 'CLK26=F')."""
-    code = _MONTH_CODES[month]
-    yr2  = str(year)[-2:]
-    return f"{prefix}{code}{yr2}=F"
+# Each futures contract trades for roughly 12-14 months before expiry.
+# Requesting 400 days captures the full trading life of any single contract.
+CONTRACT_DURATION_STR = "400 D"
 
 
 def _iter_contract_months(years_back: int = 3, months_ahead: int = 12):
     """
-    Yield (year, month) tuples from (today - years_back) to (today + months_ahead).
+    Yield YYYY-MM strings from (today - years_back) to (today + months_ahead).
     """
     today  = date.today()
     start  = today - relativedelta(years=years_back)
     end    = today + relativedelta(months=months_ahead)
     cursor = date(start.year, start.month, 1)
     while cursor <= end:
-        yield cursor.year, cursor.month
+        yield cursor.strftime("%Y-%m")
         cursor += relativedelta(months=1)
 
 
 def run_backfill(start_from: date, session, years_back: int = 3) -> int:
     """
-    Fetch individual expired/live futures contract prices from Yahoo Finance.
+    Fetch daily settlement prices for each contract month (expired and live)
+    from IB and upsert into FuturesCurve.
 
-    For each contract month from (today - years_back) to (today + 12 months) we
-    download the full daily OHLCV history via ``yf.Ticker(ticker).history(period="max")``
-    and upsert every row into FuturesCurve with the contract's own YYYY-MM as
-    ``contract_month`` (not the observation date).
+    start_from is accepted for BackfillManager compatibility but the actual
+    coverage is always (today - years_back) → (today + 12 months) to ensure
+    we have a full multi-contract curve for every historical date.
 
-    Returns total FuturesCurve rows inserted.
+    Returns total new FuturesCurve rows inserted.
     """
+    conn = IBConnection()
     total = 0
 
-    contracts = list(_iter_contract_months(years_back=years_back, months_ahead=12))
-    symbols   = list(_SYMBOL_PREFIX.items())  # [("CL", "CL"), ("COIL", "BZ")]
+    try:
+        ib = conn.connect()
 
-    logger.info(
-        f"Historical contracts backfill: {len(contracts)} months × {len(symbols)} symbols "
-        f"= {len(contracts) * len(symbols)} requests"
-    )
+        contract_months = list(_iter_contract_months(years_back=years_back))
+        logger.info(
+            f"IB historical contracts backfill: {len(contract_months)} months "
+            f"× {len(FUTURES_SYMBOLS)} symbols = "
+            f"{len(contract_months) * len(FUTURES_SYMBOLS)} requests "
+            f"(~{len(contract_months) * len(FUTURES_SYMBOLS) // BATCH_SIZE + 1} batches × {BATCH_PAUSE_SECONDS}s)"
+        )
 
-    for sym, prefix in symbols:
-        for year, month in contracts:
-            ticker_str    = _yahoo_ticker(prefix, year, month)
-            contract_month = f"{year:04d}-{month:02d}"
+        for symbol in FUTURES_SYMBOLS:
+            exchange = FUTURES_EXCHANGE.get(symbol, "NYMEX")
 
-            try:
-                ticker = yf.Ticker(ticker_str)
-                hist   = ticker.history(period="max")
+            for batch_start in range(0, len(contract_months), BATCH_SIZE):
+                batch = contract_months[batch_start:batch_start + BATCH_SIZE]
 
-                if hist is None or hist.empty:
-                    # Many expired Brent (BZ) contracts have no Yahoo data — skip silently
-                    logger.debug(f"No data for {ticker_str} ({sym} {contract_month})")
-                    time.sleep(0.05)
-                    continue
+                for month_str in batch:
+                    ym = month_str.replace("-", "")
+                    try:
+                        contract = Future(
+                            symbol=symbol,
+                            exchange=exchange,
+                            lastTradeDateOrContractMonth=ym,
+                            includeExpired=True,
+                        )
+                        ib.qualifyContracts(contract)
 
-                count = 0
-                for idx, row in hist.iterrows():
-                    obs_date    = idx.date() if hasattr(idx, "date") else idx
-                    close_price = float(row["Close"]) if row["Close"] == row["Close"] else None
-                    volume      = int(row["Volume"])  if row["Volume"] == row["Volume"] else None
+                        bars = ib.reqHistoricalData(
+                            contract,
+                            endDateTime="",
+                            durationStr=CONTRACT_DURATION_STR,
+                            barSizeSetting="1 day",
+                            whatToShow="TRADES",
+                            useRTH=True,
+                            formatDate=1,
+                            keepUpToDate=False,
+                        )
 
-                    if close_price is None or close_price <= 0:
+                        if not bars:
+                            logger.debug(f"IB: no history for {symbol} {month_str}")
+                            continue
+
+                        count = 0
+                        for bar in bars:
+                            bar_date = (
+                                bar.date if isinstance(bar.date, date) else bar.date.date()
+                            )
+
+                            existing = session.query(FuturesCurve).filter_by(
+                                date=bar_date,
+                                symbol=symbol,
+                                contract_month=month_str,
+                            ).first()
+
+                            if not existing:
+                                session.add(FuturesCurve(
+                                    date=bar_date,
+                                    symbol=symbol,
+                                    contract_month=month_str,
+                                    settlement_price=float(bar.close),
+                                    volume=int(bar.volume) if bar.volume and bar.volume > 0 else None,
+                                ))
+                                count += 1
+                            else:
+                                # Back-fill volume if IB has it and DB doesn't
+                                if bar.volume and bar.volume > 0 and existing.volume is None:
+                                    existing.volume = int(bar.volume)
+
+                        session.commit()
+                        total += count
+
+                        if count:
+                            logger.debug(f"  {symbol} {month_str}: +{count} rows")
+
+                    except Exception as e:
+                        logger.warning(
+                            f"IB historical contracts: skip {symbol} {month_str}: {e}"
+                        )
+                        try:
+                            session.rollback()
+                        except Exception:
+                            pass
                         continue
 
-                    existing = session.query(FuturesCurve).filter_by(
-                        date=obs_date,
-                        symbol=sym,
-                        contract_month=contract_month,
-                    ).first()
+                # Pacing between batches (skip pause after last batch)
+                if batch_start + BATCH_SIZE < len(contract_months):
+                    logger.debug(f"IB pacing pause {BATCH_PAUSE_SECONDS}s...")
+                    time.sleep(BATCH_PAUSE_SECONDS)
 
-                    if existing:
-                        # Only update if we don't have a price yet (IB data takes priority)
-                        if existing.settlement_price is None:
-                            existing.settlement_price = close_price
-                        if volume and existing.volume is None:
-                            existing.volume = volume
-                    else:
-                        session.add(FuturesCurve(
-                            date=obs_date,
-                            symbol=sym,
-                            contract_month=contract_month,
-                            settlement_price=close_price,
-                            volume=volume,
-                        ))
-                        count += 1
+        logger.info(
+            f"IB historical contracts backfill complete: {total} new rows inserted."
+        )
+        return total
 
-                session.commit()
-                total += count
+    finally:
+        conn.disconnect()
 
-                if count:
-                    logger.debug(
-                        f"  {ticker_str}: {count} new rows ({sym} {contract_month})"
-                    )
-
-                # Small pause to be friendly to Yahoo's unofficial API
-                time.sleep(0.1)
-
-            except Exception as e:
-                logger.warning(
-                    f"Yahoo fetch failed for {ticker_str} ({sym} {contract_month}): {e}"
-                )
-                try:
-                    session.rollback()
-                except Exception:
-                    pass
-                time.sleep(0.2)
-                continue
-
-    logger.info(f"Historical contracts backfill complete: {total} new rows inserted.")
-    return total
