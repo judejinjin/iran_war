@@ -119,6 +119,21 @@ def _run_eia_fred():
         logger.error(f"Crack spread update failed: {e}")
         results["crack_spread"] = str(e)
 
+    try:
+        from datetime import date, timedelta
+        from db.database import get_session
+        from backfill.spread_cache_backfill import run_backfill as spread_cache_backfill
+        _sc_session = get_session()
+        _sc_count = spread_cache_backfill(
+            start_from=date.today() - timedelta(days=60),
+            session=_sc_session,
+        )
+        _sc_session.close()
+        results["spread_cache"] = f"{_sc_count} records"
+    except Exception as e:
+        logger.error(f"Spread cache update failed: {e}")
+        results["spread_cache"] = str(e)
+
     return results
 
 

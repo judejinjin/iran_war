@@ -114,6 +114,7 @@ def populate_contract_dropdowns(_n):
     Output("futures-price-history", "figure"),
     Output("futures-spread-chart", "figure"),
     Output("futures-spread-contracts", "children"),
+    Output("futures-spread-percentile-row", "children"),
     Input("futures-date-range", "start_date"),
     Input("futures-date-range", "end_date"),
     Input("futures-symbol-toggle", "value"),
@@ -123,9 +124,11 @@ def populate_contract_dropdowns(_n):
     Input("futures-cal-spread-toggle", "value"),
     Input("futures-term-structure-overlays", "value"),
     Input("futures-term-structure-symbol", "value"),
+    Input("futures-spread-date-range", "start_date"),
+    Input("futures-spread-date-range", "end_date"),
     Input("auto-refresh", "n_intervals"),
 )
-def update_futures(start_date, end_date, symbol_filter, cl_contract, coil_contract, show_spread, cal_spread_mode, term_structure_overlays, term_structure_symbol, _n):
+def update_futures(start_date, end_date, symbol_filter, cl_contract, coil_contract, show_spread, cal_spread_mode, term_structure_overlays, term_structure_symbol, spread_start_date, spread_end_date, _n):
     session = get_session()
     today = date.today()
 
@@ -135,6 +138,16 @@ def update_futures(start_date, end_date, symbol_filter, cl_contract, coil_contra
             start_date = datetime.strptime(start_date[:10], "%Y-%m-%d").date()
         if isinstance(end_date, str):
             end_date = datetime.strptime(end_date[:10], "%Y-%m-%d").date()
+
+        # Parse spread-specific date range (defaults to 1-year window)
+        if isinstance(spread_start_date, str):
+            spread_start_date = datetime.strptime(spread_start_date[:10], "%Y-%m-%d").date()
+        elif spread_start_date is None:
+            spread_start_date = today - timedelta(days=365)
+        if isinstance(spread_end_date, str):
+            spread_end_date = datetime.strptime(spread_end_date[:10], "%Y-%m-%d").date()
+        elif spread_end_date is None:
+            spread_end_date = today
 
         symbols = ["CL", "COIL"] if symbol_filter == "BOTH" else [symbol_filter]
 
@@ -412,49 +425,86 @@ def update_futures(start_date, end_date, symbol_filter, cl_contract, coil_contra
             height=400,
         )
 
-        # Calendar spreads — compute on-the-fly from FuturesCurve data.
-        # Only the selected spread mode (M1-M2, M1-M6, M1-M12) is shown.
-        _offset_map = {"M1-M2": 1, "M1-M6": 5, "M1-M12": 11}
-        selected_offset = _offset_map.get(cal_spread_mode or "M1-M12", 11)
-        _cal_colors = {
-            "CL":   "#EE5A24",
-            "COIL": "#0ABDE3",
-        }
+        # ─── Calendar spreads ─────────────────────────────────────────
+        # Strategy:
+        #   1. Primary — read from pre-computed Spread table (covers full history).
+        #   2. Fallback — compute on-the-fly from FuturesCurve for any dates
+        #      more recent than the last Spread cache entry (cache may lag by a day).
+        # The spread-specific date range (spread_start_date / spread_end_date)
+        # is used here instead of the global price-history range so users can
+        # view a year or more of spread history regardless of the main date range.
 
-        # Track the actual contract months used on the most-recent date (for the label)
+        _offset_map  = {"M1-M2": 1, "M1-M6": 5, "M1-M12": 11}
+        _suffix_map  = {"M1-M2": "M1M2", "M1-M6": "M1M6", "M1-M12": "M1M12"}
+        selected_offset = _offset_map.get(cal_spread_mode or "M1-M12", 11)
+        spread_suffix   = _suffix_map.get(cal_spread_mode or "M1-M12", "M1M12")
+        _cal_colors = {"CL": "#EE5A24", "COIL": "#0ABDE3"}
+
         spread_contract_info = {}  # {sym: (m1_label, mn_label)}
+        spread_points_by_sym = {}  # {sym: [(date, value, front_month, back_month)]}
 
         for sym in ["CL", "COIL"]:
-            curve_rows = session.query(FuturesCurve).filter(
-                FuturesCurve.symbol == sym,
-                FuturesCurve.date >= start_date,
-                FuturesCurve.date <= end_date,
-            ).order_by(FuturesCurve.date, FuturesCurve.contract_month).all()
+            spread_type = f"{sym}_{spread_suffix}"
 
-            # Group by date
-            by_date = {}
-            for r in curve_rows:
-                by_date.setdefault(r.date, []).append(r)
+            # ── 1. Query the pre-computed Spread cache ──────────────────
+            cached_rows = (
+                session.query(Spread)
+                .filter(
+                    Spread.spread_type == spread_type,
+                    Spread.date >= spread_start_date,
+                    Spread.date <= spread_end_date,
+                )
+                .order_by(Spread.date)
+                .all()
+            )
+            cached_dates = {r.date for r in cached_rows}
+            last_cached_date = max(cached_dates) if cached_dates else None
 
-            points = []  # [(date, spread_val)]
-            latest_dt = None
-            for dt in sorted(by_date):
-                contracts = by_date[dt]
-                if len(contracts) < 2:
-                    continue
-                m1 = contracts[0]
-                if m1.settlement_price is None:
-                    continue
-                if len(contracts) > selected_offset and contracts[selected_offset].settlement_price is not None:
-                    mn = contracts[selected_offset]
-                    spread_val = m1.settlement_price - mn.settlement_price
-                    points.append((dt, spread_val))
-                    latest_dt = dt
-                    # Record the contract months for the most recent date
-                    spread_contract_info[sym] = (
-                        _contract_label(sym, m1.contract_month),
-                        _contract_label(sym, mn.contract_month),
+            points = [(r.date, r.spread_value, r.front_month, r.back_month)
+                      for r in cached_rows
+                      if r.spread_value is not None]
+
+            # ── 2. On-the-fly fallback for any gap at the recent end ────
+            # If cache is missing today or yesterday, compute from FuturesCurve.
+            gap_start = (last_cached_date + timedelta(days=1)) if last_cached_date else spread_start_date
+            if gap_start <= spread_end_date:
+                curve_rows = (
+                    session.query(FuturesCurve)
+                    .filter(
+                        FuturesCurve.symbol == sym,
+                        FuturesCurve.date   >= gap_start,
+                        FuturesCurve.date   <= spread_end_date,
                     )
+                    .order_by(FuturesCurve.date, FuturesCurve.contract_month)
+                    .all()
+                )
+                by_date = {}
+                for r in curve_rows:
+                    by_date.setdefault(r.date, []).append(r)
+
+                for dt in sorted(by_date):
+                    if dt in cached_dates:
+                        continue
+                    contracts = by_date[dt]
+                    prices = [c for c in contracts if c.settlement_price is not None]
+                    if len(prices) <= selected_offset:
+                        continue
+                    m1 = prices[0]
+                    mn = prices[selected_offset]
+                    points.append((dt, m1.settlement_price - mn.settlement_price,
+                                   m1.contract_month, mn.contract_month))
+
+            # Sort by date (cache + fallback may be interleaved)
+            points.sort(key=lambda x: x[0])
+            spread_points_by_sym[sym] = points
+
+            # Record the latest contract labels for the info bar
+            if points:
+                last = points[-1]
+                spread_contract_info[sym] = (
+                    _contract_label(sym, last[2]) if last[2] else "—",
+                    _contract_label(sym, last[3]) if last[3] else "—",
+                )
 
             sym_label = "WTI" if sym == "CL" else "Brent"
             if points:
@@ -462,13 +512,17 @@ def update_futures(start_date, end_date, symbol_filter, cl_contract, coil_contra
                     x=[p[0] for p in points],
                     y=[p[1] for p in points],
                     mode="lines+markers",
+                    marker=dict(size=3),
                     name=f"{sym_label} {cal_spread_mode}",
                     line=dict(color=_cal_colors[sym]),
                 ))
 
-        spread_fig.update_layout(title=f"Calendar Spread: {cal_spread_mode} (M1 − Mn)")
+        spread_fig.update_layout(
+            title=f"Calendar Spread: {cal_spread_mode} (M1 − Mn)",
+            yaxis_title="$/bbl",
+        )
 
-        # Build the contract label row shown below the chart
+        # ── Contract label row shown below the chart ────────────────────
         contract_label_parts = []
         for sym, sym_label in [("CL", "WTI"), ("COIL", "Brent")]:
             if sym in spread_contract_info:
@@ -481,7 +535,91 @@ def update_futures(start_date, end_date, symbol_filter, cl_contract, coil_contra
                 )
         spread_contracts_children = contract_label_parts or "No data"
 
-        return metrics, curve_fig, footnote_children, term_structure_tables_component, history_fig, spread_fig, spread_contracts_children
+        # ── Spread percentile metrics row ───────────────────────────────
+        # For each symbol, compute:
+        #   current value, 3-year percentile rank, 52-week min/max
+        # All from the pre-computed Spread table (fast single query per sym).
+        pct_cards = []
+        for sym, sym_label in [("CL", "WTI"), ("COIL", "Brent")]:
+            spread_type = f"{sym}_{spread_suffix}"
+            three_yr_ago  = today - timedelta(days=3 * 365)
+            fifty_two_ago = today - timedelta(days=365)
+
+            all_rows_3yr = (
+                session.query(Spread)
+                .filter(
+                    Spread.spread_type == spread_type,
+                    Spread.date >= three_yr_ago,
+                    Spread.spread_value.isnot(None),
+                )
+                .order_by(Spread.date)
+                .all()
+            )
+            if not all_rows_3yr:
+                # Fall back to spread_points_by_sym if cache is empty
+                all_vals_3yr = [v for (_, v, _, _) in spread_points_by_sym.get(sym, [])]
+                curr_val = all_vals_3yr[-1] if all_vals_3yr else None
+            else:
+                all_vals_3yr = [r.spread_value for r in all_rows_3yr]
+                curr_val = all_vals_3yr[-1]
+
+            if not all_vals_3yr or curr_val is None:
+                pct_cards.append(
+                    dbc.Col(
+                        dbc.Card(dbc.CardBody(
+                            html.Span(f"{sym_label} {cal_spread_mode}: no data",
+                                      style={"color": "#888", "fontSize": "0.82rem"})
+                        ), className="text-center"),
+                        width=6,
+                    )
+                )
+                continue
+
+            # Percentile rank: how many values ≤ curr_val?
+            pct_rank = int(100 * sum(1 for v in all_vals_3yr if v <= curr_val) / len(all_vals_3yr))
+
+            # 52-week range from Spread table
+            rows_52w = [r.spread_value for r in all_rows_3yr
+                        if r.date >= fifty_two_ago]
+            w52_min = min(rows_52w) if rows_52w else None
+            w52_max = max(rows_52w) if rows_52w else None
+
+            val_color = "#2ed573" if curr_val >= 0 else "#ff6b81"
+            pct_color = "#f0c040" if 20 <= pct_rank <= 80 else ("#2ed573" if pct_rank < 20 else "#ff6b81")
+
+            w52_str = (
+                f"52W: {w52_min:+.2f} → {w52_max:+.2f}"
+                if w52_min is not None else "52W: —"
+            )
+
+            pct_cards.append(
+                dbc.Col(
+                    dbc.Card(
+                        dbc.CardBody([
+                            html.Div(f"{sym_label} {cal_spread_mode}",
+                                     style={"fontSize": "0.75rem", "color": "#aaa",
+                                            "marginBottom": "2px"}),
+                            html.Div([
+                                html.Span(f"{curr_val:+.2f} $/bbl",
+                                          style={"fontWeight": "700", "fontSize": "1.1rem",
+                                                 "color": val_color, "marginRight": "10px"}),
+                                html.Span(f"3yr pct: {pct_rank}th",
+                                          style={"fontSize": "0.85rem", "color": pct_color,
+                                                 "marginRight": "10px"}),
+                                html.Span(w52_str,
+                                          style={"fontSize": "0.82rem", "color": "#aaa"}),
+                            ]),
+                        ], style={"padding": "8px 12px"}),
+                        style={"backgroundColor": "#1a1a2e", "border": "1px solid #333"},
+                    ),
+                    width=6,
+                )
+            )
+
+        spread_percentile_row = dbc.Row(pct_cards, className="g-2") if pct_cards else ""
+
+        return (metrics, curve_fig, footnote_children, term_structure_tables_component,
+                history_fig, spread_fig, spread_contracts_children, spread_percentile_row)
 
     finally:
         session.close()

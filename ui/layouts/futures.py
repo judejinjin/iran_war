@@ -207,7 +207,15 @@ layout = dbc.Container([
                         inline=True,
                         style={"marginLeft": "16px", "fontSize": "0.85rem"},
                     ),
-                ], style={"display": "flex", "alignItems": "center"}),
+                    html.Span(style={"flex": "1"}),
+                    dcc.DatePickerRange(
+                        id="futures-spread-date-range",
+                        start_date=today - timedelta(days=365),
+                        end_date=today,
+                        display_format="YYYY-MM-DD",
+                        style={"fontSize": "0.8rem"},
+                    ),
+                ], style={"display": "flex", "alignItems": "center", "flexWrap": "wrap", "gap": "6px"}),
                 dbc.CardBody([
                     dcc.Graph(id="futures-spread-chart"),
                     html.Div(
@@ -215,6 +223,8 @@ layout = dbc.Container([
                         style={"fontSize": "0.78rem", "color": "#888",
                                "marginTop": "4px", "paddingLeft": "4px"},
                     ),
+                    # Spread percentile metrics row (populated by callback)
+                    html.Div(id="futures-spread-percentile-row", style={"marginTop": "8px"}),
                 ]),
             ]),
             # Inspection tables — populated on click

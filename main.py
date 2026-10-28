@@ -73,6 +73,8 @@ def main():
         bm = BackfillManager()
         # Market data sources (fast, always safe to re-run)
         bm.run_incremental(sources=["fred", "yahoo", "eia", "cushing", "crack_spread"])
+        # Historical individual contract curves + pre-computed spread cache
+        bm.run_incremental(sources=["historical_contracts", "spread_cache"])
         # News + geopolitical data (GDELT day-by-day)
         bm.run_incremental(sources=["gdelt"])
 
