@@ -88,7 +88,12 @@ def run_backfill(start_from: date, session, years_back: int = 3) -> int:
                             lastTradeDateOrContractMonth=ym,
                             includeExpired=True,
                         )
-                        ib.qualifyContracts(contract)
+                        # Do NOT call qualifyContracts for expired futures — IB's
+                        # reqContractDetails does not return expired contracts so the
+                        # contract would remain unqualified (conId=0) and
+                        # reqHistoricalData would silently return [].
+                        # The full spec (symbol+exchange+lastTradeDateOrContractMonth
+                        # +includeExpired) is sufficient for IB to serve historical data.
 
                         bars = ib.reqHistoricalData(
                             contract,
